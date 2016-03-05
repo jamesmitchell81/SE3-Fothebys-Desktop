@@ -4,9 +4,46 @@
  </head>
  <body>
 
-  <span>
-    James
-  </span>
+    <div id="app">
+      <input v-model="newTodo" @keyup.enter="addTodo">
 
- </body>
- </html>
+      <ul>
+        <li v-for="todo in todos">
+          <span>{{ todo.text }}</span>
+          <button @click="removeTodo($index)">Remove</button>
+        </li>
+      </ul>
+    </div>
+
+    <script src="../js/vue.js"></script>
+    <script src="../js/vue-resource.js"></script>
+    <script>
+      new Vue({
+        el: "#app",
+        data: {
+          newTodo: '',
+          todos: [
+            { text: "Add some todos" }
+          ]
+        },
+        methods: {
+          addTodo: function() {
+            var text = this.newTodo.trim();
+
+            this.$http.get('http://localhost:8080/services/customers', function(customers) {
+              console.log(customers);
+            });
+
+            if ( text ) {
+              this.todos.push({ text: text });
+              this.newTodo = '';
+            }
+          },
+          removeTodo: function(index) {
+            this.todos.splice(index, 1);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
