@@ -1,0 +1,85 @@
+<html>
+ <head>
+   <title></title>
+ </head>
+ <body>
+
+<!--     <div id="app">
+      <input v-model="newTodo" @keyup.enter="addTodo">
+
+      <ul>
+        <li v-for="todo in todos">
+          <span>{{ todo.text }}</span>
+          <button @click="removeTodo($index)">Remove</button>
+        </li>
+      </ul>
+    </div>
+ -->
+
+  <nav>
+    <span>Intentory</span>
+    <a href="">Search Lot Items</a>
+    <a href="">New Lot Item</a>
+    <a href="">Update Lot Item</a>
+    <a href="">Achive Lot Item</a>
+  </nav>
+
+  <nav>
+    <a href="">Intentory Lot Items</a>
+    <a href="">Client Records</a>
+  </nav>
+
+  <!--
+  navigation = [
+    {
+      title: "",
+      details: {
+        address: ,
+        label:
+      }
+
+
+     }
+  ]
+
+
+  -->
+
+
+    <script src="../js/vue.js"></script>
+    <script src="../js/vue-resource.js"></script>
+    <script>
+
+
+
+
+
+      // new Vue({
+      //   el: "#app",
+      //   data: {
+      //     newTodo: '',
+      //     todos: [
+      //       { text: "Add some todos" }
+      //     ]
+      //   },
+      //   methods: {
+      //     addTodo: function() {
+      //       var text = this.newTodo.trim();
+
+      //       this.$http.get('http://localhost:8080/services/customers', function(customers) {
+      //         console.log(customers);
+      //       });
+
+      //       if ( text ) {
+      //         this.todos.push({ text: text });
+      //         this.newTodo = '';
+      //       }
+      //     },
+      //     removeTodo: function(index) {
+      //       this.todos.splice(index, 1);
+      //     }
+      //   }
+      // });
+    </script>
+  </body>
+</html>
