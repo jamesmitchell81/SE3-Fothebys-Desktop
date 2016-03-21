@@ -25,11 +25,13 @@ app.on('ready', function() {
   var page;
 
   mainWindow = new BrowserWindow({
+    title: "Fothebys Auction House",
     show: false,
     width: 1200,
     height: 700,
-    'min-width' : 650,
-    'title-bar-style': 'hidden-inset'
+    'min-width': 800,
+    'min-height': 600
+    // 'title-bar-style': 'hidden-inset'
   });
 
   mainWindow.loadUrl('file://' + __dirname + '/app/html/index.html');
