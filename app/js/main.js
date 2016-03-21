@@ -14296,15 +14296,37 @@ exports.insert = function (css) {
 }
 
 },{}],30:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"body-wrap\">\n\n\n  <div class=\"side-wrap\">\n    <header>\n      <img src=\"../assets/svg/fb-logo-white.svg\" alt=\"Fothebys Auction House\">\n    </header>\n    <nav>\n      <div class=\"nav-core\">Lot Items</div>\n      <div class=\"nav-core\">Auction Events</div>\n      <div class=\"nav-core\">Employees</div>\n    </nav>\n  </div>\n\n  <div class=\"content-wrap\">\n\n    <router-view class=\"view\" keep-alive=\"\"></router-view>\n\n<!--       <div class=\"page-title-bar\">\n              </div>\n\n      <component :is=\"view\"></component>\n\n      <div class=\"nav-tiles\">\n        <div class=\"nav-tile\">\n          Add Item\n        </div>\n\n        <div class=\"nav-tile\">\n          Search Items\n        </div>\n      </div> -->\n  </div>\n\n</div>\n"
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  name: "AddLotItem"
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form method=\"POST\" action=\"\">\n  <label for=\"\">James</label>\n  <input type=\"text\">\n</form>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/add-lot-item.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":28,"vue-hot-reload-api":2}],31:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n.nav-core {\n  color: #fff;\n  display: block;\n  padding: 2em 0 2em 3em;\n  cursor: pointer;\n}\n")
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"body-wrap\">\n  <div class=\"side-wrap\">\n    <header>\n      <img src=\"../assets/svg/fb-logo-white.svg\" alt=\"Fothebys Auction House\">\n    </header>\n    <nav>\n      <a v-link=\"'/page/lot-items'\" class=\"nav-core\">Lot Items</a>\n      <a :href=\"\" class=\"nav-core\">Auction Events</a>\n      <a :href=\"\" class=\"nav-core\">Employees</a>\n    </nav>\n  </div>\n\n  <div class=\"content-wrap\">\n    <!-- <router-view class=\"view\" keep-alive></router-view> -->\n    <router-view></router-view>\n  </div>\n\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/app.vue"
   module.hot.dispose(function () {
-    require("vueify-insert-css").cache["\n\n"] = false
+    require("vueify-insert-css").cache["\n.nav-core {\n  color: #fff;\n  display: block;\n  padding: 2em 0 2em 3em;\n  cursor: pointer;\n}\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -14313,29 +14335,35 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":28,"vue-hot-reload-api":2,"vueify-insert-css":29}],31:[function(require,module,exports){
-var Vue = require('vue')
-var VueResource = require('vue-resource')
-var Router = require('vue-router')
+},{"vue":28,"vue-hot-reload-api":2,"vueify-insert-css":29}],32:[function(require,module,exports){
+var Vue = require('vue');
+var VueResource = require('vue-resource');
+var Router = require('vue-router');
 
-var App = require('./app.vue')
-// var navComponent = require('./nav-item.vue')
+var App = require('./app.vue');
+
+var PageNav = require('./page-nav.vue');
+var Welcome = require('./welcome.vue');
+
+var AddLotItem = require('./add-lot-item.vue');
 
 Vue.use(Router);
-
-Vue.component('login', {
-  template: '<h2>Login</h2>'
-});
-
-Vue.component('lot-items', {
-  template: '<h2>Lot Items</h2>'
-});
 
 var router = new Router();
 
 router.map({
-
+  '/': {
+    component: Welcome
+  },
+  '/page/lot-items': {
+    component: PageNav
+  },
+  '/page/lot-items/add-item': {
+    component: AddLotItem
+  }
 })
+
+Vue.config.debug = true;
 
 router.start(App, '#app');
 
@@ -14359,4 +14387,105 @@ router.start(App, '#app');
 //     }
 //   }
 // })
-},{"./app.vue":30,"vue":28,"vue-resource":16,"vue-router":27}]},{},[31]);
+},{"./add-lot-item.vue":30,"./app.vue":31,"./page-nav.vue":33,"./welcome.vue":35,"vue":28,"vue-resource":16,"vue-router":27}],33:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+
+var Tile = require("./tile.vue");
+
+exports.default = {
+  name: 'PageNav',
+
+  components: {
+    Tile: Tile
+  },
+
+  data: function data() {
+    return {
+      tiles: [{ name: "Add Item", url: "/page/lot-items/add-item" }, { name: "Arrange Appraisal", url: "/page/lot-items/arrange-appraisal" }]
+    };
+  }
+
+  // route: {
+  //   activate: function(transition) {
+  //     console.log("Activated");
+  //     console.log(transition.to.path);
+  //   }
+  // }
+
+  // data: function() {
+  //   return 1;
+  // }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"nav-tiles\">\n\n  <tile v-for=\"tile in tiles\" :tile=\"tile\"></tile>\n\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/page-nav.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./tile.vue":34,"vue":28,"vue-hot-reload-api":2}],34:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  name: "Tile",
+
+  props: {
+    tile: Object
+  },
+
+  computed: {
+    href: function href() {
+      return this.tile.url;
+    }
+  }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"nav-tile\">\n  <a v-link=\"href\">{{ tile.name }}</a>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/tile.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":28,"vue-hot-reload-api":2}],35:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  name: 'PageNav'
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>welcome</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/welcome.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":28,"vue-hot-reload-api":2}]},{},[32]);

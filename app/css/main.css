@@ -52,6 +52,9 @@ nav {
   margin-top: 3em; }
 
 .nav-core {
+  color: #fff;
+  text-decoration: none;
+  display: block;
   padding: 2em 0 2em 3em;
   cursor: pointer; }
 

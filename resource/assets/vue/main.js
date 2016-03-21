@@ -1,25 +1,31 @@
-var Vue = require('vue')
-var VueResource = require('vue-resource')
-var Router = require('vue-router')
+var Vue = require('vue');
+var VueResource = require('vue-resource');
+var Router = require('vue-router');
 
-var App = require('./app.vue')
-// var navComponent = require('./nav-item.vue')
+var App = require('./app.vue');
+
+var PageNav = require('./page-nav.vue');
+var Welcome = require('./welcome.vue');
+
+var AddLotItem = require('./add-lot-item.vue');
 
 Vue.use(Router);
-
-Vue.component('login', {
-  template: '<h2>Login</h2>'
-});
-
-Vue.component('lot-items', {
-  template: '<h2>Lot Items</h2>'
-});
 
 var router = new Router();
 
 router.map({
-
+  '/': {
+    component: Welcome
+  },
+  '/page/lot-items': {
+    component: PageNav
+  },
+  '/page/lot-items/add-item': {
+    component: AddLotItem
+  }
 })
+
+Vue.config.debug = true;
 
 router.start(App, '#app');
 
