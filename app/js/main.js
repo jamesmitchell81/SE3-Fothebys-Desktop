@@ -14310,7 +14310,7 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/add-lot-item.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/add-lot-item.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -14324,7 +14324,7 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/app.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/app.vue"
   module.hot.dispose(function () {
     require("vueify-insert-css").cache["\n.nav-core {\n  color: #fff;\n  display: block;\n  padding: 2em 0 2em 3em;\n  cursor: pointer;\n}\n"] = false
     document.head.removeChild(__vueify_style__)
@@ -14345,13 +14345,13 @@ Object.defineProperty(exports, "__esModule", {
 
 
 var OptionItem = require('./option-item.vue');
-// http://localhost:8080/services/category
+var ClientDetails = require('./client-details.vue');
 
 exports.default = {
   name: "ArrangeAppraisal",
 
   components: {
-    OptionItem: OptionItem
+    OptionItem: OptionItem, ClientDetails: ClientDetails
   },
 
   data: function data() {
@@ -14364,29 +14364,21 @@ exports.default = {
     activate: function activate() {
       // get all categories and experts.
       this.$http.get('http://localhost:8080/services/category').then(function (category) {
-        // for ( var i in category.data ) {
-        //   var obj = {};
-        //   obj.name = category.data[i].name;
-        //   console.log(category.data[i].name);
-        //   this.categories.push(obj);
-        // }
         this.categories = category.data;
       }, function (err) {
         console.log(err);
       });
-
-      // return categories => (categories);
     }
   }
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form method=\"POST\" action=\"\">\n\n  <!-- client details -->\n  <label for=\"\">Client</label>\n  <span class=\"btn-group\">\n    <span>Existing Client</span>\n    <a href=\"\" class=\"btn\">Yes</a><!-- /page/arrange-appraisal/client-search.vue -->\n    <a href=\"\" class=\"btn\">No</a><!-- /page/arrange-appraisal/client-details.vue -->\n  </span>\n    <!-- search or enter details -->\n    <router-view></router-view>\n\n  <!-- item name -->\n  <label for=\"item-name\">Item Name</label>\n  <input type=\"text\" id=\"item-name\" name=\"item-name\">\n\n  <!-- category -->\n  <label for=\"\">Category</label>\n\n  <option-item v-for=\"category in categories\" :type=\"'radio'\" :name=\"'category'\" :item=\"category\">\n  </option-item>\n\n  <!-- ... -->\n  <!-- on click -> get experts related -->\n\n  <!-- list of experts related to category -->\n  <label for=\"\">Expert</label>\n\n  <!-- ... -->\n\n  <label for=\"\">Agreed date for Appraisal</label>\n\n\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form method=\"POST\" action=\"/\">\n\n  <!-- client details -->\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n    <span class=\"btn-group\">\n      <span>Existing Client</span>\n      <a v-link=\"\" class=\"btn\">Yes</a><!-- /arrange-appraisal/client-search.vue -->\n      <a v-link=\"'arrange-appraisal/client-details'\" class=\"btn\">No</a><!-- /arrange-appraisal/client-details.vue -->\n    </span>\n  </span>\n    <!-- search or enter details -->\n    <router-view></router-view>\n\n  <!-- item name -->\n  <span class=\"form-element\">\n    <label for=\"item-name\">Item Name</label>\n    <input type=\"text\" id=\"item-name\" name=\"item-name\">\n  </span>\n\n  <!-- category -->\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <option-item v-for=\"category in categories\" :type=\"'radio'\" :name=\"'category'\" :item=\"category\">\n    </option-item>\n  </span>\n\n  <!-- ... -->\n  <!-- on click -> get experts related -->\n\n  <!-- list of experts related to category -->\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n    <!-- ... -->\n\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Agreed date for Appraisal</label>\n    <input type=\"date\">\n  </span>\n\n  <button class=\"btn\">Submit</button>\n\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/arrange-appraisal.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/arrange-appraisal.vue"
   module.hot.dispose(function () {
     require("vueify-insert-css").cache["\n\n"] = false
     document.head.removeChild(__vueify_style__)
@@ -14397,64 +14389,35 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./option-item.vue":34,"vue":28,"vue-hot-reload-api":2,"vueify-insert-css":29}],33:[function(require,module,exports){
-var Vue = require('vue');
-var VueResource = require('vue-resource');
-var Router = require('vue-router');
+},{"./client-details.vue":33,"./option-item.vue":34,"vue":28,"vue-hot-reload-api":2,"vueify-insert-css":29}],33:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
+"use strict";
 
-var App = require('./app.vue');
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  name: "ClientDetails"
 
-var PageNav = require('./page-nav.vue');
-var Welcome = require('./welcome.vue');
-
-var AddLotItem = require('./add-lot-item.vue');
-var ArrangeAppraisal = require('./arrange-appraisal.vue')
-
-Vue.use(Router);
-Vue.use(VueResource);
-
-var router = new Router();
-
-router.map({
-  '/': {
-    component: Welcome
-  },
-  '/lot-items': {
-    component: PageNav
-  },
-  '/lot-items/add-item': {
-    component: AddLotItem
-  },
-  '/lot-items/arrange-appraisal': {
-    component: ArrangeAppraisal
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<!-- <form method=\"post\" action=\"\"> -->\n  <fieldset>\n    <legend>Contact</legend>\n\n    <span class=\"form-element\">\n      <label for=\"title\">Title</label>\n      <input type=\"text\" id=\"title\" name=\"title\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"firstName\">First Name</label>\n      <input type=\"text\" id=\"firstName\" name=\"firstName\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"surname\">Surname</label>\n      <input type=\"text\" id=\"surname\" name=\"surname\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"telNumber\">Telephone Number</label>\n      <input type=\"text\" id=\"telNumber\" name=\"telNumber\">\n    </span>\n  </fieldset>\n\n\n  <fieldset>\n    <legend>Address</legend>\n\n    <span class=\"form-element\">\n      <label for=\"firstLine\">First Line</label>\n      <input type=\"text\" id=\"firstLine\" name=\"firstLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"secondLine\">Second Line</label>\n      <input type=\"text\" id=\"secondLine\" name=\"secondLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"townCity\">Town/City</label>\n      <input type=\"text\" id=\"townCity\" name=\"townCity\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"postalCode\">Postal Code</label>\n      <input type=\"text\" id=\"postalCode\" name=\"postalCode\">\n    </span>\n  </fieldset>\n\n<!-- </form> -->\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/client-details.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
-})
-
-Vue.config.debug = true;
-
-router.start(App, '#app');
-
-// new Vue({
-//   el: 'body',
-//   components: {
-//     app: App,
-//     'nav-core': navComponent
-//   },
-//   data: {
-//     view: 'login',
-//     navItems: [
-//       { navName: "Lot Items", linkedView: "lot-items" },
-//       { navName: "Auction Events", linkedView: "auction-events" }
-//     ]
-//   },
-
-//   methods: {
-//     swapView(newView) {
-//       this.view = newView;
-//     }
-//   }
-// })
-},{"./add-lot-item.vue":30,"./app.vue":31,"./arrange-appraisal.vue":32,"./page-nav.vue":35,"./welcome.vue":37,"vue":28,"vue-resource":16,"vue-router":27}],34:[function(require,module,exports){
+})()}
+},{"vue":28,"vue-hot-reload-api":2,"vueify-insert-css":29}],34:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n/*.option-item {\n\n}\n\n.option-item input[type='checkbox'] {\n  display: none;\n}\n\n\n.option-item input[type='checkbox']:checked + label {\n  background: #000;\n  color: #fff;\n}*/\n")
 "use strict";
 
@@ -14477,7 +14440,7 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/option-item.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/option-item.vue"
   module.hot.dispose(function () {
     require("vueify-insert-css").cache["\n/*.option-item {\n\n}\n\n.option-item input[type='checkbox'] {\n  display: none;\n}\n\n\n.option-item input[type='checkbox']:checked + label {\n  background: #000;\n  color: #fff;\n}*/\n"] = false
     document.head.removeChild(__vueify_style__)
@@ -14529,7 +14492,7 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/page-nav.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/page-nav.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -14561,7 +14524,7 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/tile.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/tile.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -14583,11 +14546,73 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/welcome.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/welcome.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":28,"vue-hot-reload-api":2}]},{},[33]);
+},{"vue":28,"vue-hot-reload-api":2}],38:[function(require,module,exports){
+var Vue = require('vue');
+var VueResource = require('vue-resource');
+var Router = require('vue-router');
+
+var App = require('./components/app.vue');
+
+var PageNav = require('./components/page-nav.vue');
+var Welcome = require('./components/welcome.vue');
+
+var AddLotItem = require('./components/add-lot-item.vue');
+var ArrangeAppraisal = require('./components/arrange-appraisal.vue')
+
+Vue.use(Router);
+Vue.use(VueResource);
+
+var router = new Router();
+
+router.map({
+  '/': {
+    component: Welcome
+  },
+  '/lot-items': {
+    component: PageNav
+  },
+  '/lot-items/add-item': {
+    component: AddLotItem
+  },
+  '/lot-items/arrange-appraisal': {
+    component: ArrangeAppraisal,
+    subRoutes: {
+      '/client-details': {
+        component: require('./components/client-details.vue')
+      }
+    }
+  }
+})
+
+Vue.config.debug = true;
+
+router.start(App, '#app');
+
+// new Vue({
+//   el: 'body',
+//   components: {
+//     app: App,
+//     'nav-core': navComponent
+//   },
+//   data: {
+//     view: 'login',
+//     navItems: [
+//       { navName: "Lot Items", linkedView: "lot-items" },
+//       { navName: "Auction Events", linkedView: "auction-events" }
+//     ]
+//   },
+
+//   methods: {
+//     swapView(newView) {
+//       this.view = newView;
+//     }
+//   }
+// })
+},{"./components/add-lot-item.vue":30,"./components/app.vue":31,"./components/arrange-appraisal.vue":32,"./components/client-details.vue":33,"./components/page-nav.vue":35,"./components/welcome.vue":37,"vue":28,"vue-resource":16,"vue-router":27}]},{},[38]);

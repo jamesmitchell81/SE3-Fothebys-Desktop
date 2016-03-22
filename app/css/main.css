@@ -45,7 +45,8 @@ header img {
   height: 100%;
   min-height: 100%;
   background: #171615;
-  color: #fff; }
+  color: #fff;
+  position: fixed; }
 
 nav {
   width: 100%;
@@ -101,14 +102,16 @@ button, input, textarea {
   letter-spacing: 1px; }
 
 form {
-  width: 100%; }
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto; }
 
 fieldset {
   border: 1px solid #efefef; }
 
 .form-element {
   display: block;
-  margin: 2em 0; }
+  margin: 1.5em 0; }
 
 label, input, .msg, textarea {
   line-height: 1.5em;

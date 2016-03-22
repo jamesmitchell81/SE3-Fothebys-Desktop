@@ -2,13 +2,13 @@ var Vue = require('vue');
 var VueResource = require('vue-resource');
 var Router = require('vue-router');
 
-var App = require('./app.vue');
+var App = require('./components/app.vue');
 
-var PageNav = require('./page-nav.vue');
-var Welcome = require('./welcome.vue');
+var PageNav = require('./components/page-nav.vue');
+var Welcome = require('./components/welcome.vue');
 
-var AddLotItem = require('./add-lot-item.vue');
-var ArrangeAppraisal = require('./arrange-appraisal.vue')
+var AddLotItem = require('./components/add-lot-item.vue');
+var ArrangeAppraisal = require('./components/arrange-appraisal.vue')
 
 Vue.use(Router);
 Vue.use(VueResource);
@@ -26,7 +26,12 @@ router.map({
     component: AddLotItem
   },
   '/lot-items/arrange-appraisal': {
-    component: ArrangeAppraisal
+    component: ArrangeAppraisal,
+    subRoutes: {
+      '/client-details': {
+        component: require('./components/client-details.vue')
+      }
+    }
   }
 })
 
