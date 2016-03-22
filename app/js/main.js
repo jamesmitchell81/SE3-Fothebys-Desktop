@@ -14319,7 +14319,7 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"vue":28,"vue-hot-reload-api":2}],31:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n.nav-core {\n  color: #fff;\n  display: block;\n  padding: 2em 0 2em 3em;\n  cursor: pointer;\n}\n")
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"body-wrap\">\n  <div class=\"side-wrap\">\n    <header>\n      <img src=\"../assets/svg/fb-logo-white.svg\" alt=\"Fothebys Auction House\">\n    </header>\n    <nav>\n      <a v-link=\"'/page/lot-items'\" class=\"nav-core\">Lot Items</a>\n      <a :href=\"\" class=\"nav-core\">Auction Events</a>\n      <a :href=\"\" class=\"nav-core\">Employees</a>\n    </nav>\n  </div>\n\n  <div class=\"content-wrap\">\n    <!-- <router-view class=\"view\" keep-alive></router-view> -->\n    <router-view></router-view>\n  </div>\n\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"body-wrap\">\n  <div class=\"side-wrap\">\n    <header>\n      <img src=\"../assets/svg/fb-logo-white.svg\" alt=\"Fothebys Auction House\">\n    </header>\n    <nav>\n      <a v-link=\"'/lot-items'\" class=\"nav-core\">Lot Items</a>\n      <a :href=\"\" class=\"nav-core\">Auction Events</a>\n      <a :href=\"\" class=\"nav-core\">Employees</a>\n    </nav>\n  </div>\n\n  <div class=\"content-wrap\">\n    <!-- <router-view class=\"view\" keep-alive></router-view> -->\n    <router-view></router-view>\n  </div>\n\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14336,6 +14336,68 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"vue":28,"vue-hot-reload-api":2,"vueify-insert-css":29}],32:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+
+var OptionItem = require('./option-item.vue');
+// http://localhost:8080/services/category
+
+exports.default = {
+  name: "ArrangeAppraisal",
+
+  components: {
+    OptionItem: OptionItem
+  },
+
+  data: function data() {
+    return {
+      categories: []
+    };
+  },
+
+  route: {
+    activate: function activate() {
+      // get all categories and experts.
+      this.$http.get('http://localhost:8080/services/category').then(function (category) {
+        // for ( var i in category.data ) {
+        //   var obj = {};
+        //   obj.name = category.data[i].name;
+        //   console.log(category.data[i].name);
+        //   this.categories.push(obj);
+        // }
+        this.categories = category.data;
+      }, function (err) {
+        console.log(err);
+      });
+
+      // return categories => (categories);
+    }
+  }
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form method=\"POST\" action=\"\">\n\n  <!-- client details -->\n  <label for=\"\">Client</label>\n  <span class=\"btn-group\">\n    <span>Existing Client</span>\n    <a href=\"\" class=\"btn\">Yes</a><!-- /page/arrange-appraisal/client-search.vue -->\n    <a href=\"\" class=\"btn\">No</a><!-- /page/arrange-appraisal/client-details.vue -->\n  </span>\n    <!-- search or enter details -->\n    <router-view></router-view>\n\n  <!-- item name -->\n  <label for=\"item-name\">Item Name</label>\n  <input type=\"text\" id=\"item-name\" name=\"item-name\">\n\n  <!-- category -->\n  <label for=\"\">Category</label>\n\n  <option-item v-for=\"category in categories\" :type=\"'radio'\" :name=\"'category'\" :item=\"category\">\n  </option-item>\n\n  <!-- ... -->\n  <!-- on click -> get experts related -->\n\n  <!-- list of experts related to category -->\n  <label for=\"\">Expert</label>\n\n  <!-- ... -->\n\n  <label for=\"\">Agreed date for Appraisal</label>\n\n\n</form>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/arrange-appraisal.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./option-item.vue":34,"vue":28,"vue-hot-reload-api":2,"vueify-insert-css":29}],33:[function(require,module,exports){
 var Vue = require('vue');
 var VueResource = require('vue-resource');
 var Router = require('vue-router');
@@ -14346,8 +14408,10 @@ var PageNav = require('./page-nav.vue');
 var Welcome = require('./welcome.vue');
 
 var AddLotItem = require('./add-lot-item.vue');
+var ArrangeAppraisal = require('./arrange-appraisal.vue')
 
 Vue.use(Router);
+Vue.use(VueResource);
 
 var router = new Router();
 
@@ -14355,11 +14419,14 @@ router.map({
   '/': {
     component: Welcome
   },
-  '/page/lot-items': {
+  '/lot-items': {
     component: PageNav
   },
-  '/page/lot-items/add-item': {
+  '/lot-items/add-item': {
     component: AddLotItem
+  },
+  '/lot-items/arrange-appraisal': {
+    component: ArrangeAppraisal
   }
 })
 
@@ -14387,7 +14454,41 @@ router.start(App, '#app');
 //     }
 //   }
 // })
-},{"./add-lot-item.vue":30,"./app.vue":31,"./page-nav.vue":33,"./welcome.vue":35,"vue":28,"vue-resource":16,"vue-router":27}],33:[function(require,module,exports){
+},{"./add-lot-item.vue":30,"./app.vue":31,"./arrange-appraisal.vue":32,"./page-nav.vue":35,"./welcome.vue":37,"vue":28,"vue-resource":16,"vue-router":27}],34:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n/*.option-item {\n\n}\n\n.option-item input[type='checkbox'] {\n  display: none;\n}\n\n\n.option-item input[type='checkbox']:checked + label {\n  background: #000;\n  color: #fff;\n}*/\n")
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  name: "OptionItem",
+
+  props: {
+    type: String,
+    item: Object,
+    name: String
+  }
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<span class=\"option-item\">\n  <input :type=\"type\" :name=\"name\" id=\"{{ item.name | lowercase }}\">\n  <label for=\"{{ item.name | lowercase }}\">{{ item.name }}</label>\n</span>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/option-item.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n/*.option-item {\n\n}\n\n.option-item input[type='checkbox'] {\n  display: none;\n}\n\n\n.option-item input[type='checkbox']:checked + label {\n  background: #000;\n  color: #fff;\n}*/\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":28,"vue-hot-reload-api":2,"vueify-insert-css":29}],35:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14396,6 +14497,7 @@ Object.defineProperty(exports, "__esModule", {
 
 
 var Tile = require("./tile.vue");
+// var d = require("./data.js");
 
 exports.default = {
   name: 'PageNav',
@@ -14406,7 +14508,7 @@ exports.default = {
 
   data: function data() {
     return {
-      tiles: [{ name: "Add Item", url: "/page/lot-items/add-item" }, { name: "Arrange Appraisal", url: "/page/lot-items/arrange-appraisal" }]
+      tiles: [{ name: "Add Item", url: "/lot-items/add-item" }, { name: "Arrange Appraisal", url: "/lot-items/arrange-appraisal" }]
     };
   }
 
@@ -14434,7 +14536,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./tile.vue":34,"vue":28,"vue-hot-reload-api":2}],34:[function(require,module,exports){
+},{"./tile.vue":36,"vue":28,"vue-hot-reload-api":2}],36:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14466,7 +14568,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":28,"vue-hot-reload-api":2}],35:[function(require,module,exports){
+},{"vue":28,"vue-hot-reload-api":2}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14488,4 +14590,4 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":28,"vue-hot-reload-api":2}]},{},[32]);
+},{"vue":28,"vue-hot-reload-api":2}]},{},[33]);

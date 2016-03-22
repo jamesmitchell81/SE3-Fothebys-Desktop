@@ -5,7 +5,7 @@
         <img src="../assets/svg/fb-logo-white.svg" alt="Fothebys Auction House">
       </header>
       <nav>
-        <a v-link="'/page/lot-items'" class="nav-core">Lot Items</a>
+        <a v-link="'/lot-items'" class="nav-core">Lot Items</a>
         <a :href="" class="nav-core">Auction Events</a>
         <a :href="" class="nav-core">Employees</a>
       </nav>

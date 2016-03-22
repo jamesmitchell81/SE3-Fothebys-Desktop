@@ -142,4 +142,27 @@ label, .msg {
   background: #efefef;
   box-shadow: 1px 1px 1px #cacaca;
   border-radius: 2px;
-  border: none; }
+  border: none;
+  text-decoration: none;
+  color: #000; }
+
+.option-item {
+  width: 100%;
+  float: left;
+  line-height: 1em;
+  border: 1px solid #000; }
+
+.option-item input[type='checkbox'],
+.option-item input[type='radio'] {
+  display: none; }
+
+.option-item label {
+  width: 100%;
+  padding: 0.75em 1em;
+  cursor: pointer;
+  display: inline-block; }
+
+.option-item input[type='checkbox']:checked + label,
+.option-item input[type='radio']:checked + label {
+  background: #000;
+  color: #fff; }

@@ -9,6 +9,7 @@
 
 <script>
 var Tile = require("./tile.vue");
+// var d = require("./data.js");
 
   export default {
     name: 'PageNav',
@@ -20,8 +21,8 @@ var Tile = require("./tile.vue");
     data: function() {
       return {
         tiles: [
-          { name: "Add Item", url: "/page/lot-items/add-item" },
-          { name: "Arrange Appraisal", url: "/page/lot-items/arrange-appraisal" }
+          { name: "Add Item", url: "/lot-items/add-item" },
+          { name: "Arrange Appraisal", url: "/lot-items/arrange-appraisal" }
         ]
       }
     }

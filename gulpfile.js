@@ -28,3 +28,8 @@ gulp.task('sass:watch', function () {
   gulp.watch(sassPath + '*.sass', ['sass']);
 });
 
+gulp.task('watch', function() {
+    gulp.watch(sassPath + '*.sass', ['sass']);
+    gulp.watch('./resource/assets/vue/main.js', ['default']);
+});
+

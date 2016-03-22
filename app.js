@@ -22,19 +22,22 @@ app.on('window-all-closed', function() {
 });
 
 app.on('ready', function() {
+  var display = require('screen');
+  var size = display.getPrimaryDisplay().workAreaSize;
   var page;
 
   mainWindow = new BrowserWindow({
     title: "Fothebys Auction House",
     show: false,
-    width: 1200,
-    height: 700,
+    width: size.width * 0.7,
+    height: size.height * 0.9,
     'min-width': 800,
-    'min-height': 600
-    // 'title-bar-style': 'hidden-inset'
+    'min-height': 600,
+    'title-bar-style': 'hidden-inset'
   });
 
   mainWindow.loadUrl('file://' + __dirname + '/app/html/index.html');
+  mainWindow.openDevTools();
 
   var page = mainWindow.webContents;
 

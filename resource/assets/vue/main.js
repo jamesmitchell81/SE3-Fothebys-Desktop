@@ -8,8 +8,10 @@ var PageNav = require('./page-nav.vue');
 var Welcome = require('./welcome.vue');
 
 var AddLotItem = require('./add-lot-item.vue');
+var ArrangeAppraisal = require('./arrange-appraisal.vue')
 
 Vue.use(Router);
+Vue.use(VueResource);
 
 var router = new Router();
 
@@ -17,11 +19,14 @@ router.map({
   '/': {
     component: Welcome
   },
-  '/page/lot-items': {
+  '/lot-items': {
     component: PageNav
   },
-  '/page/lot-items/add-item': {
+  '/lot-items/add-item': {
     component: AddLotItem
+  },
+  '/lot-items/arrange-appraisal': {
+    component: ArrangeAppraisal
   }
 })
 
