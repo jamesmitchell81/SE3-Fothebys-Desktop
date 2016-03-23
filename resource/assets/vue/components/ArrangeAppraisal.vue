@@ -6,17 +6,21 @@
       <label for="">Client</label>
       <span class="btn-group">
         <span>Existing Client</span>
-        <a v-link="" class="btn">Yes</a><!-- /arrange-appraisal/client-search.vue -->
-        <a v-link="'arrange-appraisal/client-details'" class="btn">No</a><!-- /arrange-appraisal/client-details.vue -->
+        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientSearchForm')" class="btn">Yes</button><!-- /arrange-appraisal/client-search.vue -->
+        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientDetailsForm')" class="btn">No</button><!-- /arrange-appraisal/client-details.vue -->
       </span>
     </span>
       <!-- search or enter details -->
-      <router-view></router-view>
+      <div v-show="showClientDetails">
+        <client-details :details="clientDetails"></client-details>
+      </div>
+
+      <!-- <router-view></router-view> -->
 
     <!-- item name -->
     <span class="form-element">
       <label for="item-name">Item Name</label>
-      <input type="text" id="item-name" name="item-name">
+      <input type="text" id="itemName" name="itemName" v-model="itemName">
     </span>
 
     <!-- category -->
@@ -50,8 +54,9 @@
 </template>
 
 <script>
-  var OptionItem = require('./option-item.vue');
-  var ClientDetails = require('./client-details.vue');
+  var OptionItem = require('./OptionItem.vue');
+  var ClientDetails = require('./ClientDetails.vue');
+  var DataStore = require('../data.js');
 
   export default {
     name: "ArrangeAppraisal",
@@ -62,7 +67,10 @@
 
     data: function() {
       return {
-        categories: []
+        showClientDetails: false,
+        clientDetails: DataStore.clientDetails,
+        categories: [],
+        itemName: ''
       }
     },
 
@@ -76,6 +84,23 @@
                     console.log(err);
                   });
 
+      }
+    },
+
+    methods: {
+      loadSideForm: function(form) {
+        console.log(form);
+      }
+    },
+
+    events: {
+      ClientDetailsForm: function(data) {
+        this.$data.clientDetails = data;
+
+
+
+        this.showClientDetails = true;
+        return true;
       }
     }
 

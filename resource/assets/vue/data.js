@@ -1,4 +1,22 @@
-export default {
+module.exports = {
+  clientDetails: {
+    title: '',
+    firstName: '',
+    surname: '',
+    telNumber: '',
+    emailAddress: '',
+    contactAddress: {
+      firstLine: '',
+      secondLine: '',
+      townCity: '',
+      postalCode: ''
+    }
+  },
+  setClientDetails: function(d) {
+    // for ( var obj in d ) {
+      this.clientDetails = d;
+    // }
+  },
   data: {
     routes: [
       { name: "Welcome",   url: "/", component: "./welcome.vue"},

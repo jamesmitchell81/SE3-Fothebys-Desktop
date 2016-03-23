@@ -1,37 +1,35 @@
 var Vue = require('vue');
 var VueResource = require('vue-resource');
 var Router = require('vue-router');
-
-var App = require('./components/app.vue');
-
-var PageNav = require('./components/page-nav.vue');
-var Welcome = require('./components/welcome.vue');
-
-var AddLotItem = require('./components/add-lot-item.vue');
-var ArrangeAppraisal = require('./components/arrange-appraisal.vue')
+var App = require('./components/App.vue');
 
 Vue.use(Router);
 Vue.use(VueResource);
+
+Vue.component('empty', { template: "<div>asdas<div>"});
 
 var router = new Router();
 
 router.map({
   '/': {
-    component: Welcome
+    component: require('./components/Welcome.vue')
   },
   '/lot-items': {
-    component: PageNav
+    component: require('./components/PageNav.vue')
   },
   '/lot-items/add-item': {
-    component: AddLotItem
+    component: require('./components/AddLotItem.vue')
   },
   '/lot-items/arrange-appraisal': {
-    component: ArrangeAppraisal,
+    component: require('./components/ArrangeAppraisal.vue'),
     subRoutes: {
       '/client-details': {
-        component: require('./components/client-details.vue')
+        component: require('./components/ClientDetails.vue')
       }
     }
+  },
+  '/lot-items/lot-appraisal': {
+    component: require('./components/LotAppraisal.vue')
   }
 })
 

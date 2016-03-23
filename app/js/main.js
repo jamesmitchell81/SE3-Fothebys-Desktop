@@ -1,4 +1,509 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/json/stringify"), __esModule: true };
+},{"core-js/library/fn/json/stringify":4}],2:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/symbol"), __esModule: true };
+},{"core-js/library/fn/symbol":5}],3:[function(require,module,exports){
+"use strict";
+
+var _Symbol = require("babel-runtime/core-js/symbol")["default"];
+
+exports["default"] = function (obj) {
+  return obj && obj.constructor === _Symbol ? "symbol" : typeof obj;
+};
+
+exports.__esModule = true;
+},{"babel-runtime/core-js/symbol":2}],4:[function(require,module,exports){
+var core = require('../../modules/$.core');
+module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
+  return (core.JSON && core.JSON.stringify || JSON.stringify).apply(JSON, arguments);
+};
+},{"../../modules/$.core":9}],5:[function(require,module,exports){
+require('../../modules/es6.symbol');
+require('../../modules/es6.object.to-string');
+module.exports = require('../../modules/$.core').Symbol;
+},{"../../modules/$.core":9,"../../modules/es6.object.to-string":33,"../../modules/es6.symbol":34}],6:[function(require,module,exports){
+module.exports = function(it){
+  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
+  return it;
+};
+},{}],7:[function(require,module,exports){
+var isObject = require('./$.is-object');
+module.exports = function(it){
+  if(!isObject(it))throw TypeError(it + ' is not an object!');
+  return it;
+};
+},{"./$.is-object":22}],8:[function(require,module,exports){
+var toString = {}.toString;
+
+module.exports = function(it){
+  return toString.call(it).slice(8, -1);
+};
+},{}],9:[function(require,module,exports){
+var core = module.exports = {version: '1.2.6'};
+if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
+},{}],10:[function(require,module,exports){
+// optional / simple context binding
+var aFunction = require('./$.a-function');
+module.exports = function(fn, that, length){
+  aFunction(fn);
+  if(that === undefined)return fn;
+  switch(length){
+    case 1: return function(a){
+      return fn.call(that, a);
+    };
+    case 2: return function(a, b){
+      return fn.call(that, a, b);
+    };
+    case 3: return function(a, b, c){
+      return fn.call(that, a, b, c);
+    };
+  }
+  return function(/* ...args */){
+    return fn.apply(that, arguments);
+  };
+};
+},{"./$.a-function":6}],11:[function(require,module,exports){
+// 7.2.1 RequireObjectCoercible(argument)
+module.exports = function(it){
+  if(it == undefined)throw TypeError("Can't call method on  " + it);
+  return it;
+};
+},{}],12:[function(require,module,exports){
+// Thank's IE8 for his funny defineProperty
+module.exports = !require('./$.fails')(function(){
+  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
+});
+},{"./$.fails":15}],13:[function(require,module,exports){
+// all enumerable object keys, includes symbols
+var $ = require('./$');
+module.exports = function(it){
+  var keys       = $.getKeys(it)
+    , getSymbols = $.getSymbols;
+  if(getSymbols){
+    var symbols = getSymbols(it)
+      , isEnum  = $.isEnum
+      , i       = 0
+      , key;
+    while(symbols.length > i)if(isEnum.call(it, key = symbols[i++]))keys.push(key);
+  }
+  return keys;
+};
+},{"./$":23}],14:[function(require,module,exports){
+var global    = require('./$.global')
+  , core      = require('./$.core')
+  , ctx       = require('./$.ctx')
+  , PROTOTYPE = 'prototype';
+
+var $export = function(type, name, source){
+  var IS_FORCED = type & $export.F
+    , IS_GLOBAL = type & $export.G
+    , IS_STATIC = type & $export.S
+    , IS_PROTO  = type & $export.P
+    , IS_BIND   = type & $export.B
+    , IS_WRAP   = type & $export.W
+    , exports   = IS_GLOBAL ? core : core[name] || (core[name] = {})
+    , target    = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE]
+    , key, own, out;
+  if(IS_GLOBAL)source = name;
+  for(key in source){
+    // contains in native
+    own = !IS_FORCED && target && key in target;
+    if(own && key in exports)continue;
+    // export native or passed
+    out = own ? target[key] : source[key];
+    // prevent global pollution for namespaces
+    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
+    // bind timers to global for call from export context
+    : IS_BIND && own ? ctx(out, global)
+    // wrap global constructors for prevent change them in library
+    : IS_WRAP && target[key] == out ? (function(C){
+      var F = function(param){
+        return this instanceof C ? new C(param) : C(param);
+      };
+      F[PROTOTYPE] = C[PROTOTYPE];
+      return F;
+    // make static versions for prototype methods
+    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+    if(IS_PROTO)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
+  }
+};
+// type bitmap
+$export.F = 1;  // forced
+$export.G = 2;  // global
+$export.S = 4;  // static
+$export.P = 8;  // proto
+$export.B = 16; // bind
+$export.W = 32; // wrap
+module.exports = $export;
+},{"./$.core":9,"./$.ctx":10,"./$.global":17}],15:[function(require,module,exports){
+module.exports = function(exec){
+  try {
+    return !!exec();
+  } catch(e){
+    return true;
+  }
+};
+},{}],16:[function(require,module,exports){
+// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
+var toIObject = require('./$.to-iobject')
+  , getNames  = require('./$').getNames
+  , toString  = {}.toString;
+
+var windowNames = typeof window == 'object' && Object.getOwnPropertyNames
+  ? Object.getOwnPropertyNames(window) : [];
+
+var getWindowNames = function(it){
+  try {
+    return getNames(it);
+  } catch(e){
+    return windowNames.slice();
+  }
+};
+
+module.exports.get = function getOwnPropertyNames(it){
+  if(windowNames && toString.call(it) == '[object Window]')return getWindowNames(it);
+  return getNames(toIObject(it));
+};
+},{"./$":23,"./$.to-iobject":30}],17:[function(require,module,exports){
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
+if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
+},{}],18:[function(require,module,exports){
+var hasOwnProperty = {}.hasOwnProperty;
+module.exports = function(it, key){
+  return hasOwnProperty.call(it, key);
+};
+},{}],19:[function(require,module,exports){
+var $          = require('./$')
+  , createDesc = require('./$.property-desc');
+module.exports = require('./$.descriptors') ? function(object, key, value){
+  return $.setDesc(object, key, createDesc(1, value));
+} : function(object, key, value){
+  object[key] = value;
+  return object;
+};
+},{"./$":23,"./$.descriptors":12,"./$.property-desc":26}],20:[function(require,module,exports){
+// fallback for non-array-like ES3 and non-enumerable old V8 strings
+var cof = require('./$.cof');
+module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
+  return cof(it) == 'String' ? it.split('') : Object(it);
+};
+},{"./$.cof":8}],21:[function(require,module,exports){
+// 7.2.2 IsArray(argument)
+var cof = require('./$.cof');
+module.exports = Array.isArray || function(arg){
+  return cof(arg) == 'Array';
+};
+},{"./$.cof":8}],22:[function(require,module,exports){
+module.exports = function(it){
+  return typeof it === 'object' ? it !== null : typeof it === 'function';
+};
+},{}],23:[function(require,module,exports){
+var $Object = Object;
+module.exports = {
+  create:     $Object.create,
+  getProto:   $Object.getPrototypeOf,
+  isEnum:     {}.propertyIsEnumerable,
+  getDesc:    $Object.getOwnPropertyDescriptor,
+  setDesc:    $Object.defineProperty,
+  setDescs:   $Object.defineProperties,
+  getKeys:    $Object.keys,
+  getNames:   $Object.getOwnPropertyNames,
+  getSymbols: $Object.getOwnPropertySymbols,
+  each:       [].forEach
+};
+},{}],24:[function(require,module,exports){
+var $         = require('./$')
+  , toIObject = require('./$.to-iobject');
+module.exports = function(object, el){
+  var O      = toIObject(object)
+    , keys   = $.getKeys(O)
+    , length = keys.length
+    , index  = 0
+    , key;
+  while(length > index)if(O[key = keys[index++]] === el)return key;
+};
+},{"./$":23,"./$.to-iobject":30}],25:[function(require,module,exports){
+module.exports = true;
+},{}],26:[function(require,module,exports){
+module.exports = function(bitmap, value){
+  return {
+    enumerable  : !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable    : !(bitmap & 4),
+    value       : value
+  };
+};
+},{}],27:[function(require,module,exports){
+module.exports = require('./$.hide');
+},{"./$.hide":19}],28:[function(require,module,exports){
+var def = require('./$').setDesc
+  , has = require('./$.has')
+  , TAG = require('./$.wks')('toStringTag');
+
+module.exports = function(it, tag, stat){
+  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
+};
+},{"./$":23,"./$.has":18,"./$.wks":32}],29:[function(require,module,exports){
+var global = require('./$.global')
+  , SHARED = '__core-js_shared__'
+  , store  = global[SHARED] || (global[SHARED] = {});
+module.exports = function(key){
+  return store[key] || (store[key] = {});
+};
+},{"./$.global":17}],30:[function(require,module,exports){
+// to indexed object, toObject with fallback for non-array-like ES3 strings
+var IObject = require('./$.iobject')
+  , defined = require('./$.defined');
+module.exports = function(it){
+  return IObject(defined(it));
+};
+},{"./$.defined":11,"./$.iobject":20}],31:[function(require,module,exports){
+var id = 0
+  , px = Math.random();
+module.exports = function(key){
+  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+};
+},{}],32:[function(require,module,exports){
+var store  = require('./$.shared')('wks')
+  , uid    = require('./$.uid')
+  , Symbol = require('./$.global').Symbol;
+module.exports = function(name){
+  return store[name] || (store[name] =
+    Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
+};
+},{"./$.global":17,"./$.shared":29,"./$.uid":31}],33:[function(require,module,exports){
+
+},{}],34:[function(require,module,exports){
+'use strict';
+// ECMAScript 6 symbols shim
+var $              = require('./$')
+  , global         = require('./$.global')
+  , has            = require('./$.has')
+  , DESCRIPTORS    = require('./$.descriptors')
+  , $export        = require('./$.export')
+  , redefine       = require('./$.redefine')
+  , $fails         = require('./$.fails')
+  , shared         = require('./$.shared')
+  , setToStringTag = require('./$.set-to-string-tag')
+  , uid            = require('./$.uid')
+  , wks            = require('./$.wks')
+  , keyOf          = require('./$.keyof')
+  , $names         = require('./$.get-names')
+  , enumKeys       = require('./$.enum-keys')
+  , isArray        = require('./$.is-array')
+  , anObject       = require('./$.an-object')
+  , toIObject      = require('./$.to-iobject')
+  , createDesc     = require('./$.property-desc')
+  , getDesc        = $.getDesc
+  , setDesc        = $.setDesc
+  , _create        = $.create
+  , getNames       = $names.get
+  , $Symbol        = global.Symbol
+  , $JSON          = global.JSON
+  , _stringify     = $JSON && $JSON.stringify
+  , setter         = false
+  , HIDDEN         = wks('_hidden')
+  , isEnum         = $.isEnum
+  , SymbolRegistry = shared('symbol-registry')
+  , AllSymbols     = shared('symbols')
+  , useNative      = typeof $Symbol == 'function'
+  , ObjectProto    = Object.prototype;
+
+// fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
+var setSymbolDesc = DESCRIPTORS && $fails(function(){
+  return _create(setDesc({}, 'a', {
+    get: function(){ return setDesc(this, 'a', {value: 7}).a; }
+  })).a != 7;
+}) ? function(it, key, D){
+  var protoDesc = getDesc(ObjectProto, key);
+  if(protoDesc)delete ObjectProto[key];
+  setDesc(it, key, D);
+  if(protoDesc && it !== ObjectProto)setDesc(ObjectProto, key, protoDesc);
+} : setDesc;
+
+var wrap = function(tag){
+  var sym = AllSymbols[tag] = _create($Symbol.prototype);
+  sym._k = tag;
+  DESCRIPTORS && setter && setSymbolDesc(ObjectProto, tag, {
+    configurable: true,
+    set: function(value){
+      if(has(this, HIDDEN) && has(this[HIDDEN], tag))this[HIDDEN][tag] = false;
+      setSymbolDesc(this, tag, createDesc(1, value));
+    }
+  });
+  return sym;
+};
+
+var isSymbol = function(it){
+  return typeof it == 'symbol';
+};
+
+var $defineProperty = function defineProperty(it, key, D){
+  if(D && has(AllSymbols, key)){
+    if(!D.enumerable){
+      if(!has(it, HIDDEN))setDesc(it, HIDDEN, createDesc(1, {}));
+      it[HIDDEN][key] = true;
+    } else {
+      if(has(it, HIDDEN) && it[HIDDEN][key])it[HIDDEN][key] = false;
+      D = _create(D, {enumerable: createDesc(0, false)});
+    } return setSymbolDesc(it, key, D);
+  } return setDesc(it, key, D);
+};
+var $defineProperties = function defineProperties(it, P){
+  anObject(it);
+  var keys = enumKeys(P = toIObject(P))
+    , i    = 0
+    , l = keys.length
+    , key;
+  while(l > i)$defineProperty(it, key = keys[i++], P[key]);
+  return it;
+};
+var $create = function create(it, P){
+  return P === undefined ? _create(it) : $defineProperties(_create(it), P);
+};
+var $propertyIsEnumerable = function propertyIsEnumerable(key){
+  var E = isEnum.call(this, key);
+  return E || !has(this, key) || !has(AllSymbols, key) || has(this, HIDDEN) && this[HIDDEN][key]
+    ? E : true;
+};
+var $getOwnPropertyDescriptor = function getOwnPropertyDescriptor(it, key){
+  var D = getDesc(it = toIObject(it), key);
+  if(D && has(AllSymbols, key) && !(has(it, HIDDEN) && it[HIDDEN][key]))D.enumerable = true;
+  return D;
+};
+var $getOwnPropertyNames = function getOwnPropertyNames(it){
+  var names  = getNames(toIObject(it))
+    , result = []
+    , i      = 0
+    , key;
+  while(names.length > i)if(!has(AllSymbols, key = names[i++]) && key != HIDDEN)result.push(key);
+  return result;
+};
+var $getOwnPropertySymbols = function getOwnPropertySymbols(it){
+  var names  = getNames(toIObject(it))
+    , result = []
+    , i      = 0
+    , key;
+  while(names.length > i)if(has(AllSymbols, key = names[i++]))result.push(AllSymbols[key]);
+  return result;
+};
+var $stringify = function stringify(it){
+  if(it === undefined || isSymbol(it))return; // IE8 returns string on undefined
+  var args = [it]
+    , i    = 1
+    , $$   = arguments
+    , replacer, $replacer;
+  while($$.length > i)args.push($$[i++]);
+  replacer = args[1];
+  if(typeof replacer == 'function')$replacer = replacer;
+  if($replacer || !isArray(replacer))replacer = function(key, value){
+    if($replacer)value = $replacer.call(this, key, value);
+    if(!isSymbol(value))return value;
+  };
+  args[1] = replacer;
+  return _stringify.apply($JSON, args);
+};
+var buggyJSON = $fails(function(){
+  var S = $Symbol();
+  // MS Edge converts symbol values to JSON as {}
+  // WebKit converts symbol values to JSON as null
+  // V8 throws on boxed symbols
+  return _stringify([S]) != '[null]' || _stringify({a: S}) != '{}' || _stringify(Object(S)) != '{}';
+});
+
+// 19.4.1.1 Symbol([description])
+if(!useNative){
+  $Symbol = function Symbol(){
+    if(isSymbol(this))throw TypeError('Symbol is not a constructor');
+    return wrap(uid(arguments.length > 0 ? arguments[0] : undefined));
+  };
+  redefine($Symbol.prototype, 'toString', function toString(){
+    return this._k;
+  });
+
+  isSymbol = function(it){
+    return it instanceof $Symbol;
+  };
+
+  $.create     = $create;
+  $.isEnum     = $propertyIsEnumerable;
+  $.getDesc    = $getOwnPropertyDescriptor;
+  $.setDesc    = $defineProperty;
+  $.setDescs   = $defineProperties;
+  $.getNames   = $names.get = $getOwnPropertyNames;
+  $.getSymbols = $getOwnPropertySymbols;
+
+  if(DESCRIPTORS && !require('./$.library')){
+    redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
+  }
+}
+
+var symbolStatics = {
+  // 19.4.2.1 Symbol.for(key)
+  'for': function(key){
+    return has(SymbolRegistry, key += '')
+      ? SymbolRegistry[key]
+      : SymbolRegistry[key] = $Symbol(key);
+  },
+  // 19.4.2.5 Symbol.keyFor(sym)
+  keyFor: function keyFor(key){
+    return keyOf(SymbolRegistry, key);
+  },
+  useSetter: function(){ setter = true; },
+  useSimple: function(){ setter = false; }
+};
+// 19.4.2.2 Symbol.hasInstance
+// 19.4.2.3 Symbol.isConcatSpreadable
+// 19.4.2.4 Symbol.iterator
+// 19.4.2.6 Symbol.match
+// 19.4.2.8 Symbol.replace
+// 19.4.2.9 Symbol.search
+// 19.4.2.10 Symbol.species
+// 19.4.2.11 Symbol.split
+// 19.4.2.12 Symbol.toPrimitive
+// 19.4.2.13 Symbol.toStringTag
+// 19.4.2.14 Symbol.unscopables
+$.each.call((
+  'hasInstance,isConcatSpreadable,iterator,match,replace,search,' +
+  'species,split,toPrimitive,toStringTag,unscopables'
+).split(','), function(it){
+  var sym = wks(it);
+  symbolStatics[it] = useNative ? sym : wrap(sym);
+});
+
+setter = true;
+
+$export($export.G + $export.W, {Symbol: $Symbol});
+
+$export($export.S, 'Symbol', symbolStatics);
+
+$export($export.S + $export.F * !useNative, 'Object', {
+  // 19.1.2.2 Object.create(O [, Properties])
+  create: $create,
+  // 19.1.2.4 Object.defineProperty(O, P, Attributes)
+  defineProperty: $defineProperty,
+  // 19.1.2.3 Object.defineProperties(O, Properties)
+  defineProperties: $defineProperties,
+  // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
+  getOwnPropertyDescriptor: $getOwnPropertyDescriptor,
+  // 19.1.2.7 Object.getOwnPropertyNames(O)
+  getOwnPropertyNames: $getOwnPropertyNames,
+  // 19.1.2.8 Object.getOwnPropertySymbols(O)
+  getOwnPropertySymbols: $getOwnPropertySymbols
+});
+
+// 24.3.2 JSON.stringify(value [, replacer [, space]])
+$JSON && $export($export.S + $export.F * (!useNative || buggyJSON), 'JSON', {stringify: $stringify});
+
+// 19.4.3.5 Symbol.prototype[@@toStringTag]
+setToStringTag($Symbol, 'Symbol');
+// 20.2.1.9 Math[@@toStringTag]
+setToStringTag(Math, 'Math', true);
+// 24.3.3 JSON[@@toStringTag]
+setToStringTag(global.JSON, 'JSON', true);
+},{"./$":23,"./$.an-object":7,"./$.descriptors":12,"./$.enum-keys":13,"./$.export":14,"./$.fails":15,"./$.get-names":16,"./$.global":17,"./$.has":18,"./$.is-array":21,"./$.keyof":24,"./$.library":25,"./$.property-desc":26,"./$.redefine":27,"./$.set-to-string-tag":28,"./$.shared":29,"./$.to-iobject":30,"./$.uid":31,"./$.wks":32}],35:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -91,7 +596,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],2:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 var Vue // late bind
 var map = Object.create(null)
 var shimmed = false
@@ -391,7 +896,7 @@ function format (id) {
   return id.match(/[^\/]+\.vue$/)[0]
 }
 
-},{}],3:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /**
  * Before Interceptor.
  */
@@ -411,7 +916,7 @@ module.exports = {
 
 };
 
-},{"../util":26}],4:[function(require,module,exports){
+},{"../util":60}],38:[function(require,module,exports){
 /**
  * Base client.
  */
@@ -478,7 +983,7 @@ function parseHeaders(str) {
     return headers;
 }
 
-},{"../../promise":19,"../../util":26,"./xhr":7}],5:[function(require,module,exports){
+},{"../../promise":53,"../../util":60,"./xhr":41}],39:[function(require,module,exports){
 /**
  * JSONP client.
  */
@@ -528,7 +1033,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":19,"../../util":26}],6:[function(require,module,exports){
+},{"../../promise":53,"../../util":60}],40:[function(require,module,exports){
 /**
  * XDomain client (Internet Explorer).
  */
@@ -567,7 +1072,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":19,"../../util":26}],7:[function(require,module,exports){
+},{"../../promise":53,"../../util":60}],41:[function(require,module,exports){
 /**
  * XMLHttp client.
  */
@@ -619,7 +1124,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":19,"../../util":26}],8:[function(require,module,exports){
+},{"../../promise":53,"../../util":60}],42:[function(require,module,exports){
 /**
  * CORS Interceptor.
  */
@@ -658,7 +1163,7 @@ function crossOrigin(request) {
     return (requestUrl.protocol !== originUrl.protocol || requestUrl.host !== originUrl.host);
 }
 
-},{"../util":26,"./client/xdr":6}],9:[function(require,module,exports){
+},{"../util":60,"./client/xdr":40}],43:[function(require,module,exports){
 /**
  * Header Interceptor.
  */
@@ -686,7 +1191,7 @@ module.exports = {
 
 };
 
-},{"../util":26}],10:[function(require,module,exports){
+},{"../util":60}],44:[function(require,module,exports){
 /**
  * Service for sending network requests.
  */
@@ -786,7 +1291,7 @@ Http.headers = {
 
 module.exports = _.http = Http;
 
-},{"../promise":19,"../util":26,"./before":3,"./client":4,"./cors":8,"./header":9,"./interceptor":11,"./jsonp":12,"./method":13,"./mime":14,"./timeout":15}],11:[function(require,module,exports){
+},{"../promise":53,"../util":60,"./before":37,"./client":38,"./cors":42,"./header":43,"./interceptor":45,"./jsonp":46,"./method":47,"./mime":48,"./timeout":49}],45:[function(require,module,exports){
 /**
  * Interceptor factory.
  */
@@ -833,7 +1338,7 @@ function when(value, fulfilled, rejected) {
     return promise.then(fulfilled, rejected);
 }
 
-},{"../promise":19,"../util":26}],12:[function(require,module,exports){
+},{"../promise":53,"../util":60}],46:[function(require,module,exports){
 /**
  * JSONP Interceptor.
  */
@@ -853,7 +1358,7 @@ module.exports = {
 
 };
 
-},{"./client/jsonp":5}],13:[function(require,module,exports){
+},{"./client/jsonp":39}],47:[function(require,module,exports){
 /**
  * HTTP method override Interceptor.
  */
@@ -872,7 +1377,7 @@ module.exports = {
 
 };
 
-},{}],14:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /**
  * Mime Interceptor.
  */
@@ -910,7 +1415,7 @@ module.exports = {
 
 };
 
-},{"../util":26}],15:[function(require,module,exports){
+},{"../util":60}],49:[function(require,module,exports){
 /**
  * Timeout Interceptor.
  */
@@ -942,7 +1447,7 @@ module.exports = function () {
     };
 };
 
-},{}],16:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /**
  * Install plugin.
  */
@@ -997,7 +1502,7 @@ if (window.Vue) {
 
 module.exports = install;
 
-},{"./http":10,"./promise":19,"./resource":20,"./url":21,"./util":26}],17:[function(require,module,exports){
+},{"./http":44,"./promise":53,"./resource":54,"./url":55,"./util":60}],51:[function(require,module,exports){
 /**
  * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
  */
@@ -1178,7 +1683,7 @@ p.catch = function (onRejected) {
 
 module.exports = Promise;
 
-},{"../util":26}],18:[function(require,module,exports){
+},{"../util":60}],52:[function(require,module,exports){
 /**
  * URL Template v2.0.6 (https://github.com/bramstein/url-template)
  */
@@ -1330,7 +1835,7 @@ exports.encodeReserved = function (str) {
     }).join('');
 };
 
-},{}],19:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 /**
  * Promise adapter.
  */
@@ -1441,7 +1946,7 @@ p.always = function (callback) {
 
 module.exports = Promise;
 
-},{"./lib/promise":17,"./util":26}],20:[function(require,module,exports){
+},{"./lib/promise":51,"./util":60}],54:[function(require,module,exports){
 /**
  * Service for interacting with RESTful services.
  */
@@ -1553,7 +2058,7 @@ Resource.actions = {
 
 module.exports = _.resource = Resource;
 
-},{"./util":26}],21:[function(require,module,exports){
+},{"./util":60}],55:[function(require,module,exports){
 /**
  * Service for URL templating.
  */
@@ -1685,7 +2190,7 @@ function serialize(params, obj, scope) {
 
 module.exports = _.url = Url;
 
-},{"../util":26,"./legacy":22,"./query":23,"./root":24,"./template":25}],22:[function(require,module,exports){
+},{"../util":60,"./legacy":56,"./query":57,"./root":58,"./template":59}],56:[function(require,module,exports){
 /**
  * Legacy Transform.
  */
@@ -1733,7 +2238,7 @@ function encodeUriQuery(value, spaces) {
         replace(/%20/g, (spaces ? '%20' : '+'));
 }
 
-},{"../util":26}],23:[function(require,module,exports){
+},{"../util":60}],57:[function(require,module,exports){
 /**
  * Query Parameter Transform.
  */
@@ -1759,7 +2264,7 @@ module.exports = function (options, next) {
     return url;
 };
 
-},{"../util":26}],24:[function(require,module,exports){
+},{"../util":60}],58:[function(require,module,exports){
 /**
  * Root Prefix Transform.
  */
@@ -1777,7 +2282,7 @@ module.exports = function (options, next) {
     return url;
 };
 
-},{"../util":26}],25:[function(require,module,exports){
+},{"../util":60}],59:[function(require,module,exports){
 /**
  * URL Template (RFC 6570) Transform.
  */
@@ -1795,7 +2300,7 @@ module.exports = function (options) {
     return url;
 };
 
-},{"../lib/url-template":18}],26:[function(require,module,exports){
+},{"../lib/url-template":52}],60:[function(require,module,exports){
 /**
  * Utility functions.
  */
@@ -1919,7 +2424,7 @@ function merge(target, source, deep) {
     }
 }
 
-},{}],27:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 /*!
  * vue-router v0.7.11
  * (c) 2016 Evan You
@@ -4569,7 +5074,7 @@ function merge(target, source, deep) {
   return Router;
 
 }));
-},{}],28:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v1.0.18
@@ -14275,7 +14780,7 @@ if (config.devtools) {
 
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":1}],29:[function(require,module,exports){
+},{"_process":35}],63:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 exports.insert = function (css) {
@@ -14295,7 +14800,7 @@ exports.insert = function (css) {
   return elem
 }
 
-},{}],30:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14310,23 +14815,74 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/add-lot-item.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/AddLotItem.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":28,"vue-hot-reload-api":2}],31:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n.nav-core {\n  color: #fff;\n  display: block;\n  padding: 2em 0 2em 3em;\n  cursor: pointer;\n}\n")
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"body-wrap\">\n  <div class=\"side-wrap\">\n    <header>\n      <img src=\"../assets/svg/fb-logo-white.svg\" alt=\"Fothebys Auction House\">\n    </header>\n    <nav>\n      <a v-link=\"'/lot-items'\" class=\"nav-core\">Lot Items</a>\n      <a :href=\"\" class=\"nav-core\">Auction Events</a>\n      <a :href=\"\" class=\"nav-core\">Employees</a>\n    </nav>\n  </div>\n\n  <div class=\"content-wrap\">\n    <!-- <router-view class=\"view\" keep-alive></router-view> -->\n    <router-view></router-view>\n  </div>\n\n</div>\n"
+},{"vue":62,"vue-hot-reload-api":36}],65:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n.nav-core {\n  color: #fff;\n  display: block;\n  padding: 2em 0 2em 3em;\n  cursor: pointer;\n}\n\n.cancel-side {\n  position: fixed;\n  top: 0;\n  right: 0;\n  margin: 1em;\n}\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+
+var SidePanel = require('./SidePanel.vue');
+var ClientDetailsForm = require('./ClientDetailsForm.vue');
+
+exports.default = {
+
+  components: {
+    SidePanel: SidePanel, ClientDetailsForm: ClientDetailsForm
+  },
+
+  props: {
+    sidePanelView: {
+      default: 'empty'
+    }
+  },
+
+  data: function data() {
+    return {
+      show: false
+    };
+  },
+
+  methods: {
+    cancelSide: function cancelSide() {
+      this.show = false;
+    }
+  },
+
+  events: {
+    loadSideForm: function loadSideForm(form) {
+      this.sidePanelView = "ClientDetailsForm";
+      this.show = true;
+    },
+
+    sendToParentForm: function sendToParentForm(form, data) {
+      this.$broadcast(form, data);
+    },
+
+    closeSidePanelView: function closeSidePanelView() {
+      console.log("!");
+      this.show = false;
+    }
+  }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"body-wrap\">\n  <div class=\"side-wrap\">\n    <header>\n      <img src=\"../assets/svg/fb-logo-white.svg\" alt=\"Fothebys Auction House\">\n    </header>\n    <nav>\n      <a v-link=\"'/lot-items'\" class=\"nav-core\">Lot Items</a>\n      <a :href=\"\" class=\"nav-core\">Auction Events</a>\n      <a :href=\"\" class=\"nav-core\">Employees</a>\n    </nav>\n  </div>\n\n  <div class=\"content-wrap\">\n    <div class=\"content\">\n      <router-view></router-view>\n    </div>\n\n    <div class=\"side-panel-view\" v-show=\"show\" transition=\"slideout\">\n      <span @click=\"cancelSide\" class=\"btn cancel-side\">Cancel</span>\n      <div :is=\"sidePanelView\"></div>\n    </div>\n  </div>\n\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/app.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/App.vue"
   module.hot.dispose(function () {
-    require("vueify-insert-css").cache["\n.nav-core {\n  color: #fff;\n  display: block;\n  padding: 2em 0 2em 3em;\n  cursor: pointer;\n}\n"] = false
+    require("vueify-insert-css").cache["\n.nav-core {\n  color: #fff;\n  display: block;\n  padding: 2em 0 2em 3em;\n  cursor: pointer;\n}\n\n.cancel-side {\n  position: fixed;\n  top: 0;\n  right: 0;\n  margin: 1em;\n}\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -14335,7 +14891,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":28,"vue-hot-reload-api":2,"vueify-insert-css":29}],32:[function(require,module,exports){
+},{"./ClientDetailsForm.vue":68,"./SidePanel.vue":72,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],66:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 'use strict';
 
@@ -14344,8 +14900,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 
-var OptionItem = require('./option-item.vue');
-var ClientDetails = require('./client-details.vue');
+var OptionItem = require('./OptionItem.vue');
+var ClientDetails = require('./ClientDetails.vue');
+var DataStore = require('../data.js');
 
 exports.default = {
   name: "ArrangeAppraisal",
@@ -14356,7 +14913,10 @@ exports.default = {
 
   data: function data() {
     return {
-      categories: []
+      showClientDetails: false,
+      clientDetails: DataStore.clientDetails,
+      categories: [],
+      itemName: ''
     };
   },
 
@@ -14369,16 +14929,31 @@ exports.default = {
         console.log(err);
       });
     }
+  },
+
+  methods: {
+    loadSideForm: function loadSideForm(form) {
+      console.log(form);
+    }
+  },
+
+  events: {
+    ClientDetailsForm: function ClientDetailsForm(data) {
+      this.$data.clientDetails = data;
+
+      this.showClientDetails = true;
+      return true;
+    }
   }
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form method=\"POST\" action=\"/\">\n\n  <!-- client details -->\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n    <span class=\"btn-group\">\n      <span>Existing Client</span>\n      <a v-link=\"\" class=\"btn\">Yes</a><!-- /arrange-appraisal/client-search.vue -->\n      <a v-link=\"'arrange-appraisal/client-details'\" class=\"btn\">No</a><!-- /arrange-appraisal/client-details.vue -->\n    </span>\n  </span>\n    <!-- search or enter details -->\n    <router-view></router-view>\n\n  <!-- item name -->\n  <span class=\"form-element\">\n    <label for=\"item-name\">Item Name</label>\n    <input type=\"text\" id=\"item-name\" name=\"item-name\">\n  </span>\n\n  <!-- category -->\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <option-item v-for=\"category in categories\" :type=\"'radio'\" :name=\"'category'\" :item=\"category\">\n    </option-item>\n  </span>\n\n  <!-- ... -->\n  <!-- on click -> get experts related -->\n\n  <!-- list of experts related to category -->\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n    <!-- ... -->\n\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Agreed date for Appraisal</label>\n    <input type=\"date\">\n  </span>\n\n  <button class=\"btn\">Submit</button>\n\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form method=\"POST\" action=\"/\">\n\n  <!-- client details -->\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n    <span class=\"btn-group\">\n      <span>Existing Client</span>\n      <a v-link=\"\" class=\"btn\">Yes</a><!-- /arrange-appraisal/client-search.vue -->\n      <a @click=\"this.$dispatch('loadSideForm', 'client-details')\" class=\"btn\">No</a><!-- /arrange-appraisal/client-details.vue -->\n    </span>\n  </span>\n    <!-- search or enter details -->\n    <div v-show=\"showClientDetails\">\n      <client-details :details=\"clientDetails\"></client-details>\n    </div>\n\n    <!-- <router-view></router-view> -->\n\n  <!-- item name -->\n  <span class=\"form-element\">\n    <label for=\"item-name\">Item Name</label>\n    <input type=\"text\" id=\"itemName\" name=\"itemName\" v-model=\"itemName\">\n  </span>\n\n  <!-- category -->\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <option-item v-for=\"category in categories\" :type=\"'radio'\" :name=\"'category'\" :item=\"category\">\n    </option-item>\n  </span>\n\n  <!-- ... -->\n  <!-- on click -> get experts related -->\n\n  <!-- list of experts related to category -->\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n    <!-- ... -->\n\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Agreed date for Appraisal</label>\n    <input type=\"date\">\n  </span>\n\n  <button class=\"btn\">Submit</button>\n\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/arrange-appraisal.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/ArrangeAppraisal.vue"
   module.hot.dispose(function () {
     require("vueify-insert-css").cache["\n\n"] = false
     document.head.removeChild(__vueify_style__)
@@ -14389,24 +14964,116 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./client-details.vue":33,"./option-item.vue":34,"vue":28,"vue-hot-reload-api":2,"vueify-insert-css":29}],33:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
+},{"../data.js":75,"./ClientDetails.vue":67,"./OptionItem.vue":70,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],67:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\nth {\n  text-align: left;\n}\n")
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = {
-  name: "ClientDetails"
+  name: "ClientDetails",
 
+  props: ['details']
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<!-- <form method=\"post\" action=\"\"> -->\n  <fieldset>\n    <legend>Contact</legend>\n\n    <span class=\"form-element\">\n      <label for=\"title\">Title</label>\n      <input type=\"text\" id=\"title\" name=\"title\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"firstName\">First Name</label>\n      <input type=\"text\" id=\"firstName\" name=\"firstName\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"surname\">Surname</label>\n      <input type=\"text\" id=\"surname\" name=\"surname\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"telNumber\">Telephone Number</label>\n      <input type=\"text\" id=\"telNumber\" name=\"telNumber\">\n    </span>\n  </fieldset>\n\n\n  <fieldset>\n    <legend>Address</legend>\n\n    <span class=\"form-element\">\n      <label for=\"firstLine\">First Line</label>\n      <input type=\"text\" id=\"firstLine\" name=\"firstLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"secondLine\">Second Line</label>\n      <input type=\"text\" id=\"secondLine\" name=\"secondLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"townCity\">Town/City</label>\n      <input type=\"text\" id=\"townCity\" name=\"townCity\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"postalCode\">Postal Code</label>\n      <input type=\"text\" id=\"postalCode\" name=\"postalCode\">\n    </span>\n  </fieldset>\n\n<!-- </form> -->\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>\n  <table>\n    <tbody><tr>\n      <th>Full Name:</th>\n      <td>{{ details.title }} {{ details.firstName }} {{ details.surname }}</td>\n    </tr>\n    <tr>\n      <th>Telephone Number:</th>\n      <td>{{ details.telNumber }}</td>\n    </tr>\n    <tr>\n      <th>Email Address</th>\n      <td>{{ details.emailAddress}}</td>\n    </tr>\n    <tr><th colspan=\"2\">Address</th></tr>\n    <tr><td colspan=\"2\">{{ details.contactAddress.firstLine }}</td></tr>\n    <tr><td colspan=\"2\">{{ details.contactAddress.secondLine }}</td></tr>\n    <tr><td colspan=\"2\">{{ details.contactAddress.townCity }}</td></tr>\n    <tr><td colspan=\"2\">{{ details.contactAddress.postalCode }}</td></tr>\n  </tbody></table>\n  <span>edit</span>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/client-details.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/ClientDetails.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\nth {\n  text-align: left;\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],68:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  name: "ClientDetailsForm",
+
+  data: function data() {
+    return {
+      title: '',
+      firstName: '',
+      surname: '',
+      emailAddress: '',
+      telNumber: '',
+      contactAddress: {
+        firstLine: '',
+        secondLine: '',
+        townCity: '',
+        postalCode: ''
+      }
+    };
+  },
+
+  methods: {
+    clearData: function clearData(data) {
+
+      for (var prop in data) {
+        if (data.hasOwnProperty(prop)) {
+          var d = data[prop];
+
+          if (d !== null && (typeof d === 'undefined' ? 'undefined' : (0, _typeof3.default)(d)) === 'object') {
+            data[prop] = this.clearData(d);
+          } else {
+            data[prop] = "";
+          }
+        }
+      }
+      return data;
+    },
+
+    submitForm: function submitForm() {
+      var form = document.querySelector('form');
+      var action = form.action;
+      var methods = form.method;
+
+      var d = (0, _stringify2.default)(this.$data);
+
+      this.$http.post('http://localhost:8080/services/clients', d).then(function (response) {
+        console.log(response);
+        this.$dispatch('sendToParentForm', 'ClientDetailsForm', response.data);
+        this.clearData(this.$data);
+        this.$dispatch('closeSidePanelView');
+      }, function (response) {
+        console.log(response);
+      });
+    }
+
+  }
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form method=\"post\" action=\"http://localhost:8080/services/clients\">\n  <fieldset>\n    <legend>Contact</legend>\n\n    <span class=\"form-element\">\n      <label for=\"title\">Title</label>\n      <input type=\"text\" id=\"title\" name=\"title\" v-model=\"title\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"firstName\">First Name</label>\n      <input type=\"text\" id=\"firstName\" name=\"firstName\" v-model=\"firstName\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"surname\">Surname</label>\n      <input type=\"text\" id=\"surname\" name=\"surname\" v-model=\"surname\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"emailAddress\">Email Address</label>\n      <input type=\"text\" id=\"emailAddress\" name=\"emailAddress\" v-model=\"emailAddress\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"telNumber\">Telephone Number</label>\n      <input type=\"text\" id=\"telNumber\" name=\"telNumber\" v-model=\"telNumber\">\n    </span>\n  </fieldset>\n\n\n  <fieldset>\n    <legend>Address</legend>\n\n    <span class=\"form-element\">\n      <label for=\"firstLine\">First Line</label>\n      <input type=\"text\" id=\"firstLine\" name=\"firstLine\" v-model=\"contactAddress.firstLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"secondLine\">Second Line</label>\n      <input type=\"text\" id=\"secondLine\" name=\"secondLine\" v-model=\"contactAddress.secondLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"townCity\">Town/City</label>\n      <input type=\"text\" id=\"townCity\" name=\"townCity\" v-model=\"contactAddress.townCity\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"postalCode\">Postal Code</label>\n      <input type=\"text\" id=\"postalCode\" name=\"postalCode\" v-model=\"contactAddress.postalCode\">\n    </span>\n  </fieldset>\n\n  <button @click.prevent=\"submitForm\" class=\"btn\">\n    Register Client\n  </button>\n\n  <button @click.prevent=\"submitForm\" class=\"btn\">\n    Use Details\n  </button>\n\n</form>\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/ClientDetailsForm.vue"
   module.hot.dispose(function () {
     require("vueify-insert-css").cache["\n\n"] = false
     document.head.removeChild(__vueify_style__)
@@ -14417,8 +15084,28 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":28,"vue-hot-reload-api":2,"vueify-insert-css":29}],34:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n/*.option-item {\n\n}\n\n.option-item input[type='checkbox'] {\n  display: none;\n}\n\n\n.option-item input[type='checkbox']:checked + label {\n  background: #000;\n  color: #fff;\n}*/\n")
+},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],69:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
+"use strict";
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<!--\n  @ManyToOne private Client client;\n  @ManyToOne private Category category;\n  @ManyToOne private Expert expert;\n  @Embedded private DatePeriod productionDate;\n  @Embedded private ItemDimensions dimensions;\n\n  private String itemName;\n  private double estimatedPrice;\n  private String textualDescription;\n  private String provenanceDetails;\n  private String additionalNotes;\n  private boolean authenticated = false;\n-->\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/LotAppraisal.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],70:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n")
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14440,9 +15127,9 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/option-item.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/OptionItem.vue"
   module.hot.dispose(function () {
-    require("vueify-insert-css").cache["\n/*.option-item {\n\n}\n\n.option-item input[type='checkbox'] {\n  display: none;\n}\n\n\n.option-item input[type='checkbox']:checked + label {\n  background: #000;\n  color: #fff;\n}*/\n"] = false
+    require("vueify-insert-css").cache["\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -14451,7 +15138,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":28,"vue-hot-reload-api":2,"vueify-insert-css":29}],35:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],71:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14459,7 +15146,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 
-var Tile = require("./tile.vue");
+var Tile = require("./Tile.vue");
 // var d = require("./data.js");
 
 exports.default = {
@@ -14492,14 +15179,37 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/page-nav.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/PageNav.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./tile.vue":36,"vue":28,"vue-hot-reload-api":2}],36:[function(require,module,exports){
+},{"./Tile.vue":73,"vue":62,"vue-hot-reload-api":36}],72:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  name: "SidePanel"
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>\n\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/SidePanel.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":62,"vue-hot-reload-api":36}],73:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14519,19 +15229,19 @@ exports.default = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"nav-tile\">\n  <a v-link=\"href\">{{ tile.name }}</a>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<a class=\"nav-tile\" v-link=\"href\">{{ tile.name }}</a>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/tile.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/Tile.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":28,"vue-hot-reload-api":2}],37:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],74:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14546,48 +15256,74 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/welcome.vue"
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/Welcome.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":28,"vue-hot-reload-api":2}],38:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],75:[function(require,module,exports){
+module.exports = {
+  clientDetails: {
+    title: '',
+    firstName: '',
+    surname: '',
+    telNumber: '',
+    emailAddress: '',
+    contactAddress: {
+      firstLine: '',
+      secondLine: '',
+      townCity: '',
+      postalCode: ''
+    }
+  },
+  setClientDetails: function(d) {
+    // for ( var obj in d ) {
+      this.clientDetails = d;
+    // }
+  },
+  data: {
+    routes: [
+      { name: "Welcome",   url: "/", component: "./welcome.vue"},
+      { name: "Lot Items", url: "/lot-items", component: "./page-nav.vue"},
+      { name: "Add Lot Item", url: "/lot-items/add-item", component: "./add-lot-item.vue"}
+    ]
+  }
+}
+},{}],76:[function(require,module,exports){
 var Vue = require('vue');
 var VueResource = require('vue-resource');
 var Router = require('vue-router');
-
-var App = require('./components/app.vue');
-
-var PageNav = require('./components/page-nav.vue');
-var Welcome = require('./components/welcome.vue');
-
-var AddLotItem = require('./components/add-lot-item.vue');
-var ArrangeAppraisal = require('./components/arrange-appraisal.vue')
+var App = require('./components/App.vue');
 
 Vue.use(Router);
 Vue.use(VueResource);
+
+Vue.component('empty', { template: "<div>asdas<div>"});
 
 var router = new Router();
 
 router.map({
   '/': {
-    component: Welcome
+    component: require('./components/Welcome.vue')
   },
   '/lot-items': {
-    component: PageNav
+    component: require('./components/PageNav.vue')
   },
   '/lot-items/add-item': {
-    component: AddLotItem
+    component: require('./components/AddLotItem.vue')
   },
   '/lot-items/arrange-appraisal': {
-    component: ArrangeAppraisal,
+    component: require('./components/ArrangeAppraisal.vue'),
     subRoutes: {
       '/client-details': {
-        component: require('./components/client-details.vue')
+        component: require('./components/ClientDetails.vue')
       }
     }
+  },
+  '/lot-items/lot-appraisal': {
+    component: require('./components/LotAppraisal.vue')
   }
 })
 
@@ -14615,4 +15351,4 @@ router.start(App, '#app');
 //     }
 //   }
 // })
-},{"./components/add-lot-item.vue":30,"./components/app.vue":31,"./components/arrange-appraisal.vue":32,"./components/client-details.vue":33,"./components/page-nav.vue":35,"./components/welcome.vue":37,"vue":28,"vue-resource":16,"vue-router":27}]},{},[38]);
+},{"./components/AddLotItem.vue":64,"./components/App.vue":65,"./components/ArrangeAppraisal.vue":66,"./components/ClientDetails.vue":67,"./components/LotAppraisal.vue":69,"./components/PageNav.vue":71,"./components/Welcome.vue":74,"vue":62,"vue-resource":50,"vue-router":61}]},{},[76]);

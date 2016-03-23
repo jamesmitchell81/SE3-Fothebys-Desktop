@@ -24,17 +24,4 @@
 </script>
 
 <style>
-/*.option-item {
-
-}
-
-.option-item input[type='checkbox'] {
-  display: none;
-}
-
-
-.option-item input[type='checkbox']:checked + label {
-  background: #000;
-  color: #fff;
-}*/
 </style>

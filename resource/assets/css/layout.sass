@@ -24,6 +24,25 @@ header img
   background: $core-ui-dark
   color: #fff
   position: fixed
+  display: block
+
+.side-panel-view
+  position: fixed
+  right: 0
+  top: 0
+  width: 50%
+  height: 100%
+  padding: 2em
+  margin: 1em 0
+  background: #fff
+  box-shadow: -2px -2px 5px #cacaca, 2px 2px 5px #cacaca
+  overflow-y: scroll
+
+.slideout-transition
+  transition: all 0.5s ease
+
+.slideout-enter, .slideout-leave
+  width: 0
 
 nav
   width: 100%
@@ -46,15 +65,23 @@ nav
   width: 200px
   height: 200px
   margin: 1em
+  padding: 2em
   display: flex
   align-items: center
   justify-content: center
+  line-height: 2em
+  letter-spacing: 1px
+  text-align: center
+  text-decoration: none
 
-
-.content-wrap, .content
+.content-wrap
   width: 70%
-  margin: 0 auto
+  margin-left: 320px
   height: 100%
+
+.content
+  margin: 0 auto
+  width: 70%
 
 .page-title-bar
   padding: 1.5em

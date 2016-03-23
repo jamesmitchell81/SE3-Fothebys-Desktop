@@ -8,7 +8,7 @@
 </template>
 
 <script>
-var Tile = require("./tile.vue");
+var Tile = require("./Tile.vue");
 // var d = require("./data.js");
 
   export default {
