@@ -28,11 +28,16 @@
 <script>
 var SidePanel = require('./SidePanel.vue');
 var ClientDetailsForm = require('./ClientDetailsForm.vue');
+var DatePeriodForm = require('./DatePeriodForm.vue');
+var CategorySelection = require('./CategorySelection.vue');
 
   export default {
 
     components: {
-      SidePanel, ClientDetailsForm
+      SidePanel,
+      ClientDetailsForm,
+      DatePeriodForm,
+      CategorySelection
     },
 
     props: {

@@ -26,11 +26,11 @@
     <!-- category -->
     <span class="form-element">
       <label for="">Category</label>
-      <option-item v-for="category in categories"
-                   :type="'radio'"
-                   :name="'category'"
-                   :item="category">
-      </option-item>
+      <button class="btn"
+              @click.prevent="this.$dispatch('loadSideForm', 'CategorySelection')">
+              Select Category
+            </button>
+      <!-- display selected category and classification -->
     </span>
 
     <!-- ... -->
@@ -54,7 +54,6 @@
 </template>
 
 <script>
-  var OptionItem = require('./OptionItem.vue');
   var ClientDetails = require('./ClientDetails.vue');
   var DataStore = require('../data.js');
 
@@ -62,7 +61,7 @@
     name: "ArrangeAppraisal",
 
     components: {
-      OptionItem, ClientDetails
+      ClientDetails
     },
 
     data: function() {
@@ -71,19 +70,6 @@
         clientDetails: DataStore.clientDetails,
         categories: [],
         itemName: ''
-      }
-    },
-
-    route: {
-      activate: function() {
-        // get all categories and experts.
-        this.$http.get('http://localhost:8080/services/category')
-                  .then(function(category) {
-                    this.categories = category.data;
-                  }, function(err) {
-                    console.log(err);
-                  });
-
       }
     },
 

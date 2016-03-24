@@ -14833,11 +14833,16 @@ Object.defineProperty(exports, "__esModule", {
 
 var SidePanel = require('./SidePanel.vue');
 var ClientDetailsForm = require('./ClientDetailsForm.vue');
+var DatePeriodForm = require('./DatePeriodForm.vue');
+var CategorySelection = require('./CategorySelection.vue');
 
 exports.default = {
 
   components: {
-    SidePanel: SidePanel, ClientDetailsForm: ClientDetailsForm
+    SidePanel: SidePanel,
+    ClientDetailsForm: ClientDetailsForm,
+    DatePeriodForm: DatePeriodForm,
+    CategorySelection: CategorySelection
   },
 
   props: {
@@ -14860,7 +14865,7 @@ exports.default = {
 
   events: {
     loadSideForm: function loadSideForm(form) {
-      this.sidePanelView = "ClientDetailsForm";
+      this.sidePanelView = form;
       this.show = true;
     },
 
@@ -14891,7 +14896,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./ClientDetailsForm.vue":68,"./SidePanel.vue":72,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],66:[function(require,module,exports){
+},{"./CategorySelection.vue":67,"./ClientDetailsForm.vue":69,"./DatePeriodForm.vue":70,"./SidePanel.vue":74,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],66:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 'use strict';
 
@@ -14900,7 +14905,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 
-var OptionItem = require('./OptionItem.vue');
 var ClientDetails = require('./ClientDetails.vue');
 var DataStore = require('../data.js');
 
@@ -14908,7 +14912,7 @@ exports.default = {
   name: "ArrangeAppraisal",
 
   components: {
-    OptionItem: OptionItem, ClientDetails: ClientDetails
+    ClientDetails: ClientDetails
   },
 
   data: function data() {
@@ -14923,11 +14927,13 @@ exports.default = {
   route: {
     activate: function activate() {
       // get all categories and experts.
-      this.$http.get('http://localhost:8080/services/category').then(function (category) {
-        this.categories = category.data;
-      }, function (err) {
-        console.log(err);
-      });
+      // this.$http.get('http://localhost:8080/services/category')
+      //           .then(function(category) {
+      //             this.categories = category.data;
+      //           }, function(err) {
+      //             console.log(err);
+      //           });
+
     }
   },
 
@@ -14948,7 +14954,7 @@ exports.default = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form method=\"POST\" action=\"/\">\n\n  <!-- client details -->\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n    <span class=\"btn-group\">\n      <span>Existing Client</span>\n      <a v-link=\"\" class=\"btn\">Yes</a><!-- /arrange-appraisal/client-search.vue -->\n      <a @click=\"this.$dispatch('loadSideForm', 'client-details')\" class=\"btn\">No</a><!-- /arrange-appraisal/client-details.vue -->\n    </span>\n  </span>\n    <!-- search or enter details -->\n    <div v-show=\"showClientDetails\">\n      <client-details :details=\"clientDetails\"></client-details>\n    </div>\n\n    <!-- <router-view></router-view> -->\n\n  <!-- item name -->\n  <span class=\"form-element\">\n    <label for=\"item-name\">Item Name</label>\n    <input type=\"text\" id=\"itemName\" name=\"itemName\" v-model=\"itemName\">\n  </span>\n\n  <!-- category -->\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <option-item v-for=\"category in categories\" :type=\"'radio'\" :name=\"'category'\" :item=\"category\">\n    </option-item>\n  </span>\n\n  <!-- ... -->\n  <!-- on click -> get experts related -->\n\n  <!-- list of experts related to category -->\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n    <!-- ... -->\n\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Agreed date for Appraisal</label>\n    <input type=\"date\">\n  </span>\n\n  <button class=\"btn\">Submit</button>\n\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <form method=\"POST\" action=\"/\">\n\n    <!-- client details -->\n    <span class=\"form-element\">\n      <label for=\"\">Client</label>\n      <span class=\"btn-group\">\n        <span>Existing Client</span>\n        <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientSearchForm')\" class=\"btn\">Yes</button><!-- /arrange-appraisal/client-search.vue -->\n        <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientDetailsForm')\" class=\"btn\">No</button><!-- /arrange-appraisal/client-details.vue -->\n      </span>\n    </span>\n      <!-- search or enter details -->\n      <div v-show=\"showClientDetails\">\n        <client-details :details=\"clientDetails\"></client-details>\n      </div>\n\n      <!-- <router-view></router-view> -->\n\n    <!-- item name -->\n    <span class=\"form-element\">\n      <label for=\"item-name\">Item Name</label>\n      <input type=\"text\" id=\"itemName\" name=\"itemName\" v-model=\"itemName\">\n    </span>\n\n    <!-- category -->\n    <span class=\"form-element\">\n      <label for=\"\">Category</label>\n      <button class=\"btn\" @click.prevent=\"this.$dispatch('loadSideForm', 'CategorySelection')\">\n              Select Category\n            </button>\n<!--       <option-item v-for=\"category in categories\"\n                   :type=\"'radio'\"\n                   :name=\"'category'\"\n                   :item=\"category\">\n      </option-item> -->\n    </span>\n\n    <!-- ... -->\n    <!-- on click -> get experts related -->\n\n    <!-- list of experts related to category -->\n    <span class=\"form-element\">\n      <label for=\"\">Expert</label>\n      <!-- ... -->\n\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"\">Agreed date for Appraisal</label>\n      <input type=\"date\">\n    </span>\n\n    <button class=\"btn\">Submit</button>\n\n  </form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14964,7 +14970,59 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../data.js":75,"./ClientDetails.vue":67,"./OptionItem.vue":70,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],67:[function(require,module,exports){
+},{"../data.js":77,"./ClientDetails.vue":68,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],67:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+
+var OptionItem = require('./OptionItem.vue');
+
+exports.default = {
+  name: "CategorySelection",
+
+  components: {
+    OptionItem: OptionItem
+  },
+
+  data: function data() {
+    return {
+      categories: []
+    };
+  },
+
+  ready: function ready() {
+    this.$http.get('http://localhost:8080/services/category').then(function (category) {
+      console.log(category);
+      this.categories = category.data;
+    }, function (err) {
+      this.categories = [];
+      console.log(err);
+    });
+  }
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<span class=\"form-element\">\n  <label for=\"\">Category</label>\n  <option-item v-for=\"category in categories\" :type=\"'radio'\" :name=\"'category'\" :item=\"category\">\n  </option-item>\n</span>\n\n<!-- classification selection -->\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/CategorySelection.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./OptionItem.vue":72,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],68:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\nth {\n  text-align: left;\n}\n")
 "use strict";
 
@@ -14993,7 +15051,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],68:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],69:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 'use strict';
 
@@ -15068,7 +15126,7 @@ exports.default = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form method=\"post\" action=\"http://localhost:8080/services/clients\">\n  <fieldset>\n    <legend>Contact</legend>\n\n    <span class=\"form-element\">\n      <label for=\"title\">Title</label>\n      <input type=\"text\" id=\"title\" name=\"title\" v-model=\"title\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"firstName\">First Name</label>\n      <input type=\"text\" id=\"firstName\" name=\"firstName\" v-model=\"firstName\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"surname\">Surname</label>\n      <input type=\"text\" id=\"surname\" name=\"surname\" v-model=\"surname\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"emailAddress\">Email Address</label>\n      <input type=\"text\" id=\"emailAddress\" name=\"emailAddress\" v-model=\"emailAddress\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"telNumber\">Telephone Number</label>\n      <input type=\"text\" id=\"telNumber\" name=\"telNumber\" v-model=\"telNumber\">\n    </span>\n  </fieldset>\n\n\n  <fieldset>\n    <legend>Address</legend>\n\n    <span class=\"form-element\">\n      <label for=\"firstLine\">First Line</label>\n      <input type=\"text\" id=\"firstLine\" name=\"firstLine\" v-model=\"contactAddress.firstLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"secondLine\">Second Line</label>\n      <input type=\"text\" id=\"secondLine\" name=\"secondLine\" v-model=\"contactAddress.secondLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"townCity\">Town/City</label>\n      <input type=\"text\" id=\"townCity\" name=\"townCity\" v-model=\"contactAddress.townCity\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"postalCode\">Postal Code</label>\n      <input type=\"text\" id=\"postalCode\" name=\"postalCode\" v-model=\"contactAddress.postalCode\">\n    </span>\n  </fieldset>\n\n  <button @click.prevent=\"submitForm\" class=\"btn\">\n    Register Client\n  </button>\n\n  <button @click.prevent=\"submitForm\" class=\"btn\">\n    Use Details\n  </button>\n\n</form>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form method=\"post\" action=\"http://localhost:8080/services/clients\">\n  <fieldset>\n    <legend>Contact</legend>\n\n    <span class=\"form-element\">\n      <label for=\"title\">Title</label>\n      <input type=\"text\" id=\"title\" name=\"title\" v-model=\"title\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"firstName\">First Name</label>\n      <input type=\"text\" id=\"firstName\" name=\"firstName\" v-model=\"firstName\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"surname\">Surname</label>\n      <input type=\"text\" id=\"surname\" name=\"surname\" v-model=\"surname\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"emailAddress\">Email Address</label>\n      <input type=\"email\" id=\"emailAddress\" name=\"emailAddress\" v-model=\"emailAddress\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"telNumber\">Telephone Number</label>\n      <input type=\"text\" id=\"telNumber\" name=\"telNumber\" v-model=\"telNumber\">\n    </span>\n  </fieldset>\n\n\n  <fieldset>\n    <legend>Address</legend>\n\n    <span class=\"form-element\">\n      <label for=\"firstLine\">First Line</label>\n      <input type=\"text\" id=\"firstLine\" name=\"firstLine\" v-model=\"contactAddress.firstLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"secondLine\">Second Line</label>\n      <input type=\"text\" id=\"secondLine\" name=\"secondLine\" v-model=\"contactAddress.secondLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"townCity\">Town/City</label>\n      <input type=\"text\" id=\"townCity\" name=\"townCity\" v-model=\"contactAddress.townCity\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"postalCode\">Postal Code</label>\n      <input type=\"text\" id=\"postalCode\" name=\"postalCode\" v-model=\"contactAddress.postalCode\">\n    </span>\n  </fieldset>\n\n  <button @click.prevent=\"submitForm\" class=\"btn\">\n    Register Client\n  </button>\n\n  <button @click.prevent=\"submitForm\" class=\"btn\">\n    Use Details\n  </button>\n\n</form>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15084,11 +15142,51 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],69:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],70:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  name: "DatePeriodForm"
+
+};
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<!--\n  @ManyToOne private Client client;\n  @ManyToOne private Category category;\n  @ManyToOne private Expert expert;\n  @Embedded private DatePeriod productionDate;\n  @Embedded private ItemDimensions dimensions;\n\n  private String itemName;\n  private double estimatedPrice;\n  private String textualDescription;\n  private String provenanceDetails;\n  private String additionalNotes;\n  private boolean authenticated = false;\n-->\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form method=\"\" action=\"\">\n\n  <span class=\"form-element\">\n    <label for=\"itemName\">Date Description</label>\n    <input type=\"text\" v-model=\"dateDescription\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"productionDate\">Year</label>\n    <input type=\"number\" min=\"0\" v-model=\"productionDate\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"itemName\">Years Between</label>\n    <span class=\"form-input-inline\">\n      <input type=\"number\" min=\"0\" v-model=\"yearBetweenStart\" placeholder=\"Start\">\n      <input type=\"number\" min=\"0\" v-model=\"yearBetweenEnd\" placeholder=\"End\">\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"year\">Year</label>\n    <input type=\"number\" v-model=\"year\">\n  </span>\n</form>\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/DatePeriodForm.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],71:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+
+  data: function data() {
+    return {
+      agreement: {}
+    };
+  }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <form action=\"\">\n<!--\n  @ManyToOne private Client client;\n  @ManyToOne private Category category;\n  @ManyToOne private Expert expert;\n\n  @Embedded private DatePeriod productionDate;\n  @Embedded private ItemDimensions dimensions;\n-->\n\n    <span class=\"form-element\">\n      <label for=\"\">Client</label>\n      <!-- <button @click.prevent=\"\" class=\"btn\">Add Date Period</button> -->\n      <!-- details -->\n      <!-- edit -->\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"\">Expert</label>\n      <!-- <button @click.prevent=\"\" class=\"btn\">Add Date Period</button> -->\n\n      <!-- details -->\n      <!-- edit -->\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"\">Category</label>\n      <button @click.prevent=\"\" class=\"btn\">Select Category</button>\n\n      <!-- details -->\n      <!-- edit -->\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"\">Date Period</label>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'DatePeriodForm')\" class=\"btn\">\n              Add Date Period\n        </button>\n\n      <!-- details -->\n      <!-- edit -->\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"\">Item Dimensions</label>\n      <button @click.prevent=\"\" class=\"btn\">Add Dimensions</button>\n\n      <!-- details-->\n      <!-- edit -->\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"\">Item Images</label>\n      <button @click.prevent=\"\" class=\"btn\">Add Images</button>\n\n      <!-- list of filenames -->\n      <!-- edit -->\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"itemName\">Item Name</label>\n      <input type=\"text\" v-model=\"itemName\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"estimatedPrice\">Estimated Price</label>\n      <input type=\"number\" min=\"1\" v-model=\"estimatedPrice\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"textualDescription\">Textual Description</label>\n      <textarea rols=\"40\" cols=\"20\" v-model=\"textualDescription\">      </textarea>\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"provenanceDetails\">Provenance Details</label>\n      <textarea rols=\"40\" cols=\"20\" v-model=\"provenanceDetails\">      </textarea>\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"\">Authenticated</label>\n      <span class=\"form-input-inline\">\n        <span class=\"option-item\">\n          <input type=\"radio\" name=\"authenticated\" id=\"authenticatedYes\">\n          <label for=\"authenticatedYes\">Yes</label>\n        </span>\n        <span class=\"option-item\">\n          <input type=\"radio\" name=\"authenticated\" id=\"authenticatedNo\">\n          <label for=\"authenticatedNo\">No</label>\n        </span>\n      </span>\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"additionalNotes\">Additional Notes</label>\n      <textarea rols=\"40\" cols=\"20\" v-model=\"additionalNotes\">      </textarea>\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"additionalNotes\">Agreement Signed</label>\n      <span class=\"form-input-inline\">\n        <span class=\"option-item\">\n          <input type=\"radio\" name=\"agreement\" id=\"agreedYes\">\n          <label for=\"agreedYes\">Yes</label>\n        </span>\n        <span class=\"option-item\">\n          <input type=\"radio\" name=\"agreement\" id=\"agreedNo\">\n          <label for=\"agreedNo\">No</label>\n        </span>\n      </span>\n    </span>\n\n  </form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15104,7 +15202,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],70:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],72:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n")
 "use strict";
 
@@ -15138,7 +15236,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],71:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],73:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15158,7 +15256,7 @@ exports.default = {
 
   data: function data() {
     return {
-      tiles: [{ name: "Add Item", url: "/lot-items/add-item" }, { name: "Arrange Appraisal", url: "/lot-items/arrange-appraisal" }]
+      tiles: [{ name: "Add Item", url: "/lot-items/add-item" }, { name: "Arrange Appraisal", url: "/lot-items/arrange-appraisal" }, { name: "Record Lot Appraisal", url: "/lot-items/record-appraisal" }]
     };
   }
 
@@ -15186,7 +15284,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./Tile.vue":73,"vue":62,"vue-hot-reload-api":36}],72:[function(require,module,exports){
+},{"./Tile.vue":75,"vue":62,"vue-hot-reload-api":36}],74:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15209,7 +15307,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36}],73:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],75:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15229,7 +15327,7 @@ exports.default = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<a class=\"nav-tile\" v-link=\"href\">{{ tile.name }}</a>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>\n  <a class=\"nav-tile\" v-link=\"href\">{{ tile.name }}</a>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15241,7 +15339,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36}],74:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],76:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15263,7 +15361,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36}],75:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],77:[function(require,module,exports){
 module.exports = {
   clientDetails: {
     title: '',
@@ -15291,7 +15389,7 @@ module.exports = {
     ]
   }
 }
-},{}],76:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 var Vue = require('vue');
 var VueResource = require('vue-resource');
 var Router = require('vue-router');
@@ -15313,6 +15411,9 @@ router.map({
   },
   '/lot-items/add-item': {
     component: require('./components/AddLotItem.vue')
+  },
+  '/lot-items/record-appraisal': {
+    component: require('./components/LotAppraisal.vue')
   },
   '/lot-items/arrange-appraisal': {
     component: require('./components/ArrangeAppraisal.vue'),
@@ -15351,4 +15452,4 @@ router.start(App, '#app');
 //     }
 //   }
 // })
-},{"./components/AddLotItem.vue":64,"./components/App.vue":65,"./components/ArrangeAppraisal.vue":66,"./components/ClientDetails.vue":67,"./components/LotAppraisal.vue":69,"./components/PageNav.vue":71,"./components/Welcome.vue":74,"vue":62,"vue-resource":50,"vue-router":61}]},{},[76]);
+},{"./components/AddLotItem.vue":64,"./components/App.vue":65,"./components/ArrangeAppraisal.vue":66,"./components/ClientDetails.vue":68,"./components/LotAppraisal.vue":71,"./components/PageNav.vue":73,"./components/Welcome.vue":76,"vue":62,"vue-resource":50,"vue-router":61}]},{},[78]);

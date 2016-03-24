@@ -20,6 +20,9 @@ router.map({
   '/lot-items/add-item': {
     component: require('./components/AddLotItem.vue')
   },
+  '/lot-items/record-appraisal': {
+    component: require('./components/LotAppraisal.vue')
+  },
   '/lot-items/arrange-appraisal': {
     component: require('./components/ArrangeAppraisal.vue'),
     subRoutes: {

@@ -1,4 +1,5 @@
 <template>
+    <div>
       <a class="nav-tile" v-link="href">{{ tile.name }}</a>
     </div>
 </template>
