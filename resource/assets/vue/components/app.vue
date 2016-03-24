@@ -30,6 +30,8 @@ var SidePanel = require('./SidePanel.vue');
 var ClientDetailsForm = require('./ClientDetailsForm.vue');
 var DatePeriodForm = require('./DatePeriodForm.vue');
 var CategorySelection = require('./CategorySelection.vue');
+var ExpertSelection = require('./ExpertSelection.vue');
+var ItemDimensionForm = require('./ItemDimensionForm.vue');
 
   export default {
 
@@ -37,7 +39,9 @@ var CategorySelection = require('./CategorySelection.vue');
       SidePanel,
       ClientDetailsForm,
       DatePeriodForm,
-      CategorySelection
+      CategorySelection,
+      ExpertSelection,
+      ItemDimensionForm
     },
 
     props: {

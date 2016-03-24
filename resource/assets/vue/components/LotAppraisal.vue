@@ -1,34 +1,64 @@
 <template>
   <form action="">
-<!--
-  @ManyToOne private Client client;
-  @ManyToOne private Category category;
-  @ManyToOne private Expert expert;
-
-  @Embedded private DatePeriod productionDate;
-  @Embedded private ItemDimensions dimensions;
--->
 
     <span class="form-element">
       <label for="">Client</label>
-      <!-- <button @click.prevent="" class="btn">Add Date Period</button> -->
+
+      <span class="btn-group"><!-- v-show -->
+        <span>Existing Client</span>
+        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientSearchForm')" class="btn">Yes</button>
+        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientDetailsForm')" class="btn">No</button>
+      </span>
+
       <!-- details -->
+      <ul>
+        <li>Name: Client Name</li>
+        <li>Details:
+          <ul>
+            <li>Email: Email</li>
+            <li>Tel: Tel</li>
+          </ul>
+        </li>
+      </ul>
       <!-- edit -->
     </span>
 
     <span class="form-element">
       <label for="">Expert</label>
-      <!-- <button @click.prevent="" class="btn">Add Date Period</button> -->
+
+      <button @click.prevent="this.$dispatch('loadSideForm', 'ExpertSelection')"
+              class="btn">Add Expert
+            </button>
 
       <!-- details -->
+      <ul>
+        <li>Name: Expert Name</li>
+        <li>Specialities:
+          <ul>
+            <li>Speciality</li>
+            <li>Speciality</li>
+          </ul>
+        </li>
+      </ul>
       <!-- edit -->
     </span>
 
     <span class="form-element">
       <label for="">Category</label>
-      <button @click.prevent="" class="btn">Select Category</button>
+      <button @click.prevent="this.$dispatch('loadSideForm', 'CategorySelection')"
+              class="btn">Select Category
+            </button>
 
       <!-- details -->
+      <ul>
+        <li>Category: Category Name</li>
+        <li>Classifications:
+          <ul>
+            <li>Classification</li>
+            <li>Classification</li>
+          </ul>
+        </li>
+      </ul>
       <!-- edit -->
     </span>
 
@@ -40,14 +70,22 @@
         </button>
 
       <!-- details -->
+      <ul>
+        <li>Key: Value</li>
+      </ul>
       <!-- edit -->
     </span>
 
     <span class="form-element">
       <label for="">Item Dimensions</label>
-      <button @click.prevent="" class="btn">Add Dimensions</button>
+      <button @click.prevent="this.$dispatch('loadSideForm', 'ItemDimensionForm')"
+              class="btn">Add Dimensions
+            </button>
 
       <!-- details-->
+      <ul>
+        <li>Key: Value</li>
+      </ul>
       <!-- edit -->
     </span>
 
@@ -56,6 +94,7 @@
       <button @click.prevent="" class="btn">Add Images</button>
 
       <!-- list of filenames -->
+
       <!-- edit -->
     </span>
 

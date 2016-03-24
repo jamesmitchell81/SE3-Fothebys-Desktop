@@ -6,8 +6,8 @@
       <label for="">Client</label>
       <span class="btn-group">
         <span>Existing Client</span>
-        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientSearchForm')" class="btn">Yes</button><!-- /arrange-appraisal/client-search.vue -->
-        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientDetailsForm')" class="btn">No</button><!-- /arrange-appraisal/client-details.vue -->
+        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientSearchForm')" class="btn">Yes</button>
+        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientDetailsForm')" class="btn">No</button>
       </span>
     </span>
       <!-- search or enter details -->
@@ -19,8 +19,8 @@
 
     <!-- item name -->
     <span class="form-element">
-      <label for="item-name">Item Name</label>
-      <input type="text" id="itemName" name="itemName" v-model="itemName">
+      <label for="itemName">Item Name</label>
+      <input type="text" v-model="itemName">
     </span>
 
     <!-- category -->
