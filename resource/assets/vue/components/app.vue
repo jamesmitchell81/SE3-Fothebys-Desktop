@@ -8,6 +8,7 @@
         <a v-link="'/lot-items'" class="nav-core">Lot Items</a>
         <a :href="" class="nav-core">Auction Events</a>
         <a :href="" class="nav-core">Employees</a>
+        <a v-link="'/clients'" class="nav-core">Clients</a>
       </nav>
     </div>
 
@@ -28,6 +29,7 @@
 <script>
 var SidePanel = require('./SidePanel.vue');
 var ClientDetailsForm = require('./ClientDetailsForm.vue');
+var ClientSearchForm = require('./ClientSearchForm.vue');
 var DatePeriodForm = require('./DatePeriodForm.vue');
 var CategorySelection = require('./CategorySelection.vue');
 var ExpertSelection = require('./ExpertSelection.vue');
@@ -38,6 +40,7 @@ var ItemDimensionForm = require('./ItemDimensionForm.vue');
     components: {
       SidePanel,
       ClientDetailsForm,
+      ClientSearchForm,
       DatePeriodForm,
       CategorySelection,
       ExpertSelection,
@@ -59,6 +62,22 @@ var ItemDimensionForm = require('./ItemDimensionForm.vue');
     methods: {
       cancelSide: function() {
         this.show = false;
+      },
+
+      clearData: function(data) {
+        for ( var prop in data ) {
+          if ( data.hasOwnProperty(prop) ) {
+            var d = data[prop];
+
+            if ( d !== null && typeof d === 'object') {
+              data[prop] = this.clearData(d);
+            } else {
+              data[prop] = "";
+            }
+
+          }
+        }
+        return data;
       }
     },
 
@@ -73,7 +92,6 @@ var ItemDimensionForm = require('./ItemDimensionForm.vue');
       },
 
       closeSidePanelView: function() {
-        console.log("!");
         this.show = false;
       }
     }

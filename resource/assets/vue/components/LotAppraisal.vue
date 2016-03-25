@@ -6,8 +6,10 @@
 
       <span class="btn-group"><!-- v-show -->
         <span>Existing Client</span>
-        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientSearchForm')" class="btn">Yes</button>
-        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientDetailsForm')" class="btn">No</button>
+        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientSearchForm')"
+                class="btn">Yes</button>
+        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientDetailsForm')"
+                class="btn">No</button>
       </span>
 
       <!-- details -->
@@ -52,12 +54,6 @@
       <!-- details -->
       <ul>
         <li>Category: Category Name</li>
-        <li>Classifications:
-          <ul>
-            <li>Classification</li>
-            <li>Classification</li>
-          </ul>
-        </li>
       </ul>
       <!-- edit -->
     </span>
@@ -160,15 +156,16 @@
 <script>
 
   export default {
-
+    name: "LotAppraisalForm",
 
     data: function() {
       return {
-        agreement: {
-
-        }
+        agreement:  {},
+        authorised: {}
       }
-    }
+    },
+
+
   }
 </script>
 

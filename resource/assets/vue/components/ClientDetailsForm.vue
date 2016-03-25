@@ -89,23 +89,6 @@ export default {
   },
 
   methods: {
-    clearData: function(data) {
-
-      for ( var prop in data ) {
-        if ( data.hasOwnProperty(prop) ) {
-          var d = data[prop];
-
-          if ( d !== null && typeof d === 'object') {
-            data[prop] = this.clearData(d);
-          } else {
-            data[prop] = "";
-          }
-
-        }
-      }
-      return data;
-    },
-
     submitForm: function() {
       var form = document.querySelector('form');
       var action = form.action;
@@ -117,16 +100,14 @@ export default {
                 .then(function(response) {
                   console.log(response);
                   this.$dispatch('sendToParentForm', 'ClientDetailsForm', response.data);
-                  this.clearData(this.$data);
+                  this.$root.clearData(this.$data);
                   this.$dispatch('closeSidePanelView');
                 }, function(response) {
                   console.log(response);
                 });
-
     }
 
   }
-
 }
 </script>
 

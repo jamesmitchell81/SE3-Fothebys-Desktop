@@ -33,6 +33,9 @@ router.map({
   },
   '/lot-items/lot-appraisal': {
     component: require('./components/LotAppraisal.vue')
+  },
+  '/clients': {
+    component: require('./components/ClientList.vue')
   }
 })
 

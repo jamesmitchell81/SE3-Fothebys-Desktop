@@ -6,15 +6,21 @@
       <label for="">Client</label>
       <span class="btn-group">
         <span>Existing Client</span>
-        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientSearchForm')" class="btn">Yes</button>
-        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientDetailsForm')" class="btn">No</button>
+        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientSearchForm')"
+                class="btn">
+                Yes
+        </button>
+        <button @click.prevent="this.$dispatch('loadSideForm', 'ClientDetailsForm')"
+                class="btn">
+                No
+        </button>
       </span>
     </span>
+
       <!-- search or enter details -->
       <div v-show="showClientDetails">
         <client-details :details="clientDetails"></client-details>
       </div>
-
       <!-- <router-view></router-view> -->
 
     <!-- item name -->
@@ -82,8 +88,6 @@
     events: {
       ClientDetailsForm: function(data) {
         this.$data.clientDetails = data;
-
-
 
         this.showClientDetails = true;
         return true;

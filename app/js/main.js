@@ -14830,9 +14830,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var SidePanel = require('./SidePanel.vue');
 var ClientDetailsForm = require('./ClientDetailsForm.vue');
+var ClientSearchForm = require('./ClientSearchForm.vue');
 var DatePeriodForm = require('./DatePeriodForm.vue');
 var CategorySelection = require('./CategorySelection.vue');
 var ExpertSelection = require('./ExpertSelection.vue');
@@ -14843,6 +14849,7 @@ exports.default = {
   components: {
     SidePanel: SidePanel,
     ClientDetailsForm: ClientDetailsForm,
+    ClientSearchForm: ClientSearchForm,
     DatePeriodForm: DatePeriodForm,
     CategorySelection: CategorySelection,
     ExpertSelection: ExpertSelection,
@@ -14864,6 +14871,21 @@ exports.default = {
   methods: {
     cancelSide: function cancelSide() {
       this.show = false;
+    },
+
+    clearData: function clearData(data) {
+      for (var prop in data) {
+        if (data.hasOwnProperty(prop)) {
+          var d = data[prop];
+
+          if (d !== null && (typeof d === 'undefined' ? 'undefined' : (0, _typeof3.default)(d)) === 'object') {
+            data[prop] = this.clearData(d);
+          } else {
+            data[prop] = "";
+          }
+        }
+      }
+      return data;
     }
   },
 
@@ -14878,13 +14900,12 @@ exports.default = {
     },
 
     closeSidePanelView: function closeSidePanelView() {
-      console.log("!");
       this.show = false;
     }
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"body-wrap\">\n  <div class=\"side-wrap\">\n    <header>\n      <img src=\"../assets/svg/fb-logo-white.svg\" alt=\"Fothebys Auction House\">\n    </header>\n    <nav>\n      <a v-link=\"'/lot-items'\" class=\"nav-core\">Lot Items</a>\n      <a :href=\"\" class=\"nav-core\">Auction Events</a>\n      <a :href=\"\" class=\"nav-core\">Employees</a>\n    </nav>\n  </div>\n\n  <div class=\"content-wrap\">\n    <div class=\"content\">\n      <router-view></router-view>\n    </div>\n\n    <div class=\"side-panel-view\" v-show=\"show\" transition=\"slideout\">\n      <span @click=\"cancelSide\" class=\"btn cancel-side\">Cancel</span>\n      <div :is=\"sidePanelView\"></div>\n    </div>\n  </div>\n\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"body-wrap\">\n  <div class=\"side-wrap\">\n    <header>\n      <img src=\"../assets/svg/fb-logo-white.svg\" alt=\"Fothebys Auction House\">\n    </header>\n    <nav>\n      <a v-link=\"'/lot-items'\" class=\"nav-core\">Lot Items</a>\n      <a :href=\"\" class=\"nav-core\">Auction Events</a>\n      <a :href=\"\" class=\"nav-core\">Employees</a>\n      <a v-link=\"'/clients'\" class=\"nav-core\">Clients</a>\n    </nav>\n  </div>\n\n  <div class=\"content-wrap\">\n    <div class=\"content\">\n      <router-view></router-view>\n    </div>\n\n    <div class=\"side-panel-view\" v-show=\"show\" transition=\"slideout\">\n      <span @click=\"cancelSide\" class=\"btn cancel-side\">Cancel</span>\n      <div :is=\"sidePanelView\"></div>\n    </div>\n  </div>\n\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14900,7 +14921,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./CategorySelection.vue":67,"./ClientDetailsForm.vue":69,"./DatePeriodForm.vue":70,"./ExpertSelection.vue":71,"./ItemDimensionForm.vue":72,"./SidePanel.vue":76,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],66:[function(require,module,exports){
+},{"./CategorySelection.vue":67,"./ClientDetailsForm.vue":69,"./ClientSearchForm.vue":71,"./DatePeriodForm.vue":72,"./ExpertSelection.vue":73,"./ItemDimensionForm.vue":74,"./SidePanel.vue":78,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],66:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 'use strict';
 
@@ -14945,7 +14966,7 @@ exports.default = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form method=\"POST\" action=\"/\">\n\n  <!-- client details -->\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n    <span class=\"btn-group\">\n      <span>Existing Client</span>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientSearchForm')\" class=\"btn\">Yes</button>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientDetailsForm')\" class=\"btn\">No</button>\n    </span>\n  </span>\n    <!-- search or enter details -->\n    <div v-show=\"showClientDetails\">\n      <client-details :details=\"clientDetails\"></client-details>\n    </div>\n\n    <!-- <router-view></router-view> -->\n\n  <!-- item name -->\n  <span class=\"form-element\">\n    <label for=\"itemName\">Item Name</label>\n    <input type=\"text\" v-model=\"itemName\">\n  </span>\n\n  <!-- category -->\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <button class=\"btn\" @click.prevent=\"this.$dispatch('loadSideForm', 'CategorySelection')\">\n            Select Category\n          </button>\n    <!-- display selected category and classification -->\n  </span>\n\n  <!-- ... -->\n  <!-- on click -> get experts related -->\n\n  <!-- list of experts related to category -->\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n    <!-- ... -->\n\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Agreed date for Appraisal</label>\n    <input type=\"date\">\n  </span>\n\n  <button class=\"btn\">Submit</button>\n\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form method=\"POST\" action=\"/\">\n\n  <!-- client details -->\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n    <span class=\"btn-group\">\n      <span>Existing Client</span>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientSearchForm')\" class=\"btn\">\n              Yes\n      </button>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientDetailsForm')\" class=\"btn\">\n              No\n      </button>\n    </span>\n  </span>\n\n    <!-- search or enter details -->\n    <div v-show=\"showClientDetails\">\n      <client-details :details=\"clientDetails\"></client-details>\n    </div>\n    <!-- <router-view></router-view> -->\n\n  <!-- item name -->\n  <span class=\"form-element\">\n    <label for=\"itemName\">Item Name</label>\n    <input type=\"text\" v-model=\"itemName\">\n  </span>\n\n  <!-- category -->\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <button class=\"btn\" @click.prevent=\"this.$dispatch('loadSideForm', 'CategorySelection')\">\n            Select Category\n          </button>\n    <!-- display selected category and classification -->\n  </span>\n\n  <!-- ... -->\n  <!-- on click -> get experts related -->\n\n  <!-- list of experts related to category -->\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n    <!-- ... -->\n\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Agreed date for Appraisal</label>\n    <input type=\"date\">\n  </span>\n\n  <button class=\"btn\">Submit</button>\n\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14961,7 +14982,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../data.js":79,"./ClientDetails.vue":68,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],67:[function(require,module,exports){
+},{"../data.js":81,"./ClientDetails.vue":68,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],67:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 'use strict';
 
@@ -15013,7 +15034,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./OptionItem.vue":74,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],68:[function(require,module,exports){
+},{"./OptionItem.vue":76,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],68:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\nth {\n  text-align: left;\n}\n")
 "use strict";
 
@@ -15054,10 +15075,6 @@ var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _typeof2 = require('babel-runtime/helpers/typeof');
-
-var _typeof3 = _interopRequireDefault(_typeof2);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
@@ -15080,22 +15097,6 @@ exports.default = {
   },
 
   methods: {
-    clearData: function clearData(data) {
-
-      for (var prop in data) {
-        if (data.hasOwnProperty(prop)) {
-          var d = data[prop];
-
-          if (d !== null && (typeof d === 'undefined' ? 'undefined' : (0, _typeof3.default)(d)) === 'object') {
-            data[prop] = this.clearData(d);
-          } else {
-            data[prop] = "";
-          }
-        }
-      }
-      return data;
-    },
-
     submitForm: function submitForm() {
       var form = document.querySelector('form');
       var action = form.action;
@@ -15106,7 +15107,7 @@ exports.default = {
       this.$http.post('http://localhost:8080/services/clients', d).then(function (response) {
         console.log(response);
         this.$dispatch('sendToParentForm', 'ClientDetailsForm', response.data);
-        this.clearData(this.$data);
+        this.$root.clearData(this.$data);
         this.$dispatch('closeSidePanelView');
       }, function (response) {
         console.log(response);
@@ -15114,7 +15115,6 @@ exports.default = {
     }
 
   }
-
 };
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form method=\"post\" action=\"http://localhost:8080/services/clients\">\n  <fieldset>\n    <legend>Contact</legend>\n\n    <span class=\"form-element\">\n      <label for=\"title\">Title</label>\n      <input type=\"text\" id=\"title\" name=\"title\" v-model=\"title\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"firstName\">First Name</label>\n      <input type=\"text\" id=\"firstName\" name=\"firstName\" v-model=\"firstName\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"surname\">Surname</label>\n      <input type=\"text\" id=\"surname\" name=\"surname\" v-model=\"surname\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"emailAddress\">Email Address</label>\n      <input type=\"email\" id=\"emailAddress\" name=\"emailAddress\" v-model=\"emailAddress\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"telNumber\">Telephone Number</label>\n      <input type=\"text\" id=\"telNumber\" name=\"telNumber\" v-model=\"telNumber\">\n    </span>\n  </fieldset>\n\n\n  <fieldset>\n    <legend>Address</legend>\n\n    <span class=\"form-element\">\n      <label for=\"firstLine\">First Line</label>\n      <input type=\"text\" id=\"firstLine\" name=\"firstLine\" v-model=\"contactAddress.firstLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"secondLine\">Second Line</label>\n      <input type=\"text\" id=\"secondLine\" name=\"secondLine\" v-model=\"contactAddress.secondLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"townCity\">Town/City</label>\n      <input type=\"text\" id=\"townCity\" name=\"townCity\" v-model=\"contactAddress.townCity\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"postalCode\">Postal Code</label>\n      <input type=\"text\" id=\"postalCode\" name=\"postalCode\" v-model=\"contactAddress.postalCode\">\n    </span>\n  </fieldset>\n\n  <button @click.prevent=\"submitForm\" class=\"btn\">\n    Register Client\n  </button>\n\n  <button @click.prevent=\"submitForm\" class=\"btn\">\n    Use Details\n  </button>\n\n</form>\n\n"
@@ -15133,7 +15133,114 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],70:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],70:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+
+  name: "ClientList",
+
+  data: function data() {
+    return {
+      clients: []
+    };
+  },
+
+  route: {
+    activate: function activate() {
+
+      this.$http.get('http://localhost:8080/services/clients').then(function (response) {
+        console.log(response);
+        this.$data.clients = response.data;
+      }, function (response) {
+        console.log(response);
+      });
+    }
+  }
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<table>\n  <thead>\n    <tr>\n\n    </tr>\n  </thead>\n  <tbody>\n    <tr v-for=\"client in clients\">\n      <td>{{ client.firstName }}</td>\n      <td>{{ client.surname }}</td>\n      <td>{{ client.emailAddress }}</td>\n    </tr>\n  </tbody>\n</table>\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/ClientList.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],71:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  name: "ClientSearchForm",
+
+  data: function data() {
+    return {
+      emailAddress: "",
+      surname: "",
+      telNumber: ""
+    };
+  },
+
+  methods: {
+    searchClient: function searchClient() {
+
+      var query = "?";
+      var data = this.$data;
+
+      for (var prop in data) {
+        if (data.hasOwnProperty(prop)) {
+          // if ( !data[prop].length === 0 ) {
+          query += prop + "=" + data[prop] + "&";
+          // }
+        }
+      }
+      query = query.slice(0, -1);
+      console.log(query);
+
+      this.$http.get('http://localhost:8080/services/clients/search-client' + query).then(function (response) {
+        console.log(response);
+      }, function (response) {
+        console.log(response);
+      });
+    }
+  }
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form method=\"get\" action=\"http://localhost:8080/services/clients/\">\n\n  <span class=\"form-element\">\n    <label for=\"surname\">Surname</label>\n    <input type=\"text\" v-model=\"surname\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"title\">Email Address</label>\n    <input type=\"email\" v-model=\"emailAddress\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"telNumber\">Telephone Number</label>\n    <input type=\"text\" v-model=\"telNumber\">\n  </span>\n\n  <button class=\"btn\" @click.prevent=\"searchClient\">Search</button>\n\n</form>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/ClientSearchForm.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],72:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 "use strict";
 
@@ -15161,7 +15268,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],71:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],73:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 "use strict";
 
@@ -15189,7 +15296,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],72:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],74:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15230,7 +15337,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./OptionItem.vue":74,"vue":62,"vue-hot-reload-api":36}],73:[function(require,module,exports){
+},{"./OptionItem.vue":76,"vue":62,"vue-hot-reload-api":36}],75:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 "use strict";
 
@@ -15238,12 +15345,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = {
+  name: "LotAppraisalForm",
 
   data: function data() {
     return {
-      agreement: {}
+      agreement: {},
+      authorised: {}
     };
   }
+
 };
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form action=\"\">\n\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n\n    <span class=\"btn-group\"><!-- v-show -->\n      <span>Existing Client</span>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientSearchForm')\" class=\"btn\">Yes</button>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientDetailsForm')\" class=\"btn\">No</button>\n    </span>\n\n    <!-- details -->\n    <ul>\n      <li>Name: Client Name</li>\n      <li>Details:\n        <ul>\n          <li>Email: Email</li>\n          <li>Tel: Tel</li>\n        </ul>\n      </li>\n    </ul>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ExpertSelection')\" class=\"btn\">Add Expert\n          </button>\n\n    <!-- details -->\n    <ul>\n      <li>Name: Expert Name</li>\n      <li>Specialities:\n        <ul>\n          <li>Speciality</li>\n          <li>Speciality</li>\n        </ul>\n      </li>\n    </ul>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'CategorySelection')\" class=\"btn\">Select Category\n          </button>\n\n    <!-- details -->\n    <ul>\n      <li>Category: Category Name</li>\n      <li>Classifications:\n        <ul>\n          <li>Classification</li>\n          <li>Classification</li>\n        </ul>\n      </li>\n    </ul>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Date Period</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'DatePeriodForm')\" class=\"btn\">\n            Add Date Period\n      </button>\n\n    <!-- details -->\n    <ul>\n      <li>Key: Value</li>\n    </ul>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Dimensions</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemDimensionForm')\" class=\"btn\">Add Dimensions\n          </button>\n\n    <!-- details-->\n    <ul>\n      <li>Key: Value</li>\n    </ul>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Images</label>\n    <button @click.prevent=\"\" class=\"btn\">Add Images</button>\n\n    <!-- list of filenames -->\n\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"itemName\">Item Name</label>\n    <input type=\"text\" v-model=\"itemName\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"estimatedPrice\">Estimated Price</label>\n    <input type=\"number\" min=\"1\" v-model=\"estimatedPrice\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"textualDescription\">Textual Description</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"textualDescription\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"provenanceDetails\">Provenance Details</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"provenanceDetails\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Authenticated</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedYes\">\n        <label for=\"authenticatedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedNo\">\n        <label for=\"authenticatedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Additional Notes</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"additionalNotes\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Agreement Signed</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedYes\">\n        <label for=\"agreedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedNo\">\n        <label for=\"agreedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n</form>\n"
@@ -15262,7 +15372,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],74:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],76:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n")
 "use strict";
 
@@ -15296,7 +15406,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],75:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],77:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15344,7 +15454,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./Tile.vue":77,"vue":62,"vue-hot-reload-api":36}],76:[function(require,module,exports){
+},{"./Tile.vue":79,"vue":62,"vue-hot-reload-api":36}],78:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15367,7 +15477,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36}],77:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],79:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15399,7 +15509,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36}],78:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],80:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15421,7 +15531,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36}],79:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],81:[function(require,module,exports){
 module.exports = {
   clientDetails: {
     title: '',
@@ -15449,7 +15559,7 @@ module.exports = {
     ]
   }
 }
-},{}],80:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 var Vue = require('vue');
 var VueResource = require('vue-resource');
 var Router = require('vue-router');
@@ -15485,6 +15595,9 @@ router.map({
   },
   '/lot-items/lot-appraisal': {
     component: require('./components/LotAppraisal.vue')
+  },
+  '/clients': {
+    component: require('./components/ClientList.vue')
   }
 })
 
@@ -15512,4 +15625,4 @@ router.start(App, '#app');
 //     }
 //   }
 // })
-},{"./components/AddLotItem.vue":64,"./components/App.vue":65,"./components/ArrangeAppraisal.vue":66,"./components/ClientDetails.vue":68,"./components/LotAppraisal.vue":73,"./components/PageNav.vue":75,"./components/Welcome.vue":78,"vue":62,"vue-resource":50,"vue-router":61}]},{},[80]);
+},{"./components/AddLotItem.vue":64,"./components/App.vue":65,"./components/ArrangeAppraisal.vue":66,"./components/ClientDetails.vue":68,"./components/ClientList.vue":70,"./components/LotAppraisal.vue":75,"./components/PageNav.vue":77,"./components/Welcome.vue":80,"vue":62,"vue-resource":50,"vue-router":61}]},{},[82]);
