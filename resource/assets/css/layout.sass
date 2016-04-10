@@ -26,23 +26,42 @@ header img
   position: fixed
   display: block
 
-.side-panel-view
+.side-panel
+  padding-top: 2em
   position: fixed
   right: 0
   top: 0
-  width: 50%
   height: 100%
-  padding: 2em
-  margin: 1em 0
   background: #fff
+  transition: all 0.25s ease
+
+.side-panel__closed
+  width: 0
+  padding: 0
+  margin: 0
+
+.side-panel__closed #close-side-bar
+  display: none;
+
+.side-panel__open
+  width: 50%
+  padding: 3em
+  margin: 1em 0
   box-shadow: -2px -2px 5px #cacaca, 2px 2px 5px #cacaca
   overflow-y: scroll
 
-.slideout-transition
-  transition: all 0.5s ease
+.side-panel__open #close-side-bar
+  position: absolute
+  top: 0
+  right: 0
+  margin: 1em
 
-.slideout-enter, .slideout-leave
-  width: 0
+.btn.side-bar-confirm
+  position: absolute
+  top: 0
+  left: 0
+  margin: 1em
+  font-size: 1em
 
 nav
   width: 100%
