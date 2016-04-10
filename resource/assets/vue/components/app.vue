@@ -18,7 +18,7 @@
       </div>
 
       <div class="side-panel side-panel__closed" transition="slideout" id="side-bar">
-        <span @click="cancelSide" class="btn cancel-side">Cancel</span>
+        <span @click="cancelSide" class="btn cancel-side" id="close-side-bar">Cancel</span>
         <div class="side-bar-content">
           <div :is="sidePanelView"></div>
         </div>

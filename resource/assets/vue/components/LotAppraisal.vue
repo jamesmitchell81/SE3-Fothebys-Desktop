@@ -1,5 +1,6 @@
 <template>
   <form action="">
+    <legend>Lot Appraisal Record</legend>
 
     <span class="form-element">
       <label for="">Client</label>
@@ -12,17 +13,7 @@
                 class="btn">No</button>
       </span>
 
-      <!-- details -->
-      <ul>
-        <li>Name: Client Name</li>
-        <li>Details:
-          <ul>
-            <li>Email: Email</li>
-            <li>Tel: Tel</li>
-          </ul>
-        </li>
-      </ul>
-      <!-- edit -->
+      <div id="client-details"></div>
     </span>
 
     <span class="form-element">
@@ -186,24 +177,31 @@
 
       updateCollectionDetails: function(storagePath, displayPath) {
         var details = JSON.parse(sessionStorage.getItem(storagePath));
-        console.log(details);
         var box = document.getElementById(displayPath);
         box.innerHTML = "";
         if ( details ) {
-          var ul = document.createElement("ul");
-          for ( var prop in details ) {
-            if ( details.hasOwnProperty(prop) ) {
-              if ( details[prop] !== "" ) {
-                var li = document.createElement("li");
-                var label = prop.split(/(?=[A-Z])/g).join(" ");
-                li.innerHTML = label + ": " + details[prop];
-                ul.appendChild(li);
-              }
-            }
-          }
+          var ul = this.makeList(details);
           box.appendChild(ul);
           box.classList.add("details-display__displayed");
         }
+      },
+
+      makeList: function(details) {
+        var ul = document.createElement("ul");
+        for ( var prop in details ) {
+          if ( details.hasOwnProperty(prop) ) {
+            if ( (details[prop] !== "") && (prop !== "id")) {
+              var li = document.createElement("li");
+              if ( details[prop] !== null && typeof details[prop] === 'object' ) {
+                li.appendChild(this.makeList(details[prop]));
+              }
+              var label = prop.split(/(?=[A-Z])/g).join(" ");
+              li.innerHTML = label + ": " + details[prop];
+              ul.appendChild(li);
+            }
+          }
+        }
+        return ul;
       }
     },
 
@@ -237,6 +235,12 @@
       },
       updateDatePeriod: function() {
         this.updateCollectionDetails("date-period-set", "date-period-details");
+      },
+      showExpertDetails: function() {
+        this.updateCollectionDetails("expert-selection", "expert-selected-details");
+      },
+      displayClientDetails: function() {
+        this.updateCollectionDetails("client-set", "client-details");
       }
 
     }, // end of events.

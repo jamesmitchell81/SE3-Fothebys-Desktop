@@ -15203,7 +15203,7 @@ exports.default = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"body-wrap\">\n  <div class=\"side-wrap\">\n    <header>\n      <img src=\"../assets/svg/fb-logo-white.svg\" alt=\"Fothebys Auction House\">\n    </header>\n    <nav>\n      <a v-link=\"'/lot-items'\" class=\"nav-core\">Lot Items</a>\n      <a :href=\"\" class=\"nav-core\">Auction Events</a>\n      <a :href=\"\" class=\"nav-core\">Employees</a>\n      <a v-link=\"'/clients'\" class=\"nav-core\">Clients</a>\n    </nav>\n  </div>\n\n  <div class=\"content-wrap\">\n    <div class=\"content\">\n      <router-view></router-view>\n    </div>\n\n    <div class=\"side-panel side-panel__closed\" transition=\"slideout\" id=\"side-bar\">\n      <span @click=\"cancelSide\" class=\"btn cancel-side\">Cancel</span>\n      <div class=\"side-bar-content\">\n        <div :is=\"sidePanelView\"></div>\n      </div>\n    </div>\n  </div>\n\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"body-wrap\">\n  <div class=\"side-wrap\">\n    <header>\n      <img src=\"../assets/svg/fb-logo-white.svg\" alt=\"Fothebys Auction House\">\n    </header>\n    <nav>\n      <a v-link=\"'/lot-items'\" class=\"nav-core\">Lot Items</a>\n      <a :href=\"\" class=\"nav-core\">Auction Events</a>\n      <a :href=\"\" class=\"nav-core\">Employees</a>\n      <a v-link=\"'/clients'\" class=\"nav-core\">Clients</a>\n    </nav>\n  </div>\n\n  <div class=\"content-wrap\">\n    <div class=\"content\">\n      <router-view></router-view>\n    </div>\n\n    <div class=\"side-panel side-panel__closed\" transition=\"slideout\" id=\"side-bar\">\n      <span @click=\"cancelSide\" class=\"btn cancel-side\" id=\"close-side-bar\">Cancel</span>\n      <div class=\"side-bar-content\">\n        <div :is=\"sidePanelView\"></div>\n      </div>\n    </div>\n  </div>\n\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15473,27 +15473,46 @@ exports.default = {
   },
 
   methods: {
-    submitForm: function submitForm() {
+    saveClientDetails: function saveClientDetails() {
       var form = document.querySelector('form');
       var action = form.action;
       var method = form.method;
+      var details = (0, _stringify2.default)(this.$data);
 
-      var d = (0, _stringify2.default)(this.$data);
-
-      this.$http.post('http://localhost:8080/services/clients', d).then(function (response) {
-        console.log(response);
-        this.$dispatch('sendToParentForm', 'ClientDetailsForm', response.data);
-        this.$root.clearData(this.$data);
+      this.$http.post('http://localhost:8080/services/clients', details).then(function (response) {
+        var location = response.headers("location");
+        var parts = location.split("/");
+        details = JSON.parse(details);
+        details.id = parts[parts.length];
+        sessionStorage.setItem("client-set", details);
+        this.$dispatch('broadcastEvent', 'displayClientDetails');
         this.$dispatch('closeSidePanelView');
       }, function (response) {
         console.log(response);
       });
-    }
+    },
 
+    demoPopulateForm: function demoPopulateForm() {
+      var d = {
+        title: 'Mr',
+        firstName: 'James',
+        surname: 'Mitchell',
+        emailAddress: 'james.mitchell81@live.co.uk',
+        telNumber: '07789 558 138',
+        contactAddress: {
+          firstLine: 'Apt 4, The Gallery',
+          secondLine: '2/3 Market Square',
+          townCity: 'Northampton',
+          postalCode: 'NN1 2DL'
+        }
+      };
+
+      this.$data = d;
+    }
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form method=\"post\" action=\"http://localhost:8080/services/clients\">\n  <fieldset>\n    <legend>Contact</legend>\n\n    <span class=\"form-element\">\n      <label for=\"title\">Title</label>\n      <input type=\"text\" id=\"title\" name=\"title\" v-model=\"title\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"firstName\">First Name</label>\n      <input type=\"text\" id=\"firstName\" name=\"firstName\" v-model=\"firstName\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"surname\">Surname</label>\n      <input type=\"text\" id=\"surname\" name=\"surname\" v-model=\"surname\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"emailAddress\">Email Address</label>\n      <input type=\"email\" id=\"emailAddress\" name=\"emailAddress\" v-model=\"emailAddress\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"telNumber\">Telephone Number</label>\n      <input type=\"text\" id=\"telNumber\" name=\"telNumber\" v-model=\"telNumber\">\n    </span>\n  </fieldset>\n\n\n  <fieldset>\n    <legend>Address</legend>\n\n    <span class=\"form-element\">\n      <label for=\"firstLine\">First Line</label>\n      <input type=\"text\" id=\"firstLine\" name=\"firstLine\" v-model=\"contactAddress.firstLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"secondLine\">Second Line</label>\n      <input type=\"text\" id=\"secondLine\" name=\"secondLine\" v-model=\"contactAddress.secondLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"townCity\">Town/City</label>\n      <input type=\"text\" id=\"townCity\" name=\"townCity\" v-model=\"contactAddress.townCity\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"postalCode\">Postal Code</label>\n      <input type=\"text\" id=\"postalCode\" name=\"postalCode\" v-model=\"contactAddress.postalCode\">\n    </span>\n  </fieldset>\n\n  <button @click.prevent=\"submitForm\" class=\"btn\">\n    Register Client\n  </button>\n\n  <button @click.prevent=\"submitForm\" class=\"btn\">\n    Use Details\n  </button>\n\n</form>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form method=\"post\" action=\"http://localhost:8080/services/clients\">\n  <fieldset>\n    <legend>Contact</legend>\n\n    <span class=\"form-element\">\n      <label for=\"title\">Title</label>\n      <input type=\"text\" id=\"title\" name=\"title\" v-model=\"title\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"firstName\">First Name</label>\n      <input type=\"text\" id=\"firstName\" name=\"firstName\" v-model=\"firstName\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"surname\">Surname</label>\n      <input type=\"text\" id=\"surname\" name=\"surname\" v-model=\"surname\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"emailAddress\">Email Address</label>\n      <input type=\"email\" id=\"emailAddress\" name=\"emailAddress\" v-model=\"emailAddress\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"telNumber\">Telephone Number</label>\n      <input type=\"text\" id=\"telNumber\" name=\"telNumber\" v-model=\"telNumber\">\n    </span>\n  </fieldset>\n\n\n  <fieldset>\n    <legend>Address</legend>\n\n    <span class=\"form-element\">\n      <label for=\"firstLine\">First Line</label>\n      <input type=\"text\" id=\"firstLine\" name=\"firstLine\" v-model=\"contactAddress.firstLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"secondLine\">Second Line</label>\n      <input type=\"text\" id=\"secondLine\" name=\"secondLine\" v-model=\"contactAddress.secondLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"townCity\">Town/City</label>\n      <input type=\"text\" id=\"townCity\" name=\"townCity\" v-model=\"contactAddress.townCity\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"postalCode\">Postal Code</label>\n      <input type=\"text\" id=\"postalCode\" name=\"postalCode\" v-model=\"contactAddress.postalCode\">\n    </span>\n  </fieldset>\n\n    <button @click.prevent=\"saveClientDetails\" class=\"btn side-bar-confirm\">Confirm</button>\n\n    <button @click.prevent=\"demoPopulateForm\" class=\"btn\">Demo Populate Form</button>\n\n</form>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15676,12 +15695,53 @@ var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _stringify = require("babel-runtime/core-js/json/stringify");
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 exports.default = {
-  name: "ExpertSelection"
+  name: "ExpertSelection",
+
+  data: function data() {
+    return {
+      expertSearch: "",
+      experts: []
+    };
+  },
+
+  ready: function ready() {
+    this.$http.get('http://localhost:8080/services/expert').then(function (response) {
+      this.experts = response.data;
+    }, function (err) {
+      this.experts = [];
+      console.log(err);
+    });
+  },
+
+  methods: {
+    searchExperts: function searchExperts() {
+      console.log(this.$data.expertSearch);
+    },
+
+    setExpert: function setExpert(id, name, location, email) {
+      var details = {
+        "id": id,
+        "name": name,
+        "location": location,
+        "email": email
+      };
+      sessionStorage.setItem("expert-selection", (0, _stringify2.default)(details));
+      this.$dispatch('broadcastEvent', 'showExpertDetails');
+      this.$dispatch('closeSidePanelView');
+    }
+  }
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n  <fieldset>\n    <legend>Expert Selection</legend>\n\n\n  </fieldset>\n</form>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n  <fieldset>\n    <legend>Expert Selection</legend>\n    <span class=\"form-element\">\n      <label for=\"date-description\">Expert Search</label>\n      <input @keyup=\"searchExperts | debounce 500\" type=\"text\" v-model=\"expertSearch\">\n    </span>\n  </fieldset>\n\n  <fieldset>\n\n    <span class=\"option-item\" v-for=\"expert in experts\">\n      <input type=\"radio\" name=\"expert\" id=\"expert-{{ expert.id }}\" data-index=\"{{ expert.id }}\">\n      <label @click=\"setExpert(expert.id, expert.fullName, expert.location.name, expert.emailAddress)\" for=\"expert-{{ expert.id }}\">{{ expert.fullName }}, {{ expert.location.name }}, {{ expert.emailAddress }}</label>\n    </span>\n\n  </fieldset>\n</form>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15697,7 +15757,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],75:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],75:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15804,6 +15864,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _typeof2 = require("babel-runtime/helpers/typeof");
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
 var _stringify = require("babel-runtime/core-js/json/stringify");
 
 var _stringify2 = _interopRequireDefault(_stringify);
@@ -15830,6 +15894,7 @@ exports.default = {
     this.$dispatch("broadcastEvent", "updateCategory");
     this.$dispatch("broadcastEvent", "updateClassifications");
     this.$dispatch("broadcastEvent", "updateDimensions");
+    this.$dispatch("broadcastEvent", "updateDatePeriod");
   },
 
   methods: {
@@ -15854,24 +15919,31 @@ exports.default = {
 
     updateCollectionDetails: function updateCollectionDetails(storagePath, displayPath) {
       var details = JSON.parse(sessionStorage.getItem(storagePath));
-      console.log(details);
       var box = document.getElementById(displayPath);
       box.innerHTML = "";
       if (details) {
-        var ul = document.createElement("ul");
-        for (var prop in details) {
-          if (details.hasOwnProperty(prop)) {
-            if (details[prop] !== "") {
-              var li = document.createElement("li");
-              var label = prop.split(/(?=[A-Z])/g).join(" ");
-              li.innerHTML = label + ": " + details[prop];
-              ul.appendChild(li);
-            }
-          }
-        }
+        var ul = this.makeList(details);
         box.appendChild(ul);
         box.classList.add("details-display__displayed");
       }
+    },
+
+    makeList: function makeList(details) {
+      var ul = document.createElement("ul");
+      for (var prop in details) {
+        if (details.hasOwnProperty(prop)) {
+          if (details[prop] !== "" && prop !== "id") {
+            var li = document.createElement("li");
+            if (details[prop] !== null && (0, _typeof3.default)(details[prop]) === 'object') {
+              li.appendChild(this.makeList(details[prop]));
+            }
+            var label = prop.split(/(?=[A-Z])/g).join(" ");
+            li.innerHTML = label + ": " + details[prop];
+            ul.appendChild(li);
+          }
+        }
+      }
+      return ul;
     }
   },
 
@@ -15905,11 +15977,17 @@ exports.default = {
     },
     updateDatePeriod: function updateDatePeriod() {
       this.updateCollectionDetails("date-period-set", "date-period-details");
+    },
+    showExpertDetails: function showExpertDetails() {
+      this.updateCollectionDetails("expert-selection", "expert-selected-details");
+    },
+    displayClientDetails: function displayClientDetails() {
+      this.updateCollectionDetails("client-set", "client-details");
     }
 
   } };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form action=\"\">\n\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n\n    <span class=\"btn-group\"><!-- v-show -->\n      <span>Existing Client</span>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientSearchForm')\" class=\"btn\">Yes</button>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientDetailsForm')\" class=\"btn\">No</button>\n    </span>\n\n    <!-- details -->\n    <ul>\n      <li>Name: Client Name</li>\n      <li>Details:\n        <ul>\n          <li>Email: Email</li>\n          <li>Tel: Tel</li>\n        </ul>\n      </li>\n    </ul>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ExpertSelection')\" class=\"btn\">Add Expert\n          </button>\n\n    <!-- details -->\n    <ul>\n      <li>Name: Expert Name</li>\n      <li>Specialities:\n        <ul>\n          <li>Speciality</li>\n          <li>Speciality</li>\n        </ul>\n      </li>\n    </ul>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'CategorySelection')\" class=\"btn\">Select Category\n          </button>\n    <div id=\"category-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Classification</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClassificationSelection')\" class=\"btn\">Select Classifications\n          </button>\n    <div id=\"classification-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Date Period</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'DatePeriodForm')\" class=\"btn\">\n            Add Date Period\n      </button>\n\n    <div id=\"date-period-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Dimensions</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemDimensionForm')\" class=\"btn\">Add Dimensions\n          </button>\n\n    <div id=\"dimension-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Images</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemImagesForm')\" class=\"btn\">Add Images</button>\n\n    <!-- list of filenames -->\n\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"itemName\">Item Name</label>\n    <input type=\"text\" v-model=\"itemName\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"estimatedPrice\">Estimated Price</label>\n    <input type=\"number\" min=\"1\" v-model=\"estimatedPrice\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"textualDescription\">Textual Description</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"textualDescription\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"provenanceDetails\">Provenance Details</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"provenanceDetails\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Authenticated</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedYes\">\n        <label for=\"authenticatedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedNo\">\n        <label for=\"authenticatedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Agreement Signed</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedYes\">\n        <label for=\"agreedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedNo\">\n        <label for=\"agreedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Additional Notes</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"additionalNotes\">      </textarea>\n  </span>\n\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form action=\"\">\n  <legend>Lot Appraisal Record</legend>\n\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n\n    <span class=\"btn-group\"><!-- v-show -->\n      <span>Existing Client</span>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientSearchForm')\" class=\"btn\">Yes</button>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientDetailsForm')\" class=\"btn\">No</button>\n    </span>\n\n    <div id=\"client-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ExpertSelection')\" class=\"btn\">Add Expert\n          </button>\n    <!-- details -->\n    <div id=\"expert-selected-details\"></div>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'CategorySelection')\" class=\"btn\">Select Category\n          </button>\n    <div id=\"category-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Classification</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClassificationSelection')\" class=\"btn\">Select Classifications\n          </button>\n    <div id=\"classification-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Date Period</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'DatePeriodForm')\" class=\"btn\">\n            Add Date Period\n      </button>\n    <div id=\"date-period-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Dimensions</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemDimensionForm')\" class=\"btn\">Add Dimensions\n          </button>\n    <div id=\"dimension-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Images</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemImagesForm')\" class=\"btn\">Add Images</button>\n\n    <!-- list of filenames -->\n\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"itemName\">Item Name</label>\n    <input type=\"text\" v-model=\"itemName\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"estimatedPrice\">Estimated Price</label>\n    <input type=\"number\" min=\"1\" v-model=\"estimatedPrice\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"textualDescription\">Textual Description</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"textualDescription\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"provenanceDetails\">Provenance Details</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"provenanceDetails\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Authenticated</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedYes\">\n        <label for=\"authenticatedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedNo\">\n        <label for=\"authenticatedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Agreement Signed</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedYes\">\n        <label for=\"agreedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedNo\">\n        <label for=\"agreedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Additional Notes</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"additionalNotes\">      </textarea>\n  </span>\n\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15925,7 +16003,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],78:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],78:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n")
 "use strict";
 

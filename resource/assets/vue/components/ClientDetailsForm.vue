@@ -55,13 +55,11 @@
       </span>
     </fieldset>
 
-    <button @click.prevent="submitForm" class="btn">
-      Register Client
-    </button>
+      <button @click.prevent="saveClientDetails"
+              class="btn side-bar-confirm">Confirm</button>
 
-    <button @click.prevent="submitForm" class="btn">
-      Use Details
-    </button>
+      <button @click.prevent="demoPopulateForm"
+              class="btn">Demo Populate Form</button>
 
   </form>
 
@@ -89,24 +87,43 @@ export default {
   },
 
   methods: {
-    submitForm: function() {
+    saveClientDetails: function() {
       var form = document.querySelector('form');
       var action = form.action;
       var method = form.method;
+      var details = JSON.stringify(this.$data);
 
-      var d = JSON.stringify(this.$data);
-
-      this.$http.post('http://localhost:8080/services/clients', d)
+      this.$http.post('http://localhost:8080/services/clients', details)
                 .then(function(response) {
-                  console.log(response);
-                  this.$dispatch('sendToParentForm', 'ClientDetailsForm', response.data);
-                  this.$root.clearData(this.$data);
+                  var location = response.headers("location");
+                  var parts = location.split("/");
+                  details = JSON.parse(details);
+                  details.id = parts[parts.length];
+                  sessionStorage.setItem("client-set", details);
+                  this.$dispatch('broadcastEvent', 'displayClientDetails');
                   this.$dispatch('closeSidePanelView');
                 }, function(response) {
                   console.log(response);
                 });
-    }
+    },
 
+    demoPopulateForm: function() {
+      var d = {
+          title: 'Mr',
+          firstName: 'James',
+          surname: 'Mitchell',
+          emailAddress: 'james.mitchell81@live.co.uk',
+          telNumber: '07789 558 138',
+          contactAddress: {
+            firstLine: 'Apt 4, The Gallery',
+            secondLine: '2/3 Market Square',
+            townCity: 'Northampton',
+            postalCode: 'NN1 2DL'
+          }
+        }
+
+        this.$data = d;
+    }
   }
 }
 </script>
