@@ -1,6 +1,8 @@
 <template>
 
   <form action="">
+
+    <legend>Category Selection</legend>
       <span class="option-item" v-for="category in categories">
         <input type="radio"
                name="category"
@@ -9,6 +11,7 @@
         <label @click="setCategory(category.id, category.name)"
                for="{{ category.name | lowercase }}">{{ category.name }}</label>
       </span>
+
   </form>
 
 </template>
@@ -32,14 +35,11 @@
     ready: function() {
       this.$http.get('http://localhost:8080/services/category')
                 .then(function(category) {
-                  console.log(category);
                   this.categories = category.data;
                 }, function(err) {
                   this.categories = [];
                   console.log(err);
                 });
-
-        console.log("cat sess", sessionStorage.getItem("category-selected"));
     },
 
     methods: {
@@ -48,7 +48,9 @@
           "id": index,
           "name": name
         };
+
         sessionStorage.setItem("category-selected", JSON.stringify(category));
+        this.$dispatch('broadcastEvent', 'updateCategory');
         this.$dispatch('closeSidePanelView');
       }
     }

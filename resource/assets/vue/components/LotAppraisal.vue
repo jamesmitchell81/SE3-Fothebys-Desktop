@@ -27,21 +27,11 @@
 
     <span class="form-element">
       <label for="">Expert</label>
-
       <button @click.prevent="this.$dispatch('loadSideForm', 'ExpertSelection')"
               class="btn">Add Expert
             </button>
-
       <!-- details -->
-      <ul>
-        <li>Name: Expert Name</li>
-        <li>Specialities:
-          <ul>
-            <li>Speciality</li>
-            <li>Speciality</li>
-          </ul>
-        </li>
-      </ul>
+      <div id="expert-selected-details"></div>
       <!-- edit -->
     </span>
 
@@ -50,12 +40,15 @@
       <button @click.prevent="this.$dispatch('loadSideForm', 'CategorySelection')"
               class="btn">Select Category
             </button>
+      <div id="category-details"></div>
+    </span>
 
-      <!-- details -->
-      <ul>
-        <li>Category: Category Name</li>
-      </ul>
-      <!-- edit -->
+    <span class="form-element">
+      <label for="">Classification</label>
+      <button @click.prevent="this.$dispatch('loadSideForm', 'ClassificationSelection')"
+              class="btn">Select Classifications
+            </button>
+      <div id="classification-details"></div>
     </span>
 
     <span class="form-element">
@@ -64,12 +57,7 @@
               class="btn">
               Add Date Period
         </button>
-
-      <!-- details -->
-      <ul>
-        <li>Key: Value</li>
-      </ul>
-      <!-- edit -->
+      <div id="date-period-details"></div>
     </span>
 
     <span class="form-element">
@@ -77,17 +65,12 @@
       <button @click.prevent="this.$dispatch('loadSideForm', 'ItemDimensionForm')"
               class="btn">Add Dimensions
             </button>
-
-      <!-- details-->
-      <ul>
-        <li>Key: Value</li>
-      </ul>
-      <!-- edit -->
+      <div id="dimension-details"></div>
     </span>
 
     <span class="form-element">
       <label for="">Item Images</label>
-      <span @click.prevent="this.$dispatch('loadSideForm', 'ItemImagesForm')" class="btn">Add Images</span>
+      <button @click.prevent="this.$dispatch('loadSideForm', 'ItemImagesForm')" class="btn">Add Images</button>
 
       <!-- list of filenames -->
 
@@ -165,8 +148,17 @@
         itemName: "",
         estimatedPrice: "",
         provenanceDetails: "",
-        additionalNotes: ""
+        additionalNotes: "",
+        category: ""
       }
+    },
+
+    ready: function() {
+      // relaod all the displayed data on reload.
+      this.$dispatch("broadcastEvent", "updateCategory");
+      this.$dispatch("broadcastEvent", "updateClassifications");
+      this.$dispatch("broadcastEvent", "updateDimensions");
+      this.$dispatch("broadcastEvent", "updateDatePeriod");
     },
 
     methods: {
@@ -186,8 +178,69 @@
                 }, function(response) {
                   console.log(response);
                 });
+      },
+
+      updateDetails: function(details, elem) {
+
+      },
+
+      updateCollectionDetails: function(storagePath, displayPath) {
+        var details = JSON.parse(sessionStorage.getItem(storagePath));
+        console.log(details);
+        var box = document.getElementById(displayPath);
+        box.innerHTML = "";
+        if ( details ) {
+          var ul = document.createElement("ul");
+          for ( var prop in details ) {
+            if ( details.hasOwnProperty(prop) ) {
+              if ( details[prop] !== "" ) {
+                var li = document.createElement("li");
+                var label = prop.split(/(?=[A-Z])/g).join(" ");
+                li.innerHTML = label + ": " + details[prop];
+                ul.appendChild(li);
+              }
+            }
+          }
+          box.appendChild(ul);
+          box.classList.add("details-display__displayed");
+        }
       }
-    }
+    },
+
+    events: {
+      updateCategory: function() {
+        var details = JSON.parse(sessionStorage.getItem("category-selected"));
+        var box = document.getElementById("category-details");
+        if ( details ) {
+          box.innerHTML = details.name;
+          box.classList.add("details-display__displayed");
+        }
+      },
+
+      updateClassifications: function() {
+        var details = JSON.parse(sessionStorage.getItem("classifications-selection"));
+        var box = document.getElementById("classification-details");
+        box.innerHTML = "";
+        if ( details ) {
+          var ul = document.createElement("ul");
+          for ( var i = 0; i < details.length; i++ ) {
+            var li = document.createElement("li");
+            li.innerHTML = details[i].name;
+            ul.appendChild(li);
+          }
+          box.appendChild(ul);
+          box.classList.add("details-display__displayed");
+        }
+      },
+      updateDimensions: function() {
+        this.updateCollectionDetails("dimensions-set", "dimension-details");
+      },
+      updateDatePeriod: function() {
+        this.updateCollectionDetails("date-period-set", "date-period-details");
+      }
+
+    }, // end of events.
+
   }
 </script>
 

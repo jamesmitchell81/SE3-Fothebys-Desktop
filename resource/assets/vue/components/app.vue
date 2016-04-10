@@ -34,6 +34,7 @@ var ClientDetailsForm = require('./ClientDetailsForm.vue');
 var ClientSearchForm = require('./ClientSearchForm.vue');
 var DatePeriodForm = require('./DatePeriodForm.vue');
 var CategorySelection = require('./CategorySelection.vue');
+var ClassificationSelection = require('./ClassificationSelection.vue');
 var ExpertSelection = require('./ExpertSelection.vue');
 var ItemDimensionForm = require('./ItemDimensionForm.vue');
 var ItemImagesForm = require('./ItemImagesForm.vue');
@@ -46,6 +47,7 @@ var ItemImagesForm = require('./ItemImagesForm.vue');
       ClientSearchForm,
       DatePeriodForm,
       CategorySelection,
+      ClassificationSelection,
       ExpertSelection,
       ItemDimensionForm,
       ItemImagesForm
@@ -101,12 +103,16 @@ var ItemImagesForm = require('./ItemImagesForm.vue');
 
       sendToParentForm: function(form, data) {
         this.$broadcast(form, data);
-
       },
 
       closeSidePanelView: function() {
         this.sidePanelView = null;
         this.cancelSide();
+      },
+
+      broadcastEvent: function(event) {
+        console.log(event);
+        this.$broadcast(event);
       }
     }
   }
