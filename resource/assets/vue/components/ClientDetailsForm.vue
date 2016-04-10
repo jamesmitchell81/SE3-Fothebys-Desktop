@@ -92,7 +92,7 @@ export default {
     submitForm: function() {
       var form = document.querySelector('form');
       var action = form.action;
-      var methods = form.method;
+      var method = form.method;
 
       var d = JSON.stringify(this.$data);
 
