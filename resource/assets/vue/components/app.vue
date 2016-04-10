@@ -17,9 +17,11 @@
         <router-view></router-view>
       </div>
 
-      <div class="side-panel-view" v-show="show" transition="slideout">
+      <div class="side-panel side-panel__closed" transition="slideout" id="side-bar">
         <span @click="cancelSide" class="btn cancel-side">Cancel</span>
-        <div :is="sidePanelView"></div>
+        <div class="side-bar-content">
+          <div :is="sidePanelView"></div>
+        </div>
       </div>
     </div>
 
@@ -34,6 +36,7 @@ var DatePeriodForm = require('./DatePeriodForm.vue');
 var CategorySelection = require('./CategorySelection.vue');
 var ExpertSelection = require('./ExpertSelection.vue');
 var ItemDimensionForm = require('./ItemDimensionForm.vue');
+var ItemImagesForm = require('./ItemImagesForm.vue');
 
   export default {
 
@@ -44,7 +47,8 @@ var ItemDimensionForm = require('./ItemDimensionForm.vue');
       DatePeriodForm,
       CategorySelection,
       ExpertSelection,
-      ItemDimensionForm
+      ItemDimensionForm,
+      ItemImagesForm
     },
 
     props: {
@@ -60,8 +64,16 @@ var ItemDimensionForm = require('./ItemDimensionForm.vue');
     },
 
     methods: {
+      openSide: function() {
+        var side = document.getElementById("side-bar");
+        side.classList.remove("side-panel__closed");
+        side.classList.add("side-panel__open");
+      },
+
       cancelSide: function() {
-        this.show = false;
+        var side = document.getElementById("side-bar");
+        side.classList.remove("side-panel__open");
+        side.classList.add("side-panel__closed");
       },
 
       clearData: function(data) {
@@ -84,15 +96,17 @@ var ItemDimensionForm = require('./ItemDimensionForm.vue');
     events: {
       loadSideForm: function(form) {
         this.sidePanelView = form;
-        this.show = true;
+        this.openSide();
       },
 
       sendToParentForm: function(form, data) {
         this.$broadcast(form, data);
+
       },
 
       closeSidePanelView: function() {
-        this.show = false;
+        this.sidePanelView = null;
+        this.cancelSide();
       }
     }
   }
