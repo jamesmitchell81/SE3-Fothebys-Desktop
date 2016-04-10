@@ -87,7 +87,7 @@
 
     <span class="form-element">
       <label for="">Item Images</label>
-      <button @click.prevent="" class="btn">Add Images</button>
+      <span @click.prevent="this.$dispatch('loadSideForm', 'ItemImagesForm')" class="btn">Add Images</span>
 
       <!-- list of filenames -->
 
@@ -131,12 +131,6 @@
     </span>
 
     <span class="form-element">
-      <label for="additionalNotes">Additional Notes</label>
-      <textarea rols="40" cols="20" v-model="additionalNotes">
-      </textarea>
-    </span>
-
-    <span class="form-element">
       <label for="additionalNotes">Agreement Signed</label>
       <span class="form-input-inline">
         <span class="option-item">
@@ -150,6 +144,12 @@
       </span>
     </span>
 
+    <span class="form-element">
+      <label for="additionalNotes">Additional Notes</label>
+      <textarea rols="40" cols="20" v-model="additionalNotes">
+      </textarea>
+    </span>
+
   </form>
 </template>
 
@@ -160,12 +160,34 @@
 
     data: function() {
       return {
-        agreement:  {},
-        authorised: {}
+        agreement: false,
+        authenticated: false,
+        itemName: "",
+        estimatedPrice: "",
+        provenanceDetails: "",
+        additionalNotes: ""
       }
     },
 
+    methods: {
+      submitForm: function() {
+      var form = document.querySelector('form');
+      var action = form.action;
+      var method = form.method;
 
+      var d = JSON.stringify(this.$data);
+
+      this.$http.post('http://localhost:8080/services/clients', d)
+                .then(function(response) {
+                  console.log(response);
+                  this.$dispatch('sendToParentForm', 'ClientDetailsForm', response.data);
+                  this.$root.clearData(this.$data);
+                  this.$dispatch('closeSidePanelView');
+                }, function(response) {
+                  console.log(response);
+                });
+      }
+    }
   }
 </script>
 
