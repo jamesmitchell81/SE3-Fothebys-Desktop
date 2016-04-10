@@ -37,7 +37,7 @@ router.map({
   '/clients': {
     component: require('./components/ClientList.vue')
   }
-})
+});
 
 Vue.config.debug = true;
 
