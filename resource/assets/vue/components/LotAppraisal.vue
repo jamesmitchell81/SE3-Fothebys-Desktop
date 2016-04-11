@@ -60,11 +60,19 @@
     </span>
 
     <span class="form-element">
+      <label for="">Item Dimensions</label>
+      <button @click.prevent="this.$dispatch('loadSideForm', 'ItemWeightForm')"
+              class="btn">Add Item Weight
+            </button>
+      <div id="item-weight-details"></div>
+    </span>
+
+    <span class="form-element">
       <label for="">Item Images</label>
       <button @click.prevent="this.$dispatch('loadSideForm', 'ItemImagesForm')" class="btn">Add Images</button>
-
       <!-- list of filenames -->
 
+      <div id="item-images-details"></div>
       <!-- edit -->
     </span>
 
@@ -123,6 +131,8 @@
       <textarea rols="40" cols="20" v-model="additionalNotes">
       </textarea>
     </span>
+
+
 
   </form>
 </template>
@@ -241,6 +251,9 @@
       },
       displayClientDetails: function() {
         this.updateCollectionDetails("client-set", "client-details");
+      },
+      displayItemWeight: function() {
+        this.updateCollectionDetails("item-weight-set", "item-weight-details");
       }
 
     }, // end of events.

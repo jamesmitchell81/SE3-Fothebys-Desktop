@@ -1,20 +1,34 @@
 <template>
 
-  <div>
-    <div class='drop-zone'>
-      DROP IMAGE[S] or FOLDER HERE
-    </div>
+  <form action="">
+    <fieldset>
+      <legend>Item Image Upload</legend>
+      <span class="form-element">
+        <input class="drop-zone-input"
+               type="file"
+               name="image-input"
+               id="image-input" multiple @change="changed">
+        <label class="drop-zone" for="image-input" @drop="dropped">
+          DROP IMAGE[S] or FOLDER HERE
+        </label>
+      </span>
+    </fieldset>
 
-    <ul class="images-list">
-      <li v-for="image in images">
-        <img src="" alt="{{ image.alt }}">
-        <span class="input-btn-group">
-          <input type="text" value="{{ image.name }}">
-          <button class="btn">Remove</button>
-        </span>
-      </li>
-    </ul>
-  </div>
+    <fieldset>
+      <legend>Image List</legend>
+      <div id="image-list">
+        <div class="image-item" v-for="image in images">
+          <img src="" alt="">
+          <span>filename</span>
+          <span class="btn">action</span>
+        </div>
+      </div>
+    </fieldset>
+
+    <button @click.prevent="confirm"
+            class="btn side-bar-confirm">Confirm</button>
+
+  </form>
 
 </template>
 
@@ -22,52 +36,54 @@
   export default {
     name: "ItemImagesForm",
 
-    components: {
-    },
-
     data: function() {
       return {
-        images: []
+        images: [],
+        files: []
       }
     },
 
     ready: function() {
-      this.images = [
-        { id: 1, name: "james", alt: "rules"}
-      ]
+      // get the images for this item.
+      // this.$http.get('http://localhost:8080/services/item-images/item/1')
+      //           .then(function(response) {
+      //             console.log(response);
+      //             this.images = response.data;
+      //           }, function(err) {
+      //             this.images = [];
+      //             console.log(err);
+      //           });
+
+    },
+
+    methods: {
+      dropped: function(e) {
+
+      },
+
+      changed: function(e) {
+        console.log(e.target.files);
+      },
+
+      addImages: function() {
+        // preview.file = file.
+
+        // REFERENCE: https://developer.mozilla.org/en/docs/
+        // Using_files_from_web_applications#Example_Showing_thumbnails_of_user-selected_images
+        var fr = new FileReader();
+        fr.onload = (function(img) {
+          return function(e) {
+            img.src = e.target.result;
+          };
+        }) (preview);
+
+        fr.readAsDataURL(file);
+      }
+
+      confirm: function() {
+        // close form.
+      }
     }
 
   }
 </script>
-
-<style>
-
-.drop-zone {
-  width: 70%;
-  margin: 0 auto;
-  padding: 5em 0;
-  background: #cacaca;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.images-list {
-  width: 70%;
-  margin: 2em auto 0 auto;
-}
-
-.input-btn-group {
-  width: 100%;
-}
-
-.input-btn-group input {
-  width: 70%;
-  display: inline-block;
-}
-
-.input-btn-group button {
-  width: 20%;
-  display: inline-block;
-}
-
-</style>

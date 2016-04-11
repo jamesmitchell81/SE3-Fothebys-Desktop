@@ -38,6 +38,7 @@ var ClassificationSelection = require('./ClassificationSelection.vue');
 var ExpertSelection = require('./ExpertSelection.vue');
 var ItemDimensionForm = require('./ItemDimensionForm.vue');
 var ItemImagesForm = require('./ItemImagesForm.vue');
+var ItemWeightForm = require('./ItemWeightForm.vue');
 
   export default {
 
@@ -50,7 +51,8 @@ var ItemImagesForm = require('./ItemImagesForm.vue');
       ClassificationSelection,
       ExpertSelection,
       ItemDimensionForm,
-      ItemImagesForm
+      ItemImagesForm,
+      ItemWeightForm
     },
 
     props: {
