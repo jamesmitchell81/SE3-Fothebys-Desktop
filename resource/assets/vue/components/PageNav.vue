@@ -23,7 +23,8 @@ var Tile = require("./Tile.vue");
         tiles: [
           { name: "Add Item", url: "/lot-items/add-item" },
           { name: "Arrange Appraisal", url: "/lot-items/arrange-appraisal" },
-          { name: "Record Lot Appraisal", url: "/lot-items/record-appraisal" }
+          { name: "Record Lot Appraisal", url: "/lot-items/record-appraisal" },
+          { name: "Define Categories", url: "/lot-items/define-categories" }
         ]
       }
     }

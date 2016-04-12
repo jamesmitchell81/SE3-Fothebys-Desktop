@@ -23,6 +23,9 @@ router.map({
   '/lot-items/record-appraisal': {
     component: require('./components/LotAppraisal.vue')
   },
+  '/lot-items/define-categories': {
+    component: require('./components/DefineCategories.vue'),
+  },
   '/lot-items/arrange-appraisal': {
     component: require('./components/ArrangeAppraisal.vue'),
     subRoutes: {

@@ -15,7 +15,7 @@
     </span>
 
     <span class="form-element">
-      <label for="itemName">Years Between</label>
+      <label for="">Years Between</label>
       <span class="form-input-inline">
         <input type="number" min="0" v-model="yearBetweenStart">
         <input type="number" min="0" v-model="yearBetweenEnd">

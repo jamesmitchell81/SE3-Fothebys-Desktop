@@ -1,5 +1,5 @@
 html, body, div, article, header, nav, ul, ol, li, a, form,
-legend, input, label, p, img, textarea,
+legend, input, label, p, img, textarea, select,
 h1, h2, h3, h4, h5, h6, header {
   margin: 0;
   padding: 0;
@@ -163,7 +163,7 @@ body, html {
 h1 {
   font-size: 2.5em; }
 
-button, input, textarea {
+button, input, textarea, select {
   font-family: "Fira Sans", sans-serif;
   font-size: 1.2em; }
 
@@ -238,6 +238,15 @@ input, textarea {
   background: #eee;
   border-radius: 2px;
   box-shadow: inset 1px 1px 1px #cacaca; }
+
+select {
+  width: 100%;
+  height: 2em;
+  margin: 0.5em;
+  border: none;
+  background: #eee;
+  border-radius: 2px;
+  box-shadow: 1px 1px 1px #cacaca; }
 
 ::-webkit-input-placeholder {
   font-size: 0.8em;

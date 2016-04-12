@@ -170,12 +170,10 @@
 
       var d = JSON.stringify(this.$data);
 
-      this.$http.post('http://localhost:8080/services/clients', d)
+      this.$http.post('http://localhost:8080/services/lot-item', d)
                 .then(function(response) {
                   console.log(response);
-                  this.$dispatch('sendToParentForm', 'ClientDetailsForm', response.data);
-                  this.$root.clearData(this.$data);
-                  this.$dispatch('closeSidePanelView');
+
                 }, function(response) {
                   console.log(response);
                 });

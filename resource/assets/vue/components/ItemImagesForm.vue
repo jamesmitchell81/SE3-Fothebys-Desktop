@@ -78,7 +78,7 @@
         }) (preview);
 
         fr.readAsDataURL(file);
-      }
+      },
 
       confirm: function() {
         // close form.

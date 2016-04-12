@@ -39,6 +39,7 @@ var ExpertSelection = require('./ExpertSelection.vue');
 var ItemDimensionForm = require('./ItemDimensionForm.vue');
 var ItemImagesForm = require('./ItemImagesForm.vue');
 var ItemWeightForm = require('./ItemWeightForm.vue');
+var DefineCategoryForm = require('./DefineCategoryForm.vue');
 
   export default {
 
@@ -52,7 +53,8 @@ var ItemWeightForm = require('./ItemWeightForm.vue');
       ExpertSelection,
       ItemDimensionForm,
       ItemImagesForm,
-      ItemWeightForm
+      ItemWeightForm,
+      DefineCategoryForm
     },
 
     props: {
@@ -98,8 +100,11 @@ var ItemWeightForm = require('./ItemWeightForm.vue');
     },
 
     events: {
-      loadSideForm: function(form) {
+      loadSideForm: function(form, data) {
         this.sidePanelView = form;
+        if ( data ) {
+          this.$broadcast(form, data);
+        }
         this.openSide();
       },
 
