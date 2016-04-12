@@ -1,7 +1,7 @@
 form
   width: 100%
   max-width: 550px
-  margin: 0 auto
+  margin: 3em auto 6em auto
   background: #fff
 
 fieldset
@@ -34,12 +34,13 @@ label
 .form-input-inline
   display: flex
   flex-direction: row
+  align-items: stretch
 
 .form-input-inline .option-item
   text-align: center;
 
 .form-input-inline input
-  margin: 0.5em
+  margin: 0.5em 0.5em 0.5em 0
 
 .form-input-inline .inline-title
   display: inline-block
@@ -113,6 +114,25 @@ select
 .option-item input[type='radio']:focus + label
   border: 1px solid #000
 
+.checkbox-item
+  margin: 0 0.5em
+
+.checkbox-item label
+  padding: 0.25em
+  letter-spacing: 0;
+  text-transform: none
+  border: none
+  font-weight: normal
+  width: 45%
+  margin: 0
+  display: inline-block
+
+.checkbox-item input
+  width: 20px
+  display: inline
+  margin: 0
+  box-shadow: none
+
 .form-table
   margin: 2em 0
 
@@ -171,3 +191,6 @@ select
 .input-btn-group button
   width: 20%
   display: inline-block
+
+
+

@@ -59,14 +59,6 @@ header img
   right: 0
   margin: 1em
 
-.btn.side-bar-confirm
-  background: #B9F6CA
-  position: absolute
-  top: 0
-  left: 0
-  margin: 1em
-  font-size: 1em
-
 nav
   width: 100%
   margin-top: 3em
@@ -81,6 +73,7 @@ nav
 .nav-tiles
   display: flex
   flex-direction: row
+  flex-wrap: wrap
 
 .nav-tile
   color: #fff
@@ -100,11 +93,26 @@ nav
 .content-wrap
   width: 70%
   margin-left: 320px
-  height: 100%
+  width: calc(100% - 320px)
 
 .content
   margin: 0 auto
   width: 70%
+
+.control-bar
+  border-top: 1px solid #efefef
+  background: #fafafa
+  padding: 1em 0.5em
+  width: calc(100% - 320px)
+  position: fixed
+  bottom: 0
+  right: 0
+  left: 320px
+
+.control-bar-content
+  max-width: 550px
+  width: 70%
+  margin: 0 auto
 
 .page-title-bar
   padding: 1.5em

@@ -45,6 +45,15 @@
       </span>
 
       <span class="form-element">
+        <label for="townCity">Country of Residence</label>
+        <select type="text" id="country" name="country" v-model="contactAddress.country">
+            <option value="{{ country.shortCode }}" v-for="country in countries">
+              {{ country.shortCode }} {{ country.name }}
+            </option>
+        </select>
+      </span>
+
+      <span class="form-element">
         <label for="townCity">Town/City</label>
         <input type="text" id="townCity" name="townCity" v-model="contactAddress.townCity">
       </span>
@@ -72,6 +81,7 @@ export default {
 
   data: function() {
     return {
+      countries: [],
       title: '',
       firstName: '',
       surname: '',
@@ -81,9 +91,20 @@ export default {
         firstLine: '',
         secondLine: '',
         townCity: '',
-        postalCode: ''
+        postalCode: '',
+        country: ''
       }
     }
+  },
+
+  ready: function() {
+      this.$http.get('http://localhost:8080/services/countries')
+                .then(function(response) {
+                  console.log(response);
+                  this.$data.countries = response.data;
+                },function(response) {
+                  console.log(response);
+                });
   },
 
   methods: {

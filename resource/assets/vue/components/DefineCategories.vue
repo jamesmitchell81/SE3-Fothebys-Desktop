@@ -3,30 +3,28 @@
   <form action="">
     <legend>Define Categories</legend>
 
-      <span class="option-item" v-for="category in categories">
-        <input type="radio"
-               name="category"
-               id="{{ category.name | lowercase }}"
-               data-index="{{ category.id }}">
-        <label @click="showCategoryForm(category.id)"
-               for="{{ category.name | lowercase }}">{{ category.name }}</label>
-      </span>
-
-      <span class="option-item">
-        <input type="radio"
-               name="category"
-               id="addNew">
-        <label @click="showCategoryForm"
-               for="addNew">Add New Category</label>
-      </span>
-
-      <button class='btn'
-              @click.prevent="complete">
-              Complete
+      <button v-for="category in categories"
+              class="btn btn-full-width"
+              @click.prevent="showCategoryForm(category.id)"
+              >
+        {{ category.name }}
       </button>
+
+      <button class="btn btn-full-width btn-distinct"
+              @click.prevent="showCategoryForm"
+              >
+          Add New Category
+      </button>
+
+      <div class="control-bar">
+        <div class="control-bar-content">
+          <button class='btn btn-distinct'
+                  @click.prevent="complete">
+                  Complete
+          </button>
+        </div>
+      </div>
   </form>
-
-
 
 </template>
 
@@ -43,7 +41,6 @@
     ready: function() {
       this.$http.get('http://localhost:8080/services/category/')
                 .then(function(response) {
-                  console.log(response);
                   this.$data.categories = response.data;
 
                 }, function(response) {
@@ -52,12 +49,19 @@
     },
 
     methods: {
-      showCategoryForm: function(id) {
-        this.$dispatch('loadSideForm', 'DefineCategoryForm', id);
+      showCategoryForm: function(e, id) {
+        if ( !id ) id = 0;
+        sessionStorage.setItem("category-selected", id);
+        this.$dispatch('loadSideForm', 'DefineCategoryForm');
+      },
+
+      displayDefinedCatergories: function() {
+        var data = JSON.parse(sessionStorage.getItem('defined-category'));
+        this.$data.categories.push();
       },
 
       complete: function() {
-
+        sessionStorage.clear();
       }
     }
 

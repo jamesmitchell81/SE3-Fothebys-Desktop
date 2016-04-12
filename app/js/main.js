@@ -15188,9 +15188,6 @@ exports.default = {
   events: {
     loadSideForm: function loadSideForm(form, data) {
       this.sidePanelView = form;
-      if (data) {
-        this.$broadcast(form, data);
-      }
       this.openSide();
     },
 
@@ -15465,6 +15462,7 @@ exports.default = {
 
   data: function data() {
     return {
+      countries: [],
       title: '',
       firstName: '',
       surname: '',
@@ -15474,9 +15472,19 @@ exports.default = {
         firstLine: '',
         secondLine: '',
         townCity: '',
-        postalCode: ''
+        postalCode: '',
+        country: ''
       }
     };
+  },
+
+  ready: function ready() {
+    this.$http.get('http://localhost:8080/services/countries').then(function (response) {
+      console.log(response);
+      this.$data.countries = response.data;
+    }, function (response) {
+      console.log(response);
+    });
   },
 
   methods: {
@@ -15519,7 +15527,7 @@ exports.default = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form method=\"post\" action=\"http://localhost:8080/services/clients\">\n  <fieldset>\n    <legend>Contact</legend>\n\n    <span class=\"form-element\">\n      <label for=\"title\">Title</label>\n      <input type=\"text\" id=\"title\" name=\"title\" v-model=\"title\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"firstName\">First Name</label>\n      <input type=\"text\" id=\"firstName\" name=\"firstName\" v-model=\"firstName\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"surname\">Surname</label>\n      <input type=\"text\" id=\"surname\" name=\"surname\" v-model=\"surname\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"emailAddress\">Email Address</label>\n      <input type=\"email\" id=\"emailAddress\" name=\"emailAddress\" v-model=\"emailAddress\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"telNumber\">Telephone Number</label>\n      <input type=\"text\" id=\"telNumber\" name=\"telNumber\" v-model=\"telNumber\">\n    </span>\n  </fieldset>\n\n\n  <fieldset>\n    <legend>Address</legend>\n\n    <span class=\"form-element\">\n      <label for=\"firstLine\">First Line</label>\n      <input type=\"text\" id=\"firstLine\" name=\"firstLine\" v-model=\"contactAddress.firstLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"secondLine\">Second Line</label>\n      <input type=\"text\" id=\"secondLine\" name=\"secondLine\" v-model=\"contactAddress.secondLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"townCity\">Town/City</label>\n      <input type=\"text\" id=\"townCity\" name=\"townCity\" v-model=\"contactAddress.townCity\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"postalCode\">Postal Code</label>\n      <input type=\"text\" id=\"postalCode\" name=\"postalCode\" v-model=\"contactAddress.postalCode\">\n    </span>\n  </fieldset>\n\n    <button @click.prevent=\"saveClientDetails\" class=\"btn side-bar-confirm\">Confirm</button>\n\n    <button @click.prevent=\"demoPopulateForm\" class=\"btn\">Demo Populate Form</button>\n\n</form>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form method=\"post\" action=\"http://localhost:8080/services/clients\">\n  <fieldset>\n    <legend>Contact</legend>\n\n    <span class=\"form-element\">\n      <label for=\"title\">Title</label>\n      <input type=\"text\" id=\"title\" name=\"title\" v-model=\"title\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"firstName\">First Name</label>\n      <input type=\"text\" id=\"firstName\" name=\"firstName\" v-model=\"firstName\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"surname\">Surname</label>\n      <input type=\"text\" id=\"surname\" name=\"surname\" v-model=\"surname\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"emailAddress\">Email Address</label>\n      <input type=\"email\" id=\"emailAddress\" name=\"emailAddress\" v-model=\"emailAddress\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"telNumber\">Telephone Number</label>\n      <input type=\"text\" id=\"telNumber\" name=\"telNumber\" v-model=\"telNumber\">\n    </span>\n  </fieldset>\n\n\n  <fieldset>\n    <legend>Address</legend>\n\n    <span class=\"form-element\">\n      <label for=\"firstLine\">First Line</label>\n      <input type=\"text\" id=\"firstLine\" name=\"firstLine\" v-model=\"contactAddress.firstLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"secondLine\">Second Line</label>\n      <input type=\"text\" id=\"secondLine\" name=\"secondLine\" v-model=\"contactAddress.secondLine\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"townCity\">Country of Residence</label>\n      <select type=\"text\" id=\"country\" name=\"country\" v-model=\"contactAddress.country\">\n          <option value=\"{{ country.shortCode }}\" v-for=\"country in countries\">\n            {{ country.shortCode }} {{ country.name }}\n          </option>\n      </select>\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"townCity\">Town/City</label>\n      <input type=\"text\" id=\"townCity\" name=\"townCity\" v-model=\"contactAddress.townCity\">\n    </span>\n\n    <span class=\"form-element\">\n      <label for=\"postalCode\">Postal Code</label>\n      <input type=\"text\" id=\"postalCode\" name=\"postalCode\" v-model=\"contactAddress.postalCode\">\n    </span>\n  </fieldset>\n\n    <button @click.prevent=\"saveClientDetails\" class=\"btn side-bar-confirm\">Confirm</button>\n\n    <button @click.prevent=\"demoPopulateForm\" class=\"btn\">Demo Populate Form</button>\n\n</form>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15696,7 +15704,7 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],74:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -15712,7 +15720,6 @@ exports.default = {
 
   ready: function ready() {
     this.$http.get('http://localhost:8080/services/category/').then(function (response) {
-      console.log(response);
       this.$data.categories = response.data;
     }, function (response) {
       console.log(response);
@@ -15720,16 +15727,25 @@ exports.default = {
   },
 
   methods: {
-    showCategoryForm: function showCategoryForm(id) {
-      this.$dispatch('loadSideForm', 'DefineCategoryForm', id);
+    showCategoryForm: function showCategoryForm(e, id) {
+      if (!id) id = 0;
+      sessionStorage.setItem("category-selected", id);
+      this.$dispatch('loadSideForm', 'DefineCategoryForm');
     },
 
-    complete: function complete() {}
+    displayDefinedCatergories: function displayDefinedCatergories() {
+      var data = JSON.parse(sessionStorage.getItem('defined-category'));
+      this.$data.categories.push();
+    },
+
+    complete: function complete() {
+      sessionStorage.clear();
+    }
   }
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n  <legend>Define Categories</legend>\n\n    <span class=\"option-item\" v-for=\"category in categories\">\n      <input type=\"radio\" name=\"category\" id=\"{{ category.name | lowercase }}\" data-index=\"{{ category.id }}\">\n      <label @click=\"showCategoryForm(category.id)\" for=\"{{ category.name | lowercase }}\">{{ category.name }}</label>\n    </span>\n\n    <span class=\"option-item\">\n      <input type=\"radio\" name=\"category\" id=\"addNew\">\n      <label @click=\"showCategoryForm\" for=\"addNew\">Add New Category</label>\n    </span>\n\n    <button class=\"btn\" @click.prevent=\"complete\">\n            Complete\n    </button>\n</form>\n\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n  <legend>Define Categories</legend>\n\n    <button v-for=\"category in categories\" class=\"btn btn-full-width\" @click.prevent=\"showCategoryForm(category.id)\">\n      {{ category.name }}\n    </button>\n\n    <button class=\"btn btn-full-width btn-distinct\" @click.prevent=\"showCategoryForm\">\n        Add New Category\n    </button>\n\n    <div class=\"control-bar\">\n      <div class=\"control-bar-content\">\n        <button class=\"btn btn-distinct\" @click.prevent=\"complete\">\n                Complete\n        </button>\n      </div>\n    </div>\n</form>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15760,59 +15776,69 @@ exports.default = {
   data: function data() {
     return {
       id: 0,
-      name: "",
-      attributes: [],
-      types: [{ name: "text" }, { name: "number" }, { name: "date" }]
+      message: "",
+      category: {
+        name: "",
+        attributes: []
+      },
+      newAttr: {
+        name: "",
+        type: "",
+        required: false
+      },
+      types: [{ name: "text" }, { name: "number" }, { name: "date" }, { name: "true/false" }]
     };
   },
 
   ready: function ready() {
-    var id = this.$data.id;
+    this.$data.id = sessionStorage.getItem("category-selected");
 
-    if (id !== 0) {
-      getCategoryData(id);
+    if (this.$data.id != 0) {
+      console.log(this.$data.id);
+      this.getCategoryData();
     }
   },
 
   methods: {
     getCategoryData: function getCategoryData(id) {
-      this.$http.get('http://localhost:8080/services/category/' + id).then(function (response) {
-        console.log(response);
+      this.$http.get('http://localhost:8080/services/category/' + this.$data.id).then(function (response) {
+        this.$data.name = response.data.name;
+        this.$data.category = response.data;
       }, function (response) {
-        console.log(response);
+        this.$data.message = "Connection Failed";
       });
     },
 
-    confirm: function confirm() {
-      var definition = {
-        id: "",
-        name: "",
-        attributes: []
+    addAttribute: function addAttribute() {
+      var attr = {
+        name: this.$data.newAttr.name,
+        type: this.$data.newAttr.type,
+        required: this.$data.newAttr.required,
+        active: true
       };
 
-      // this.$http.get('http://localhost:8080/services/category/',
-      //           JSON.stringify(definition)
-      //           .then(function(response) {
-      //             console.log(response);
-      //           }, function(response) {
-      //             console.log(response);
-      //           });
+      this.$data.category.attributes.push(attr);
+      this.$data.newAttr.name = "";
+      this.$data.newAttr.required = false;
+      this.$data.newAttr.type = false;
+    },
 
-      sessionStorage.setItem("defined-category", (0, _stringify2.default)(definition));
-      this.$dispatch('broadcastEvent', 'displayDefinedCategories');
-      this.$dispatch('closeSidePanelView');
-    }
-  },
-
-  events: {
-    DefineCategoryForm: function DefineCategoryForm(id) {
-      this.$data.id = id;
+    confirm: function confirm() {
+      var path = "http://localhost:8080/services/category/" + this.$data.id;
+      var data = (0, _stringify2.default)(this.$data.category);
+      this.$http.put(path, data).then(function (response) {
+        sessionStorage.setItem("defined-category", data);
+        this.$dispatch('broadcastEvent', 'displayDefinedCategories');
+        this.$dispatch('closeSidePanelView');
+      }, function (response) {
+        this.$data.message = "Request Failed";
+      });
     }
   }
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n\n  <legend></legend>\n\n  <span class=\"form-element\">\n    <label for=\"name\">Category Name</label>\n    <input type=\"text\" v-model=\"name\">\n  </span>\n\n  <span class=\"form-element\" v-for=\"attribute in attributes\">\n    <span class=\"form-input-inline\">\n      <input type=\"text\">\n      <select name=\"attrType\" id=\"\">\n        <option v-for=\"type in types\" value=\"\">{{ type.name }}</option>\n      </select>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Attribute and Type</label>\n    <span class=\"form-input-inline\">\n      <input type=\"text\">\n      <select id=\"\">\n        <option v-for=\"type in types\" value=\"\">{{ type.name }}</option>\n      </select>\n    </span>\n  </span>\n\n  <button @click.prevent=\"confirm\" class=\"btn side-bar-confirm\">Confirm</button>\n\n</form>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n\n  <legend>Define Category</legend>\n\n  <span>{{ message }}</span>\n\n  <span class=\"form-element\">\n    <label for=\"name\">Category Name</label>\n    <input type=\"text\" v-model=\"category.name\">\n  </span>\n\n  <label for=\"\">Attribute and Type</label>\n  <span class=\"form-element\" v-for=\"attribute in category.attributes\">\n    <span class=\"form-input-inline\">\n      <input type=\"text\" v-model=\"attribute.name\">\n      <select name=\"attrType\" id=\"\">\n        <option v-for=\"type in types\" value=\"type.name\" v-if=\"type.name == attribute.type\">\n                {{ type.name }}\n        </option>\n        <option v-for=\"type in types\" value=\"type.name\" v-if=\"type.name != attribute.type\">\n                {{ type.name }}\n        </option>\n      </select>\n    </span>\n    <span class=\"checkbox-item\">\n      <label for=\"required-{{attribute.name | lowercase }}\">\n      <input type=\"checkbox\" name=\"required\" id=\"required-{{attribute.name | lowercase }}\" v-model=\"attribute.required\">\n        Required Field?</label>\n    </span>\n    <span class=\"checkbox-item\">\n      <label for=\"required-{{attribute.name | lowercase }}\">\n      <input type=\"checkbox\" name=\"active\" id=\"active-{{attribute.name | lowercase }}\" v-model=\"attribute.active\">\n        Active?</label>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <span class=\"form-input-inline\">\n      <input type=\"text\" v-model=\"newAttr.name\">\n      <select id=\"\" v-model=\"newAttr.type\">\n        <option v-for=\"type in types\" value=\"{{ type.name }}\">{{ type.name }}</option>\n      </select>\n    </span>\n    <span class=\"checkbox-item\">\n      <label for=\"required-new\">\n      <input type=\"checkbox\" name=\"required-new\" id=\"required-new\" v-model=\"newAttr.required\">\n        Required Field?</label>\n    </span>\n    <button @click.prevent=\"addAttribute\" class=\"btn\">\n            Add Attribute\n    </button>\n  </span>\n\n  <button @click.prevent=\"confirm\" class=\"btn side-bar-confirm\">Confirm</button>\n\n</form>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16206,7 +16232,7 @@ exports.default = {
 
   } };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form action=\"\">\n  <legend>Lot Appraisal Record</legend>\n\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n\n    <span class=\"btn-group\"><!-- v-show -->\n      <span>Existing Client</span>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientSearchForm')\" class=\"btn\">Yes</button>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientDetailsForm')\" class=\"btn\">No</button>\n    </span>\n\n    <div id=\"client-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ExpertSelection')\" class=\"btn\">Add Expert\n          </button>\n    <!-- details -->\n    <div id=\"expert-selected-details\"></div>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'CategorySelection')\" class=\"btn\">Select Category\n          </button>\n    <div id=\"category-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Classification</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClassificationSelection')\" class=\"btn\">Select Classifications\n          </button>\n    <div id=\"classification-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Date Period</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'DatePeriodForm')\" class=\"btn\">\n            Add Date Period\n      </button>\n    <div id=\"date-period-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Dimensions</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemDimensionForm')\" class=\"btn\">Add Dimensions\n          </button>\n    <div id=\"dimension-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Dimensions</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemWeightForm')\" class=\"btn\">Add Item Weight\n          </button>\n    <div id=\"item-weight-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Images</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemImagesForm')\" class=\"btn\">Add Images</button>\n    <!-- list of filenames -->\n\n    <div id=\"item-images-details\"></div>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"itemName\">Item Name</label>\n    <input type=\"text\" v-model=\"itemName\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"estimatedPrice\">Estimated Price</label>\n    <input type=\"number\" min=\"1\" v-model=\"estimatedPrice\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"textualDescription\">Textual Description</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"textualDescription\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"provenanceDetails\">Provenance Details</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"provenanceDetails\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Authenticated</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedYes\">\n        <label for=\"authenticatedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedNo\">\n        <label for=\"authenticatedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Agreement Signed</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedYes\">\n        <label for=\"agreedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedNo\">\n        <label for=\"agreedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Additional Notes</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"additionalNotes\">      </textarea>\n  </span>\n\n\n\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form action=\"\">\n  <legend>Record Lot Appraisal</legend>\n\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n\n    <span class=\"btn-group\"><!-- v-show -->\n      <span>Existing Client</span>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientSearchForm')\" class=\"btn\">Yes</button>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientDetailsForm')\" class=\"btn\">No</button>\n    </span>\n\n    <div id=\"client-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ExpertSelection')\" class=\"btn\">Add Expert\n          </button>\n    <!-- details -->\n    <div id=\"expert-selected-details\"></div>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'CategorySelection')\" class=\"btn\">Select Category\n          </button>\n    <div id=\"category-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Classification</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClassificationSelection')\" class=\"btn\">Select Classifications\n          </button>\n    <div id=\"classification-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Date Period</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'DatePeriodForm')\" class=\"btn\">\n            Add Date Period\n      </button>\n    <div id=\"date-period-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Dimensions</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemDimensionForm')\" class=\"btn\">Add Dimensions\n          </button>\n    <div id=\"dimension-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Dimensions</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemWeightForm')\" class=\"btn\">Add Item Weight\n          </button>\n    <div id=\"item-weight-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Images</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemImagesForm')\" class=\"btn\">Add Images</button>\n    <!-- list of filenames -->\n\n    <div id=\"item-images-details\"></div>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"itemName\">Item Name</label>\n    <input type=\"text\" v-model=\"itemName\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"estimatedPrice\">Estimated Price</label>\n    <input type=\"number\" min=\"1\" v-model=\"estimatedPrice\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"textualDescription\">Textual Description</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"textualDescription\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"provenanceDetails\">Provenance Details</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"provenanceDetails\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Authenticated</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedYes\">\n        <label for=\"authenticatedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedNo\">\n        <label for=\"authenticatedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Agreement Signed</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedYes\">\n        <label for=\"agreedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedNo\">\n        <label for=\"agreedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Additional Notes</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"additionalNotes\">      </textarea>\n  </span>\n\n  <div class=\"control-bar\">\n    <div class=\"control-bar-content\">\n      <button class=\"btn\" @click.prevent=\"submitForm\">\n              Complete\n      </button>\n    </div>\n  </div>\n\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

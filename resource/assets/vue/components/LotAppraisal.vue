@@ -1,6 +1,6 @@
 <template>
   <form action="">
-    <legend>Lot Appraisal Record</legend>
+    <legend>Record Lot Appraisal</legend>
 
     <span class="form-element">
       <label for="">Client</label>
@@ -132,7 +132,14 @@
       </textarea>
     </span>
 
-
+    <div class="control-bar">
+      <div class="control-bar-content">
+        <button class='btn'
+                @click.prevent="submitForm">
+                Complete
+        </button>
+      </div>
+    </div>
 
   </form>
 </template>

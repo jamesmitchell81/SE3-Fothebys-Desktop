@@ -82,14 +82,6 @@ header img {
   right: 0;
   margin: 1em; }
 
-.btn.side-bar-confirm {
-  background: #B9F6CA;
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 1em;
-  font-size: 1em; }
-
 nav {
   width: 100%;
   margin-top: 3em; }
@@ -103,7 +95,8 @@ nav {
 
 .nav-tiles {
   display: flex;
-  flex-direction: row; }
+  flex-direction: row;
+  flex-wrap: wrap; }
 
 .nav-tile {
   color: #fff;
@@ -123,11 +116,26 @@ nav {
 .content-wrap {
   width: 70%;
   margin-left: 320px;
-  height: 100%; }
+  width: calc(100% - 320px); }
 
 .content {
   margin: 0 auto;
   width: 70%; }
+
+.control-bar {
+  border-top: 1px solid #efefef;
+  background: #fafafa;
+  padding: 1em 0.5em;
+  width: calc(100% - 320px);
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 320px; }
+
+.control-bar-content {
+  max-width: 550px;
+  width: 70%;
+  margin: 0 auto; }
 
 .page-title-bar {
   padding: 1.5em;
@@ -146,6 +154,12 @@ nav {
   color: #000;
   cursor: pointer; }
 
+.btn-full-width {
+  width: 100%;
+  display: block;
+  margin: 0.25em 0;
+  padding: 1em 0; }
+
 .upload-image-btn {
   color: #000;
   display: block;
@@ -156,6 +170,18 @@ nav {
   box-shadow: 1px 1px 1px #cacaca;
   text-decoration: none; }
 
+.btn.side-bar-confirm {
+  background: #B9F6CA;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 1em;
+  font-size: 1em; }
+
+.btn-distinct {
+  background: #171615;
+  color: #fff; }
+
 body, html {
   font-family: "Fira Sans", sans-serif;
   font-size: 100%; }
@@ -165,7 +191,7 @@ h1 {
 
 button, input, textarea, select {
   font-family: "Fira Sans", sans-serif;
-  font-size: 1.2em; }
+  font-size: 1em; }
 
 .fb-title {
   font-size: 2em;
@@ -178,7 +204,7 @@ button, input, textarea, select {
 form {
   width: 100%;
   max-width: 550px;
-  margin: 0 auto;
+  margin: 3em auto 6em auto;
   background: #fff; }
 
 fieldset {
@@ -210,13 +236,14 @@ label {
 
 .form-input-inline {
   display: flex;
-  flex-direction: row; }
+  flex-direction: row;
+  align-items: stretch; }
 
 .form-input-inline .option-item {
   text-align: center; }
 
 .form-input-inline input {
-  margin: 0.5em; }
+  margin: 0.5em 0.5em 0.5em 0; }
 
 .form-input-inline .inline-title {
   display: inline-block;
@@ -286,6 +313,25 @@ select {
 .option-item input[type='checkbox']:focus + label,
 .option-item input[type='radio']:focus + label {
   border: 1px solid #000; }
+
+.checkbox-item {
+  margin: 0 0.5em; }
+
+.checkbox-item label {
+  padding: 0.25em;
+  letter-spacing: 0;
+  text-transform: none;
+  border: none;
+  font-weight: normal;
+  width: 45%;
+  margin: 0;
+  display: inline-block; }
+
+.checkbox-item input {
+  width: 20px;
+  display: inline;
+  margin: 0;
+  box-shadow: none; }
 
 .form-table {
   margin: 2em 0; }

@@ -102,9 +102,6 @@ var DefineCategoryForm = require('./DefineCategoryForm.vue');
     events: {
       loadSideForm: function(form, data) {
         this.sidePanelView = form;
-        if ( data ) {
-          this.$broadcast(form, data);
-        }
         this.openSide();
       },
 
