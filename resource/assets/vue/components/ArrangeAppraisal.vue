@@ -61,7 +61,6 @@
 
 <script>
   var ClientDetails = require('./ClientDetails.vue');
-  var DataStore = require('../data.js');
 
   export default {
     name: "ArrangeAppraisal",
@@ -73,7 +72,7 @@
     data: function() {
       return {
         showClientDetails: false,
-        clientDetails: DataStore.clientDetails,
+        clientDetails: "",
         categories: [],
         itemName: ''
       }

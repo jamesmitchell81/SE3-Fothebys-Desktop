@@ -42,14 +42,14 @@
       this.$http.get('http://localhost:8080/services/category/')
                 .then(function(response) {
                   this.$data.categories = response.data;
-
+                  console.log(this.$data.categories);
                 }, function(response) {
                   console.log(response);
                 });
     },
 
     methods: {
-      showCategoryForm: function(e, id) {
+      showCategoryForm: function(id) {
         if ( !id ) id = 0;
         sessionStorage.setItem("category-selected", id);
         this.$dispatch('loadSideForm', 'DefineCategoryForm');
@@ -62,6 +62,7 @@
 
       complete: function() {
         sessionStorage.clear();
+        this.$router.go("/lot-items");
       }
     }
 

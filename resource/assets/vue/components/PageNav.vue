@@ -9,7 +9,6 @@
 
 <script>
 var Tile = require("./Tile.vue");
-// var d = require("./data.js");
 
   export default {
     name: 'PageNav',

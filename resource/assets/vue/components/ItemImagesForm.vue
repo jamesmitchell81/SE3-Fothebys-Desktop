@@ -25,6 +25,9 @@
       </div>
     </fieldset>
 
+    <div class="image-list" v-for="image in images">
+    </div>
+
     <button @click.prevent="confirm"
             class="btn side-bar-confirm">Confirm</button>
 
@@ -62,18 +65,20 @@
       },
 
       changed: function(e) {
-        console.log(e.target.files);
+        this.$data.files.push(e.target.files);
+        this.addImages(e.target.files[0]);
       },
 
-      addImages: function() {
-        // preview.file = file.
+      addImages: function(file) {
+        var preview = document.createElement("img");
+        preview.file = file;
 
         // REFERENCE: https://developer.mozilla.org/en/docs/
         // Using_files_from_web_applications#Example_Showing_thumbnails_of_user-selected_images
         var fr = new FileReader();
         fr.onload = (function(img) {
           return function(e) {
-            img.src = e.target.result;
+
           };
         }) (preview);
 
