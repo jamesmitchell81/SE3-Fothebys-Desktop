@@ -15225,7 +15225,7 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"./CategorySelection.vue":67,"./ClassificationSelection.vue":68,"./ClientDetailsForm.vue":70,"./ClientSearchForm.vue":72,"./DatePeriodForm.vue":73,"./DefineCategoryForm.vue":75,"./ExpertSelection.vue":76,"./ItemDimensionForm.vue":77,"./ItemImagesForm.vue":78,"./ItemWeightForm.vue":79,"./SidePanel.vue":83,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],66:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -15233,7 +15233,6 @@ Object.defineProperty(exports, "__esModule", {
 
 
 var ClientDetails = require('./ClientDetails.vue');
-var DataStore = require('../data.js');
 
 exports.default = {
   name: "ArrangeAppraisal",
@@ -15245,7 +15244,7 @@ exports.default = {
   data: function data() {
     return {
       showClientDetails: false,
-      clientDetails: DataStore.clientDetails,
+      clientDetails: "",
       categories: [],
       itemName: ''
     };
@@ -15284,7 +15283,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../data.js":86,"./ClientDetails.vue":69,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],67:[function(require,module,exports){
+},{"./ClientDetails.vue":69,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],67:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 'use strict';
 
@@ -15721,13 +15720,14 @@ exports.default = {
   ready: function ready() {
     this.$http.get('http://localhost:8080/services/category/').then(function (response) {
       this.$data.categories = response.data;
+      console.log(this.$data.categories);
     }, function (response) {
       console.log(response);
     });
   },
 
   methods: {
-    showCategoryForm: function showCategoryForm(e, id) {
+    showCategoryForm: function showCategoryForm(id) {
       if (!id) id = 0;
       sessionStorage.setItem("category-selected", id);
       this.$dispatch('loadSideForm', 'DefineCategoryForm');
@@ -15740,6 +15740,7 @@ exports.default = {
 
     complete: function complete() {
       sessionStorage.clear();
+      this.$router.go("/lot-items");
     }
   }
 
@@ -15824,6 +15825,7 @@ exports.default = {
     },
 
     confirm: function confirm() {
+
       var path = "http://localhost:8080/services/category/" + this.$data.id;
       var data = (0, _stringify2.default)(this.$data.category);
       this.$http.put(path, data).then(function (response) {
@@ -16011,11 +16013,27 @@ exports.default = {
     dropped: function dropped(e) {},
 
     changed: function changed(e) {
-      console.log(e.target.files);
+      this.$data.files = e.target.files;
+      for (var i = 0; i < this.$data.files.length; i++) {
+        this.addImages(e.target.files[0]);
+      }
     },
 
-    addImages: function addImages() {
-      // preview.file = file.
+    addImages: function addImages(file) {
+      // var preview = document.createElement("img");
+      var preview = {
+        action: "Upload",
+        src: "",
+        filename: ""
+      };
+
+      preview.file = file;
+      preview.filename = file.name;
+      preview.size = file.size;
+
+      this.$data.images.push(preview);
+
+      console.log(this.$data.images);
 
       // REFERENCE: https://developer.mozilla.org/en/docs/
       // Using_files_from_web_applications#Example_Showing_thumbnails_of_user-selected_images
@@ -16036,7 +16054,7 @@ exports.default = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n  <fieldset>\n    <legend>Item Image Upload</legend>\n    <span class=\"form-element\">\n      <input class=\"drop-zone-input\" type=\"file\" name=\"image-input\" id=\"image-input\" multiple=\"\" @change=\"changed\">\n      <label class=\"drop-zone\" for=\"image-input\" @drop=\"dropped\">\n        DROP IMAGE[S] or FOLDER HERE\n      </label>\n    </span>\n  </fieldset>\n\n  <fieldset>\n    <legend>Image List</legend>\n    <div id=\"image-list\">\n      <div class=\"image-item\" v-for=\"image in images\">\n        <img src=\"\" alt=\"\">\n        <span>filename</span>\n        <span class=\"btn\">action</span>\n      </div>\n    </div>\n  </fieldset>\n\n  <button @click.prevent=\"confirm\" class=\"btn side-bar-confirm\">Confirm</button>\n\n</form>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n  <fieldset>\n    <legend>Item Image Upload</legend>\n    <span class=\"form-element\">\n      <input class=\"drop-zone-input\" type=\"file\" name=\"image-input\" id=\"image-input\" multiple=\"\" @change=\"changed\">\n      <label class=\"drop-zone\" for=\"image-input\" @drop=\"dropped\">\n        DROP IMAGE[S] or FOLDER HERE\n      </label>\n    </span>\n  </fieldset>\n\n  <fieldset>\n    <legend>Image List</legend>\n    <div id=\"image-list\">\n      <div class=\"image-item\" v-for=\"image in images\">\n        <div class=\"item-image-wrap\">\n          <img :src=\"image.src\" alt=\"image preview\" class=\"image-upload-preview\">\n        </div>\n        <input type=\"text\" class=\"image-filename\" v-model=\"image.filename\">\n        <span class=\"image-upload-btn\" data-action=\"{{ image.action | lowercase }}\">{{ image.action }}</span>\n      </div>\n    </div>\n  </fieldset>\n\n  <button @click.prevent=\"confirm\" class=\"btn side-bar-confirm\">Confirm</button>\n\n</form>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16291,7 +16309,6 @@ Object.defineProperty(exports, "__esModule", {
 
 
 var Tile = require("./Tile.vue");
-// var d = require("./data.js");
 
 exports.default = {
   name: 'PageNav',
@@ -16408,35 +16425,6 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"vue":62,"vue-hot-reload-api":36}],86:[function(require,module,exports){
-module.exports = {
-  clientDetails: {
-    title: '',
-    firstName: '',
-    surname: '',
-    telNumber: '',
-    emailAddress: '',
-    contactAddress: {
-      firstLine: '',
-      secondLine: '',
-      townCity: '',
-      postalCode: ''
-    }
-  },
-  setClientDetails: function(d) {
-    // for ( var obj in d ) {
-      this.clientDetails = d;
-    // }
-  },
-  data: {
-    routes: [
-      { name: "Welcome",   url: "/", component: "./welcome.vue"},
-      { name: "Lot Items", url: "/lot-items", component: "./page-nav.vue"},
-      { name: "Add Lot Item", url: "/lot-items/add-item", component: "./add-lot-item.vue"},
-      { name: "Define Categories", url: "/lot-items/category-definition", component: "./add-lot-item.vue"}
-    ]
-  }
-}
-},{}],87:[function(require,module,exports){
 var Vue = require('vue');
 var VueResource = require('vue-resource');
 var Router = require('vue-router');
@@ -16505,4 +16493,4 @@ router.start(App, '#app');
 //     }
 //   }
 // })
-},{"./components/AddLotItem.vue":64,"./components/App.vue":65,"./components/ArrangeAppraisal.vue":66,"./components/ClientDetails.vue":69,"./components/ClientList.vue":71,"./components/DefineCategories.vue":74,"./components/LotAppraisal.vue":80,"./components/PageNav.vue":82,"./components/Welcome.vue":85,"vue":62,"vue-resource":50,"vue-router":61}]},{},[87]);
+},{"./components/AddLotItem.vue":64,"./components/App.vue":65,"./components/ArrangeAppraisal.vue":66,"./components/ClientDetails.vue":69,"./components/ClientList.vue":71,"./components/DefineCategories.vue":74,"./components/LotAppraisal.vue":80,"./components/PageNav.vue":82,"./components/Welcome.vue":85,"vue":62,"vue-resource":50,"vue-router":61}]},{},[86]);

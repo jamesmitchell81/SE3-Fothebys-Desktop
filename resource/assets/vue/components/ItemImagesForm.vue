@@ -18,15 +18,14 @@
       <legend>Image List</legend>
       <div id="image-list">
         <div class="image-item" v-for="image in images">
-          <img src="" alt="">
-          <span>filename</span>
-          <span class="btn">action</span>
+          <div class="item-image-wrap">
+            <img :src="image.src" alt="image preview" class="image-upload-preview">
+          </div>
+          <input type="text" class="image-filename" v-model="image.filename">
+          <span class="image-upload-btn" data-action="{{ image.action | lowercase }}">{{ image.action }}</span>
         </div>
       </div>
     </fieldset>
-
-    <div class="image-list" v-for="image in images">
-    </div>
 
     <button @click.prevent="confirm"
             class="btn side-bar-confirm">Confirm</button>
@@ -65,20 +64,35 @@
       },
 
       changed: function(e) {
-        this.$data.files.push(e.target.files);
-        this.addImages(e.target.files[0]);
+        this.$data.files = e.target.files;
+        for ( var i = 0; i < this.$data.files.length; i++ )
+        {
+          this.addImages(e.target.files[0]);
+        }
       },
 
       addImages: function(file) {
-        var preview = document.createElement("img");
+        // var preview = document.createElement("img");
+        var preview = {
+          action: "Upload",
+          src: "",
+          filename: ""
+        };
+
         preview.file = file;
+        preview.filename = file.name;
+        preview.size = file.size;
+
+        this.$data.images.push(preview);
+
+        console.log(this.$data.images);
 
         // REFERENCE: https://developer.mozilla.org/en/docs/
         // Using_files_from_web_applications#Example_Showing_thumbnails_of_user-selected_images
         var fr = new FileReader();
         fr.onload = (function(img) {
           return function(e) {
-
+            img.src = e.target.result;
           };
         }) (preview);
 
