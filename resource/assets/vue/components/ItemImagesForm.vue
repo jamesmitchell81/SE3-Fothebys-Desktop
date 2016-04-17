@@ -8,7 +8,7 @@
                type="file"
                name="image-input"
                id="image-input" multiple @change="changed">
-        <label class="drop-zone" for="image-input" @drop="dropped">
+        <label droppable="true" class="drop-zone" for="image-input" @drop.stop="dropped">
           DROP IMAGE[S] or FOLDER HERE
         </label>
       </span>
@@ -16,6 +16,14 @@
 
     <fieldset>
       <legend>Image List</legend>
+
+      <button @click.prevent="uploadAll"
+              class="btn"
+              style="width:100%;"
+              v-show="images.length > 1">
+        Upload All
+      </button>
+
       <div id="image-list">
         <div class="image-item" v-for="image in images">
           <div class="item-image-wrap">
@@ -57,20 +65,25 @@
       //             this.images = [];
       //             console.log(err);
       //           });
-
     },
 
     methods: {
       dropped: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Dropped");
+        console.log(e);
+      },
 
+      draggedover: function(e) {
+        e.preventDefault();
+        return true;
       },
 
       changed: function(e) {
         this.$data.files = e.target.files;
-        console.log(this.$data.files);
-        for ( var i = 0; i < this.$data.files.length; i++ )
-        {
-          this.addImage(e.target.files[0]);
+        for ( var i = 0; i < this.$data.files.length; i++ ) {
+          this.addImage(e.target.files[i]);
         }
       },
 
@@ -108,6 +121,10 @@
         }
       },
 
+      uploadAll: function() {
+        // get all that are present but not uploaded.
+      },
+
       upload: function(index) {
         var path = 'http://localhost:8080/services/item-images';
         var image = this.$data.images[index];
@@ -121,18 +138,17 @@
           "Content-Type" : contentType
         }
 
-        this.$http.post(path, data, {headers: headers})
-                  .then(function(response){
-                    var  images = [];
-                    images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
-                    var id = this.getIdFromLocationHeader(response.headers("Location"));
-                    images.push(id);
-                    this.$data.images[index].id = id;
-                    sessionStorage.setItem("uploaded-images", JSON.stringify(images));
-                    this.$data.images[index].action = "remove";
-                  }, function(response) {
-
-                  });
+        this.$http.post(path, data, {headers: headers}).then(function(response){
+          var  images = [];
+          images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+          var id = this.getIdFromLocationHeader(response.headers("Location"));
+          images.push(id);
+          this.$data.images[index].id = id;
+          sessionStorage.setItem("uploaded-images", JSON.stringify(images));
+          this.$data.images[index].action = "remove";
+        }, function(response) {
+          console.log(response);
+        });
       },
 
       getIdFromLocationHeader: function(data) {
@@ -163,7 +179,7 @@
       },
 
       confirm: function() {
-        this.$dispatch('broadcastEvent', 'displayDefinedCategories');
+        this.$dispatch('broadcastEvent', 'displayUploadedImages');
         this.$dispatch('closeSidePanelView');
       }
     }

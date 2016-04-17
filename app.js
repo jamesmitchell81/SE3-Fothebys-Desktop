@@ -2,7 +2,7 @@ var app = require('app');
 var BrowserWindow = require('browser-window');
 var fs = require('fs');
 var path = require('path');
-var ipc = require('ipc');
+var ipc = require("electron").ipcMain;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -11,7 +11,7 @@ var mainWindow = null;
 ipc.on('change-page', function(event, args) {
   if ( !mainWindow ) return;
   var page = path.join("/src", "html", args);
-  mainWindow.loadUrl('file://' + __dirname + page);
+  mainWindow.loadURL('file://' + __dirname + page);
 
 });
 
@@ -31,7 +31,7 @@ app.on('ready', function() {
     show: false,
     width: (size.width - 40),
     height: (size.height - 40), //0.99),
-    'min-width': 800,
+    minWidth: 800,
     'min-height': 600,
     'title-bar-style': 'hidden-inset'
   });

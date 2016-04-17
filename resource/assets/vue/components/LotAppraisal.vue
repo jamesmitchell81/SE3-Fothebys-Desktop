@@ -60,7 +60,7 @@
     </span>
 
     <span class="form-element">
-      <label for="">Item Dimensions</label>
+      <label for="">Item Weight</label>
       <button @click.prevent="this.$dispatch('loadSideForm', 'ItemWeightForm')"
               class="btn">Add Item Weight
             </button>
@@ -69,10 +69,10 @@
 
     <span class="form-element">
       <label for="">Item Images</label>
-      <button @click.prevent="this.$dispatch('loadSideForm', 'ItemImagesForm')" class="btn">Add Images</button>
+      <button @click.prevent="this.$dispatch('loadSideForm', 'ItemImagesForm')"
+              class="btn">Add Images</button>
       <!-- list of filenames -->
-
-      <div id="item-images-details"></div>
+      <div style="clear:both;" id="item-images-details"></div>
       <!-- edit -->
     </span>
 
@@ -167,6 +167,10 @@
       this.$dispatch("broadcastEvent", "updateClassifications");
       this.$dispatch("broadcastEvent", "updateDimensions");
       this.$dispatch("broadcastEvent", "updateDatePeriod");
+      this.$dispatch("broadcastEvent", "showExpertDetails");
+      this.$dispatch("broadcastEvent", "displayClientDetails");
+      this.$dispatch("broadcastEvent", "displayItemWeight");
+      this.$dispatch("broadcastEvent", "displayUploadedImages");
     },
 
     methods: {
@@ -217,6 +221,27 @@
           }
         }
         return ul;
+      },
+
+      displayImageList: function(imageData) {
+        var parent = document.getElementById("item-images-details");
+        var image = document.createElement("img");
+        var wrapper = document.createElement("div");
+        var imageWrap = document.createElement("div");
+        var span = document.createElement("span");
+
+        console.log(parent);
+
+        span.innerHTML = imageData.filename;
+        image.src = "data:image/" + imageData.extension + ";base64," + imageData.data;
+        image.alt = imageData.filename;
+        image.classList.add("image-upload-preview-small");
+        imageWrap.classList.add("item-image-wrap");
+        wrapper.classList.add("image-item-small");
+        imageWrap.appendChild(image);
+        wrapper.appendChild(imageWrap);
+        wrapper.appendChild(span);
+        parent.appendChild(wrapper);
       }
     },
 
@@ -261,10 +286,21 @@
         this.updateCollectionDetails("item-weight-set", "item-weight-details");
       },
       displayUploadedImages: function() {
-        var images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+        var uploadedImages = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+        var path = "http://localhost:8080/services/item-images/";
+        var parent = document.getElementById("item-images-details");
+        parent.innerHTML = "";
 
-        // get the images from the server.
-        // display on the page.
+        console.log(uploadedImages);
+
+        for ( var i = 0; i < uploadedImages.length; i++ ) {
+          this.$http.get(path + uploadedImages[i]).then(function(response) {
+            console.log(response);
+            this.displayImageList(response.data);
+          }, function(response) {
+            console.log(response);
+          });
+        }
       }
 
     }, // end of events.
