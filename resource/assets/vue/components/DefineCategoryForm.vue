@@ -40,7 +40,7 @@
           Required Field?</label>
       </span>
       <span class="checkbox-item">
-        <label for="required-{{attribute.name | lowercase }}">
+        <label for="active-{{attribute.name | lowercase }}">
         <input type="checkbox"
                name="active"
                id="active-{{attribute.name | lowercase }}"
@@ -116,6 +116,7 @@
 
     methods: {
       getCategoryData: function(id) {
+
         this.$http.get('http://localhost:8080/services/category/' + this.$data.id)
                   .then(function(response) {
                     this.$data.name = response.data.name;
@@ -139,8 +140,35 @@
         this.$data.newAttr.type = false;
       },
 
-      confirm: function() {
+      getIdFromHeaderLocation: function(data) {
+        var split = data.split("/");
+        return split[split.length - 1];
+      },
 
+      confirm: function() {
+        if ( this.$data.id == 0 ) {
+          this.post();
+        } else {
+          this.update();
+        }
+      },
+
+      post: function() {
+        var path = "http://localhost:8080/services/category";
+        var data = JSON.stringify(this.$data.category);
+        this.$http.post(path, data)
+                  .then(function(response) {
+                    var sess = JSON.parse(data);
+                    sess.id = this.getIdFromHeaderLocation(response.headers("Location"));
+                    sessionStorage.setItem("defined-category", JSON.stringify(sess));
+                    this.$dispatch('broadcastEvent', 'displayDefinedCategories');
+                    this.$dispatch('closeSidePanelView');
+                  }, function(response) {
+                    this.$data.message = "Request Failed";
+                  });
+      },
+
+      update: function(data) {
         var path = "http://localhost:8080/services/category/" + this.$data.id;
         var data = JSON.stringify(this.$data.category);
         this.$http.put(path, data)

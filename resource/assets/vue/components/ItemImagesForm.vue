@@ -22,7 +22,9 @@
             <img :src="image.src" alt="image preview" class="image-upload-preview">
           </div>
           <input type="text" class="image-filename" v-model="image.filename">
-          <span class="image-upload-btn" data-action="{{ image.action | lowercase }}">{{ image.action }}</span>
+          <button @click.prevent="action(image.index)"
+                  class="image-upload-btn"
+                  data-action="{{ image.action | lowercase }}">{{ image.action | capitalize }}</button>
         </div>
       </div>
     </fieldset>
@@ -65,27 +67,26 @@
 
       changed: function(e) {
         this.$data.files = e.target.files;
+        console.log(this.$data.files);
         for ( var i = 0; i < this.$data.files.length; i++ )
         {
-          this.addImages(e.target.files[0]);
+          this.addImage(e.target.files[0]);
         }
       },
 
-      addImages: function(file) {
-        // var preview = document.createElement("img");
+      addImage: function(file) {
         var preview = {
-          action: "Upload",
+          index: this.$data.images.length,
+          action: "upload",
           src: "",
           filename: ""
         };
 
         preview.file = file;
-        preview.filename = file.name;
+        preview.filename = file.name.split(".")[0];
+        preview.extension = file.name.split(".")[1];
         preview.size = file.size;
-
         this.$data.images.push(preview);
-
-        console.log(this.$data.images);
 
         // REFERENCE: https://developer.mozilla.org/en/docs/
         // Using_files_from_web_applications#Example_Showing_thumbnails_of_user-selected_images
@@ -99,8 +100,71 @@
         fr.readAsDataURL(file);
       },
 
+      action: function(index) {
+        if ( this.$data.images[index].action === "upload" ) {
+          this.upload(index);
+        } else {
+          this.remove(index);
+        }
+      },
+
+      upload: function(index) {
+        var path = 'http://localhost:8080/services/item-images';
+        var image = this.$data.images[index];
+        var contentType = image.src.split(",")[0];
+        var data = {
+          filename: image.filename,
+          extension: image.extension,
+          data: image.src.split(",")[1]
+        }
+        var headers = {
+          "Content-Type" : contentType
+        }
+
+        this.$http.post(path, data, {headers: headers})
+                  .then(function(response){
+                    var  images = [];
+                    images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+                    var id = this.getIdFromLocationHeader(response.headers("Location"));
+                    images.push(id);
+                    this.$data.images[index].id = id;
+                    sessionStorage.setItem("uploaded-images", JSON.stringify(images));
+                    this.$data.images[index].action = "remove";
+                  }, function(response) {
+
+                  });
+      },
+
+      getIdFromLocationHeader: function(data) {
+        var split = data.split("/");
+        return split[split.length - 1];
+      },
+
+      remove: function(index) {
+        var id = this.$data.images[index].id;
+        var path = 'http://localhost:8080/services/item-images/' + id;
+        this.$http.delete(path)
+                  .then(function(response){
+                    console.log(response);
+                    // hate this.
+                    var  images = [];
+                    images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+                    for ( var i = 0; i < images.length; i++ ) {
+                      if ( images[i] == id ) {
+                        images.splice(i, 1);
+                      }
+                    }
+                    sessionStorage.setItem("uploaded-images", JSON.stringify(images));
+                    this.$data.images[index].action = "upload";
+                  }, function(response){
+
+                  });
+
+      },
+
       confirm: function() {
-        // close form.
+        this.$dispatch('broadcastEvent', 'displayDefinedCategories');
+        this.$dispatch('closeSidePanelView');
       }
     }
 

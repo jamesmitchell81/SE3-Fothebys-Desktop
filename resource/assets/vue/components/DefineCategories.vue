@@ -3,17 +3,17 @@
   <form action="">
     <legend>Define Categories</legend>
 
+      <button class="btn btn-full-width btn-distinct"
+              @click.prevent="showCategoryForm(0)"
+              >
+          Add New Category
+      </button>
+
       <button v-for="category in categories"
               class="btn btn-full-width"
               @click.prevent="showCategoryForm(category.id)"
               >
         {{ category.name }}
-      </button>
-
-      <button class="btn btn-full-width btn-distinct"
-              @click.prevent="showCategoryForm"
-              >
-          Add New Category
       </button>
 
       <div class="control-bar">
@@ -55,14 +55,17 @@
         this.$dispatch('loadSideForm', 'DefineCategoryForm');
       },
 
-      displayDefinedCatergories: function() {
-        var data = JSON.parse(sessionStorage.getItem('defined-category'));
-        this.$data.categories.push();
-      },
-
       complete: function() {
         sessionStorage.clear();
         this.$router.go("/lot-items");
+      }
+    },
+
+    events: {
+      displayDefinedCategories: function() {
+        var data = JSON.parse(sessionStorage.getItem('defined-category'));
+        this.$data.categories.push(data);
+        sessionStorage.clear();
       }
     }
 

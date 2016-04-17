@@ -259,6 +259,12 @@
       },
       displayItemWeight: function() {
         this.updateCollectionDetails("item-weight-set", "item-weight-details");
+      },
+      displayUploadedImages: function() {
+        var images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+
+        // get the images from the server.
+        // display on the page.
       }
 
     }, // end of events.

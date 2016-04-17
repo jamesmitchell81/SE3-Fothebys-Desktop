@@ -15733,20 +15733,23 @@ exports.default = {
       this.$dispatch('loadSideForm', 'DefineCategoryForm');
     },
 
-    displayDefinedCatergories: function displayDefinedCatergories() {
-      var data = JSON.parse(sessionStorage.getItem('defined-category'));
-      this.$data.categories.push();
-    },
-
     complete: function complete() {
       sessionStorage.clear();
       this.$router.go("/lot-items");
+    }
+  },
+
+  events: {
+    displayDefinedCategories: function displayDefinedCategories() {
+      var data = JSON.parse(sessionStorage.getItem('defined-category'));
+      this.$data.categories.push(data);
+      sessionStorage.clear();
     }
   }
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n  <legend>Define Categories</legend>\n\n    <button v-for=\"category in categories\" class=\"btn btn-full-width\" @click.prevent=\"showCategoryForm(category.id)\">\n      {{ category.name }}\n    </button>\n\n    <button class=\"btn btn-full-width btn-distinct\" @click.prevent=\"showCategoryForm\">\n        Add New Category\n    </button>\n\n    <div class=\"control-bar\">\n      <div class=\"control-bar-content\">\n        <button class=\"btn btn-distinct\" @click.prevent=\"complete\">\n                Complete\n        </button>\n      </div>\n    </div>\n</form>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n  <legend>Define Categories</legend>\n\n    <button class=\"btn btn-full-width btn-distinct\" @click.prevent=\"showCategoryForm(0)\">\n        Add New Category\n    </button>\n\n    <button v-for=\"category in categories\" class=\"btn btn-full-width\" @click.prevent=\"showCategoryForm(category.id)\">\n      {{ category.name }}\n    </button>\n\n    <div class=\"control-bar\">\n      <div class=\"control-bar-content\">\n        <button class=\"btn btn-distinct\" @click.prevent=\"complete\">\n                Complete\n        </button>\n      </div>\n    </div>\n</form>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15802,6 +15805,7 @@ exports.default = {
 
   methods: {
     getCategoryData: function getCategoryData(id) {
+
       this.$http.get('http://localhost:8080/services/category/' + this.$data.id).then(function (response) {
         this.$data.name = response.data.name;
         this.$data.category = response.data;
@@ -15824,8 +15828,34 @@ exports.default = {
       this.$data.newAttr.type = false;
     },
 
-    confirm: function confirm() {
+    getIdFromHeaderLocation: function getIdFromHeaderLocation(data) {
+      var split = data.split("/");
+      return split[split.length - 1];
+    },
 
+    confirm: function confirm() {
+      if (this.$data.id == 0) {
+        this.post();
+      } else {
+        this.update();
+      }
+    },
+
+    post: function post() {
+      var path = "http://localhost:8080/services/category";
+      var data = (0, _stringify2.default)(this.$data.category);
+      this.$http.post(path, data).then(function (response) {
+        var sess = JSON.parse(data);
+        sess.id = this.getIdFromHeaderLocation(response.headers("Location"));
+        sessionStorage.setItem("defined-category", (0, _stringify2.default)(sess));
+        this.$dispatch('broadcastEvent', 'displayDefinedCategories');
+        this.$dispatch('closeSidePanelView');
+      }, function (response) {
+        this.$data.message = "Request Failed";
+      });
+    },
+
+    update: function update(data) {
       var path = "http://localhost:8080/services/category/" + this.$data.id;
       var data = (0, _stringify2.default)(this.$data.category);
       this.$http.put(path, data).then(function (response) {
@@ -15840,7 +15870,7 @@ exports.default = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n\n  <legend>Define Category</legend>\n\n  <span>{{ message }}</span>\n\n  <span class=\"form-element\">\n    <label for=\"name\">Category Name</label>\n    <input type=\"text\" v-model=\"category.name\">\n  </span>\n\n  <label for=\"\">Attribute and Type</label>\n  <span class=\"form-element\" v-for=\"attribute in category.attributes\">\n    <span class=\"form-input-inline\">\n      <input type=\"text\" v-model=\"attribute.name\">\n      <select name=\"attrType\" id=\"\">\n        <option v-for=\"type in types\" value=\"type.name\" v-if=\"type.name == attribute.type\">\n                {{ type.name }}\n        </option>\n        <option v-for=\"type in types\" value=\"type.name\" v-if=\"type.name != attribute.type\">\n                {{ type.name }}\n        </option>\n      </select>\n    </span>\n    <span class=\"checkbox-item\">\n      <label for=\"required-{{attribute.name | lowercase }}\">\n      <input type=\"checkbox\" name=\"required\" id=\"required-{{attribute.name | lowercase }}\" v-model=\"attribute.required\">\n        Required Field?</label>\n    </span>\n    <span class=\"checkbox-item\">\n      <label for=\"required-{{attribute.name | lowercase }}\">\n      <input type=\"checkbox\" name=\"active\" id=\"active-{{attribute.name | lowercase }}\" v-model=\"attribute.active\">\n        Active?</label>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <span class=\"form-input-inline\">\n      <input type=\"text\" v-model=\"newAttr.name\">\n      <select id=\"\" v-model=\"newAttr.type\">\n        <option v-for=\"type in types\" value=\"{{ type.name }}\">{{ type.name }}</option>\n      </select>\n    </span>\n    <span class=\"checkbox-item\">\n      <label for=\"required-new\">\n      <input type=\"checkbox\" name=\"required-new\" id=\"required-new\" v-model=\"newAttr.required\">\n        Required Field?</label>\n    </span>\n    <button @click.prevent=\"addAttribute\" class=\"btn\">\n            Add Attribute\n    </button>\n  </span>\n\n  <button @click.prevent=\"confirm\" class=\"btn side-bar-confirm\">Confirm</button>\n\n</form>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n\n  <legend>Define Category</legend>\n\n  <span>{{ message }}</span>\n\n  <span class=\"form-element\">\n    <label for=\"name\">Category Name</label>\n    <input type=\"text\" v-model=\"category.name\">\n  </span>\n\n  <label for=\"\">Attribute and Type</label>\n  <span class=\"form-element\" v-for=\"attribute in category.attributes\">\n    <span class=\"form-input-inline\">\n      <input type=\"text\" v-model=\"attribute.name\">\n      <select name=\"attrType\" id=\"\">\n        <option v-for=\"type in types\" value=\"type.name\" v-if=\"type.name == attribute.type\">\n                {{ type.name }}\n        </option>\n        <option v-for=\"type in types\" value=\"type.name\" v-if=\"type.name != attribute.type\">\n                {{ type.name }}\n        </option>\n      </select>\n    </span>\n    <span class=\"checkbox-item\">\n      <label for=\"required-{{attribute.name | lowercase }}\">\n      <input type=\"checkbox\" name=\"required\" id=\"required-{{attribute.name | lowercase }}\" v-model=\"attribute.required\">\n        Required Field?</label>\n    </span>\n    <span class=\"checkbox-item\">\n      <label for=\"active-{{attribute.name | lowercase }}\">\n      <input type=\"checkbox\" name=\"active\" id=\"active-{{attribute.name | lowercase }}\" v-model=\"attribute.active\">\n        Active?</label>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <span class=\"form-input-inline\">\n      <input type=\"text\" v-model=\"newAttr.name\">\n      <select id=\"\" v-model=\"newAttr.type\">\n        <option v-for=\"type in types\" value=\"{{ type.name }}\">{{ type.name }}</option>\n      </select>\n    </span>\n    <span class=\"checkbox-item\">\n      <label for=\"required-new\">\n      <input type=\"checkbox\" name=\"required-new\" id=\"required-new\" v-model=\"newAttr.required\">\n        Required Field?</label>\n    </span>\n    <button @click.prevent=\"addAttribute\" class=\"btn\">\n            Add Attribute\n    </button>\n  </span>\n\n  <button @click.prevent=\"confirm\" class=\"btn side-bar-confirm\">Confirm</button>\n\n</form>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15986,6 +16016,13 @@ if (module.hot) {(function () {  module.hot.accept()
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _stringify = require("babel-runtime/core-js/json/stringify");
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 exports.default = {
   name: "ItemImagesForm",
 
@@ -16014,26 +16051,25 @@ exports.default = {
 
     changed: function changed(e) {
       this.$data.files = e.target.files;
+      console.log(this.$data.files);
       for (var i = 0; i < this.$data.files.length; i++) {
-        this.addImages(e.target.files[0]);
+        this.addImage(e.target.files[0]);
       }
     },
 
-    addImages: function addImages(file) {
-      // var preview = document.createElement("img");
+    addImage: function addImage(file) {
       var preview = {
-        action: "Upload",
+        index: this.$data.images.length,
+        action: "upload",
         src: "",
         filename: ""
       };
 
       preview.file = file;
-      preview.filename = file.name;
+      preview.filename = file.name.split(".")[0];
+      preview.extension = file.name.split(".")[1];
       preview.size = file.size;
-
       this.$data.images.push(preview);
-
-      console.log(this.$data.images);
 
       // REFERENCE: https://developer.mozilla.org/en/docs/
       // Using_files_from_web_applications#Example_Showing_thumbnails_of_user-selected_images
@@ -16047,6 +16083,61 @@ exports.default = {
       fr.readAsDataURL(file);
     },
 
+    action: function action(index) {
+      if (this.$data.images[index].action === "upload") {
+        this.upload(index);
+      } else {
+        this.remove(index);
+      }
+    },
+
+    upload: function upload(index) {
+      var path = 'http://localhost:8080/services/item-images';
+      var image = this.$data.images[index];
+      var contentType = image.src.split(",")[0];
+      var data = {
+        filename: image.filename,
+        extension: image.extension,
+        data: image.src.split(",")[1]
+      };
+      var headers = {
+        "Content-Type": contentType
+      };
+
+      this.$http.post(path, data, { headers: headers }).then(function (response) {
+        var images = [];
+        images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+        var id = this.getIdFromLocationHeader(response.headers("Location"));
+        images.push(id);
+        this.$data.images[index].id = id;
+        sessionStorage.setItem("uploaded-images", (0, _stringify2.default)(images));
+        this.$data.images[index].action = "remove";
+      }, function (response) {});
+    },
+
+    getIdFromLocationHeader: function getIdFromLocationHeader(data) {
+      var split = data.split("/");
+      return split[split.length - 1];
+    },
+
+    remove: function remove(index) {
+      var id = this.$data.images[index].id;
+      var path = 'http://localhost:8080/services/item-images/' + id;
+      this.$http.delete(path).then(function (response) {
+        console.log(response);
+        // hate this.
+        var images = [];
+        images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+        for (var i = 0; i < images.length; i++) {
+          if (images[i] == id) {
+            images.splice(i, 1);
+          }
+        }
+        sessionStorage.setItem("uploaded-images", (0, _stringify2.default)(images));
+        this.$data.images[index].action = "upload";
+      }, function (response) {});
+    },
+
     confirm: function confirm() {
       // close form.
     }
@@ -16054,7 +16145,7 @@ exports.default = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n  <fieldset>\n    <legend>Item Image Upload</legend>\n    <span class=\"form-element\">\n      <input class=\"drop-zone-input\" type=\"file\" name=\"image-input\" id=\"image-input\" multiple=\"\" @change=\"changed\">\n      <label class=\"drop-zone\" for=\"image-input\" @drop=\"dropped\">\n        DROP IMAGE[S] or FOLDER HERE\n      </label>\n    </span>\n  </fieldset>\n\n  <fieldset>\n    <legend>Image List</legend>\n    <div id=\"image-list\">\n      <div class=\"image-item\" v-for=\"image in images\">\n        <div class=\"item-image-wrap\">\n          <img :src=\"image.src\" alt=\"image preview\" class=\"image-upload-preview\">\n        </div>\n        <input type=\"text\" class=\"image-filename\" v-model=\"image.filename\">\n        <span class=\"image-upload-btn\" data-action=\"{{ image.action | lowercase }}\">{{ image.action }}</span>\n      </div>\n    </div>\n  </fieldset>\n\n  <button @click.prevent=\"confirm\" class=\"btn side-bar-confirm\">Confirm</button>\n\n</form>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n  <fieldset>\n    <legend>Item Image Upload</legend>\n    <span class=\"form-element\">\n      <input class=\"drop-zone-input\" type=\"file\" name=\"image-input\" id=\"image-input\" multiple=\"\" @change=\"changed\">\n      <label class=\"drop-zone\" for=\"image-input\" @drop=\"dropped\">\n        DROP IMAGE[S] or FOLDER HERE\n      </label>\n    </span>\n  </fieldset>\n\n  <fieldset>\n    <legend>Image List</legend>\n    <div id=\"image-list\">\n      <div class=\"image-item\" v-for=\"image in images\">\n        <div class=\"item-image-wrap\">\n          <img :src=\"image.src\" alt=\"image preview\" class=\"image-upload-preview\">\n        </div>\n        <input type=\"text\" class=\"image-filename\" v-model=\"image.filename\">\n        <button @click.prevent=\"action(image.index)\" class=\"image-upload-btn\" data-action=\"{{ image.action | lowercase }}\">{{ image.action | capitalize }}</button>\n      </div>\n    </div>\n  </fieldset>\n\n  <button @click.prevent=\"confirm\" class=\"btn side-bar-confirm\">Confirm</button>\n\n</form>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16066,7 +16157,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36}],79:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36}],79:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
