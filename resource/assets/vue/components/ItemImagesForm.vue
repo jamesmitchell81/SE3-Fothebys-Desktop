@@ -57,33 +57,54 @@
 
     ready: function() {
       // get the images for this item.
-      // this.$http.get('http://localhost:8080/services/item-images/item/1')
-      //           .then(function(response) {
-      //             console.log(response);
-      //             this.images = response.data;
-      //           }, function(err) {
-      //             this.images = [];
-      //             console.log(err);
-      //           });
+      var sess = sessionStorage.getItem("uploaded-images");
+
+      if ( sess !== null ) {
+        sess = JSON.parse(sess);
+        for ( var i = 0; i < sess.length; i++ ) {
+          var id = sess[i];
+          this.$http.get('http://localhost:8080/services/item-images/' + id).then(
+            function(response) {
+              var image = {
+                id: response.data.id,
+                index: this.$data.images.length,
+                src: "data:image/" + response.data.extension + ";base64," + response.data.data,
+                extension: response.data.extension,
+                filename: response.data.filename,
+                action: "remove",
+              }
+              this.$data.images.push(image);
+            }, function(err) {
+              this.images = [];
+              console.log(err);
+            });
+        }
+      }
+
     },
 
     methods: {
       dropped: function(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log("Dropped");
-        console.log(e);
+        var data = e.dataTransfer;
+        var files = data.files;
+
+        this.addImages(files);
       },
 
       draggedover: function(e) {
         e.preventDefault();
-        return true;
       },
 
       changed: function(e) {
-        this.$data.files = e.target.files;
+        this.addImages(e.target.files);
+      },
+
+      addImages: function(files) {
+        this.$data.files = files;
         for ( var i = 0; i < this.$data.files.length; i++ ) {
-          this.addImage(e.target.files[i]);
+          this.addImage(this.$data.files[i]);
         }
       },
 
@@ -157,11 +178,11 @@
       },
 
       remove: function(index) {
+        console.log(this.$data.images);
         var id = this.$data.images[index].id;
         var path = 'http://localhost:8080/services/item-images/' + id;
         this.$http.delete(path)
                   .then(function(response){
-                    console.log(response);
                     // hate this.
                     var  images = [];
                     images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];

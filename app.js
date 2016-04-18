@@ -32,11 +32,11 @@ app.on('ready', function() {
     width: (size.width - 40),
     height: (size.height - 40), //0.99),
     minWidth: 800,
-    'min-height': 600,
-    'title-bar-style': 'hidden-inset'
+    minHeight: 600,
+    titleBarStyle: 'hidden-inset'
   });
 
-  mainWindow.loadUrl('file://' + __dirname + '/app/html/index.html');
+  mainWindow.loadURL('file://' + __dirname + '/app/html/index.html');
   mainWindow.openDevTools();
 
   var page = mainWindow.webContents;

@@ -47,6 +47,28 @@ label
   padding: 0.5em
   width: 50%
 
+.msg
+  color: #FF8A80
+  font-style: italic
+  border-radius: 2px
+  font-size: 0.9em
+
+label > .msg
+  display: inline
+  float: right
+  text-transform: none
+  letter-spacing: 0
+
+.msg-error
+  display: none;
+
+.msg-hide-transition
+  transition: all 0.2s ease
+  opacity: 1
+
+.msg-hide-enter, .msg-hide-leave
+  opacity: 0
+
 input, .msg, textarea
   line-height: 1.5em
   padding: 0.35em 0.5em
@@ -75,13 +97,6 @@ select
 ::-webkit-input-placeholder
   font-size: 0.8em
   color: #999;
-
-.msg
-  text-align: right
-  font-size: 0.9em
-  // background: #efefef
-  // box-shadow: inset 1px 1px 1px #cacaca
-  // border-radius: 2px;
 
 .option-item
   width: 100%
@@ -225,4 +240,11 @@ select
   display: inline-block
 
 
+.details-display
+  width: 100%
+  clear: both
+  margin-top: 0.5em
+
+.details-display li
+  border-top: 1px dotted #efefef
 

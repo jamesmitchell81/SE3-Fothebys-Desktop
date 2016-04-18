@@ -13,7 +13,7 @@
                 class="btn">No</button>
       </span>
 
-      <div id="client-details"></div>
+      <div class="details-display" id="client-details"></div>
     </span>
 
     <span class="form-element">
@@ -22,7 +22,7 @@
               class="btn">Add Expert
             </button>
       <!-- details -->
-      <div id="expert-selected-details"></div>
+      <div class="details-display" id="expert-selected-details"></div>
       <!-- edit -->
     </span>
 
@@ -31,7 +31,7 @@
       <button @click.prevent="this.$dispatch('loadSideForm', 'CategorySelection')"
               class="btn">Select Category
             </button>
-      <div id="category-details"></div>
+      <div class="details-display" id="category-details"></div>
     </span>
 
     <span class="form-element">
@@ -39,7 +39,7 @@
       <button @click.prevent="this.$dispatch('loadSideForm', 'ClassificationSelection')"
               class="btn">Select Classifications
             </button>
-      <div id="classification-details"></div>
+      <div class="details-display"  class="details-display" id="classification-details"></div>
     </span>
 
     <span class="form-element">
@@ -48,7 +48,7 @@
               class="btn">
               Add Date Period
         </button>
-      <div id="date-period-details"></div>
+      <div class="details-display"  class="details-display" id="date-period-details"></div>
     </span>
 
     <span class="form-element">
@@ -56,7 +56,7 @@
       <button @click.prevent="this.$dispatch('loadSideForm', 'ItemDimensionForm')"
               class="btn">Add Dimensions
             </button>
-      <div id="dimension-details"></div>
+      <div class="details-display" id="dimension-details"></div>
     </span>
 
     <span class="form-element">
@@ -64,7 +64,7 @@
       <button @click.prevent="this.$dispatch('loadSideForm', 'ItemWeightForm')"
               class="btn">Add Item Weight
             </button>
-      <div id="item-weight-details"></div>
+      <div  class="details-display" id="item-weight-details"></div>
     </span>
 
     <span class="form-element">
@@ -72,7 +72,7 @@
       <button @click.prevent="this.$dispatch('loadSideForm', 'ItemImagesForm')"
               class="btn">Add Images</button>
       <!-- list of filenames -->
-      <div style="clear:both;" id="item-images-details"></div>
+      <div class="details-display" id="item-images-details"></div>
       <!-- edit -->
     </span>
 
@@ -162,7 +162,7 @@
     },
 
     ready: function() {
-      // relaod all the displayed data on reload.
+      // reload all the displayed data on reload.
       this.$dispatch("broadcastEvent", "updateCategory");
       this.$dispatch("broadcastEvent", "updateClassifications");
       this.$dispatch("broadcastEvent", "updateDimensions");
@@ -213,9 +213,10 @@
               var li = document.createElement("li");
               if ( details[prop] !== null && typeof details[prop] === 'object' ) {
                 li.appendChild(this.makeList(details[prop]));
+              } else {
+                var label = prop.split(/(?=[A-Z])/g).join(" ").toUpperCase();
+                li.innerHTML = label + ": " + "<strong>details[prop]</strong>";
               }
-              var label = prop.split(/(?=[A-Z])/g).join(" ");
-              li.innerHTML = label + ": " + details[prop];
               ul.appendChild(li);
             }
           }
@@ -291,11 +292,8 @@
         var parent = document.getElementById("item-images-details");
         parent.innerHTML = "";
 
-        console.log(uploadedImages);
-
         for ( var i = 0; i < uploadedImages.length; i++ ) {
           this.$http.get(path + uploadedImages[i]).then(function(response) {
-            console.log(response);
             this.displayImageList(response.data);
           }, function(response) {
             console.log(response);
