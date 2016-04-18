@@ -15585,14 +15585,22 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],71:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+
+var ClientSearchForm = require('./ClientSearchForm.vue');
+
 exports.default = {
 
   name: "ClientList",
+
+  components: {
+    ClientSearchForm: ClientSearchForm
+  },
 
   data: function data() {
     return {
@@ -15614,7 +15622,7 @@ exports.default = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<table>\n  <thead>\n    <tr>\n\n    </tr>\n  </thead>\n  <tbody>\n    <tr v-for=\"client in clients\">\n      <td>{{ client.firstName }}</td>\n      <td>{{ client.surname }}</td>\n      <td>{{ client.emailAddress }}</td>\n    </tr>\n  </tbody>\n</table>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<client-search-form>\n</client-search-form>\n\n<div v-for=\"client in clients\">\n    <span>Name: <span>{{ client.fullName }}</span></span>\n    <span>Email: <span>{{ client.emailAddress }}</span></span>\n</div>\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15630,7 +15638,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],72:[function(require,module,exports){
+},{"./ClientSearchForm.vue":72,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],72:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 "use strict";
 
@@ -16091,9 +16099,6 @@ exports.default = {
             filename: response.data.filename,
             action: "remove"
           };
-
-          console.log(image);
-
           this.$data.images.push(image);
         }, function (err) {
           this.images = [];
@@ -16202,7 +16207,6 @@ exports.default = {
       var id = this.$data.images[index].id;
       var path = 'http://localhost:8080/services/item-images/' + id;
       this.$http.delete(path).then(function (response) {
-        console.log(response);
         // hate this.
         var images = [];
         images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
@@ -16372,7 +16376,7 @@ exports.default = {
               li.appendChild(this.makeList(details[prop]));
             } else {
               var label = prop.split(/(?=[A-Z])/g).join(" ").toUpperCase();
-              li.innerHTML = label + ": " + "<strong>details[prop]</strong>";
+              li.innerHTML = label + ": " + "<strong>" + details[prop] + "</strong>";
             }
             ul.appendChild(li);
           }
@@ -16619,10 +16623,16 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = {
-  name: 'PageNav'
+  name: 'Welcome',
+
+  data: function data() {
+    return {
+      actions: []
+    };
+  }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>welcome</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"actions\">\n  <h1>Actions</h1>\n\n    <div class=\"page-notification\" v-if=\"actions.length === 0\">\n      You have no current actions\n    </div>\n\n</div>\n\n\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

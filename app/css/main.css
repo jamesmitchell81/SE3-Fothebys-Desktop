@@ -142,6 +142,27 @@ nav {
   padding: 1.5em;
   width: 100%; }
 
+.actions {
+  margin-top: 2em; }
+
+.actions h1 {
+  border-bottom: 1px solid #efefef;
+  width: 100%;
+  font-weight: 300;
+  text-transform: uppercase;
+  text-align: center; }
+
+.actions .page-notification {
+  width: 70%;
+  margin: 5em auto; }
+
+.page-notification {
+  width: 100%;
+  text-align: center;
+  line-height: 4em;
+  background: #efefef;
+  border-radius: 5px; }
+
 #close-side-bar {
   background: #FF8A80; }
 

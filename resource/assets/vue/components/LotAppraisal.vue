@@ -215,7 +215,7 @@
                 li.appendChild(this.makeList(details[prop]));
               } else {
                 var label = prop.split(/(?=[A-Z])/g).join(" ").toUpperCase();
-                li.innerHTML = label + ": " + "<strong>details[prop]</strong>";
+                li.innerHTML = label + ": " + "<strong>" + details[prop] + "</strong>";
               }
               ul.appendChild(li);
             }

@@ -1,51 +1,50 @@
 <template>
 
-  <table>
-    <thead>
-      <tr>
+  <client-search-form>
+  </client-search-form>
 
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="client in clients">
-        <td>{{ client.firstName }}</td>
-        <td>{{ client.surname }}</td>
-        <td>{{ client.emailAddress }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div v-for="client in clients">
+      <span>Name: <span>{{ client.fullName }}</span></span>
+      <span>Email: <span>{{ client.emailAddress }}</span></span>
+  </div>
+
 
 </template>
 
 <script>
+var ClientSearchForm = require('./ClientSearchForm.vue');
 
-  export default {
+export default {
 
-    name: "ClientList",
+  name: "ClientList",
 
-    data: function() {
-      return {
-        clients: []
-      }
-    },
+  components: {
+    ClientSearchForm
+  },
 
-    route: {
-      activate: function() {
-
-        this.$http.get('http://localhost:8080/services/clients')
-                  .then(function(response) {
-                    console.log(response);
-                    this.$data.clients = response.data;
-                  }, function(response) {
-                    console.log(response);
-                  });
-
-
-
-      }
+  data: function() {
+    return {
+      clients: []
     }
+  },
 
+  route: {
+    activate: function() {
+
+      this.$http.get('http://localhost:8080/services/clients')
+                .then(function(response) {
+                  console.log(response);
+                  this.$data.clients = response.data;
+                }, function(response) {
+                  console.log(response);
+                });
+
+
+
+    }
   }
+
+}
 
 </script>
 
