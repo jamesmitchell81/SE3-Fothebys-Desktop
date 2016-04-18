@@ -40,6 +40,7 @@ var ItemDimensionForm = require('./ItemDimensionForm.vue');
 var ItemImagesForm = require('./ItemImagesForm.vue');
 var ItemWeightForm = require('./ItemWeightForm.vue');
 var DefineCategoryForm = require('./DefineCategoryForm.vue');
+var ItemAttributeDefinition = require('./ItemAttributeDefinition.vue');
 
   export default {
 
@@ -54,7 +55,8 @@ var DefineCategoryForm = require('./DefineCategoryForm.vue');
       ItemDimensionForm,
       ItemImagesForm,
       ItemWeightForm,
-      DefineCategoryForm
+      DefineCategoryForm,
+      ItemAttributeDefinition
     },
 
     props: {

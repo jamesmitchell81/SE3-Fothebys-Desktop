@@ -15127,6 +15127,7 @@ var ItemDimensionForm = require('./ItemDimensionForm.vue');
 var ItemImagesForm = require('./ItemImagesForm.vue');
 var ItemWeightForm = require('./ItemWeightForm.vue');
 var DefineCategoryForm = require('./DefineCategoryForm.vue');
+var ItemAttributeDefinition = require('./ItemAttributeDefinition.vue');
 
 exports.default = {
 
@@ -15141,7 +15142,8 @@ exports.default = {
     ItemDimensionForm: ItemDimensionForm,
     ItemImagesForm: ItemImagesForm,
     ItemWeightForm: ItemWeightForm,
-    DefineCategoryForm: DefineCategoryForm
+    DefineCategoryForm: DefineCategoryForm,
+    ItemAttributeDefinition: ItemAttributeDefinition
   },
 
   props: {
@@ -15223,7 +15225,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./CategorySelection.vue":67,"./ClassificationSelection.vue":68,"./ClientDetailsForm.vue":70,"./ClientSearchForm.vue":72,"./DatePeriodForm.vue":73,"./DefineCategoryForm.vue":75,"./ExpertSelection.vue":76,"./ItemDimensionForm.vue":77,"./ItemImagesForm.vue":78,"./ItemWeightForm.vue":79,"./SidePanel.vue":83,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],66:[function(require,module,exports){
+},{"./CategorySelection.vue":67,"./ClassificationSelection.vue":68,"./ClientDetailsForm.vue":70,"./ClientSearchForm.vue":72,"./DatePeriodForm.vue":73,"./DefineCategoryForm.vue":75,"./ExpertSelection.vue":76,"./ItemAttributeDefinition.vue":77,"./ItemDimensionForm.vue":78,"./ItemImagesForm.vue":79,"./ItemWeightForm.vue":80,"./SidePanel.vue":84,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],66:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 "use strict";
 
@@ -15352,7 +15354,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./OptionItem.vue":81,"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],68:[function(require,module,exports){
+},{"./OptionItem.vue":82,"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],68:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16001,6 +16003,54 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],77:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+
+  name: "ItemAttributeDefinition",
+  data: function data() {
+    return {
+      attributes: [],
+      category: {}
+    };
+  },
+
+  ready: function ready() {
+    var category = sessionStorage.getItem("category-selected");
+    var path = "http://localhost:8080/services/category/";
+
+    if (category !== null) {
+      category = JSON.parse(category);
+
+      this.$http.get(path + category.id).then(function (response) {
+        this.$data.category = response.data;
+      }, function (response) {});
+    }
+  }
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n  <fieldset>\n    <legend>Item Attribute Definition</legend>\n  </fieldset>\n\n  <span>{{ category.name }}</span>\n\n  <span class=\"form-element\" v-for=\"attribute in category.attributes\"> {{ attribute.type }}\n    <label for=\"itemName\">{{ attribute.name }}\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"attribute.required\">Required field</span>\n    </label>\n\n    <input type=\"text\" v-model=\"\" required=\"\" v-if=\"attribute.type === 'text'\">\n    <input type=\"number\" v-model=\"\" required=\"\" v-if=\"attribute.type === 'number'\">\n    <input type=\"date\" v-model=\"\" required=\"\" v-if=\"attribute.type === 'date'\">\n\n    <span class=\"form-input-inline\" v-if=\"attribute.type === 'true/false'\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"{{ attribute.name | lowercase }}\" id=\"true\">\n        <label for=\"true\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"{{ attribute.name | lowercase }}\" id=\"false\">\n        <label for=\"false\">No</label>\n      </span>\n    </span>\n  </span>\n\n</form>\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/ItemAttributeDefinition.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],78:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16059,7 +16109,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36}],78:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36}],79:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16240,7 +16290,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36}],79:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36}],80:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16293,7 +16343,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36}],80:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36}],81:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 "use strict";
 
@@ -16316,6 +16366,7 @@ exports.default = {
 
   data: function data() {
     return {
+      appraisalDate: '',
       agreement: false,
       authenticated: false,
       itemName: "",
@@ -16339,12 +16390,29 @@ exports.default = {
   },
 
   methods: {
+    validate: function validate(e) {
+      var src = e.target;
+      var err = src.parentElement.querySelector(".msg-error");
+
+      if (err) {
+        if (!src.validity.valid) {
+          err.style.display = "block";
+        } else {
+          err.style.display = "none";
+        }
+      }
+    },
+
     submitForm: function submitForm() {
       var form = document.querySelector('form');
       var action = form.action;
       var method = form.method;
 
       var d = (0, _stringify2.default)(this.$data);
+
+      console.log(this.$data);
+
+      // lot item
 
       this.$http.post('http://localhost:8080/services/lot-item', d).then(function (response) {
         console.log(response);
@@ -16464,7 +16532,7 @@ exports.default = {
 
   } };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form action=\"\">\n  <legend>Record Lot Appraisal</legend>\n\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n\n    <span class=\"btn-group\"><!-- v-show -->\n      <span>Existing Client</span>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientSearchForm')\" class=\"btn\">Yes</button>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientDetailsForm')\" class=\"btn\">No</button>\n    </span>\n\n    <div class=\"details-display\" id=\"client-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ExpertSelection')\" class=\"btn\">Add Expert\n          </button>\n    <!-- details -->\n    <div class=\"details-display\" id=\"expert-selected-details\"></div>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'CategorySelection')\" class=\"btn\">Select Category\n          </button>\n    <div class=\"details-display\" id=\"category-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Classification</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClassificationSelection')\" class=\"btn\">Select Classifications\n          </button>\n    <div class=\"details-display\" id=\"classification-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Date Period</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'DatePeriodForm')\" class=\"btn\">\n            Add Date Period\n      </button>\n    <div class=\"details-display\" id=\"date-period-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Dimensions</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemDimensionForm')\" class=\"btn\">Add Dimensions\n          </button>\n    <div class=\"details-display\" id=\"dimension-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Weight</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemWeightForm')\" class=\"btn\">Add Item Weight\n          </button>\n    <div class=\"details-display\" id=\"item-weight-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Images</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemImagesForm')\" class=\"btn\">Add Images</button>\n    <!-- list of filenames -->\n    <div class=\"details-display\" id=\"item-images-details\"></div>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"itemName\">Item Name</label>\n    <input type=\"text\" v-model=\"itemName\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"estimatedPrice\">Estimated Price</label>\n    <input type=\"number\" min=\"1\" v-model=\"estimatedPrice\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"textualDescription\">Textual Description</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"textualDescription\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"provenanceDetails\">Provenance Details</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"provenanceDetails\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Authenticated</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedYes\">\n        <label for=\"authenticatedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedNo\">\n        <label for=\"authenticatedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Agreement Signed</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedYes\">\n        <label for=\"agreedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedNo\">\n        <label for=\"agreedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Additional Notes</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"additionalNotes\">      </textarea>\n  </span>\n\n  <div class=\"control-bar\">\n    <div class=\"control-bar-content\">\n      <button class=\"btn\" @click.prevent=\"submitForm\">\n              Complete\n      </button>\n    </div>\n  </div>\n\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form action=\"\" @keyup.enter.prevent=\"\" @change=\"validate\">\n  <legend>Record Lot Appraisal</legend>\n\n  <span class=\"form-element\">\n    <label for=\"appraisalDate\">Appraisal Date\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"appraisalDate.length === 0\">Required field</span>\n    </label>\n    <input type=\"date\" v-model=\"appraisalDate\" required=\"\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n\n    <span class=\"btn-group\"><!-- v-show -->\n      <span>Existing Client</span>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientSearchForm')\" class=\"btn\">Yes</button>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientDetailsForm')\" class=\"btn\">No</button>\n    </span>\n\n    <div class=\"details-display\" id=\"client-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ExpertSelection')\" class=\"btn\">Add Expert\n          </button>\n    <!-- details -->\n    <div class=\"details-display\" id=\"expert-selected-details\"></div>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'CategorySelection')\" class=\"btn\">Select Category\n          </button>\n    <div class=\"details-display\" id=\"category-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Category Specific Attributes</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemAttributeDefinition')\" class=\"btn\">Set Attributes\n          </button>\n    <div class=\"details-display\" id=\"attribute-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Classification</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClassificationSelection')\" class=\"btn\">Select Classifications\n          </button>\n    <div class=\"details-display\" id=\"classification-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Date Period</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'DatePeriodForm')\" class=\"btn\">\n            Add Date Period\n      </button>\n    <div class=\"details-display\" id=\"date-period-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Dimensions</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemDimensionForm')\" class=\"btn\">Add Dimensions\n          </button>\n    <div class=\"details-display\" id=\"dimension-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Weight</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemWeightForm')\" class=\"btn\">Add Item Weight\n          </button>\n    <div class=\"details-display\" id=\"item-weight-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Images</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemImagesForm')\" class=\"btn\">Add Images</button>\n    <!-- list of filenames -->\n    <div class=\"details-display\" id=\"item-images-details\"></div>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"itemName\">Item Name\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"itemName.length === 0\">Required field</span>\n    </label>\n    <input type=\"text\" v-model=\"itemName\" required=\"\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"estimatedPrice\">Estimated Price\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"estimatedPrice.length === 0\">Required field</span>\n    </label>\n    <input type=\"number\" min=\"1\" v-model=\"estimatedPrice\" required=\"\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"textualDescription\">Textual Description\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"textualDescription.length === 0\">Required field</span>\n    </label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"textualDescription\" required=\"\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"provenanceDetails\">Provenance Details\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"provenanceDetails.length === 0\">Required field</span>\n    </label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"provenanceDetails\" required=\"\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Authenticated</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedYes\">\n        <label for=\"authenticatedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedNo\">\n        <label for=\"authenticatedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Agreement Signed</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedYes\">\n        <label for=\"agreedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedNo\">\n        <label for=\"agreedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Additional Notes</label>\n    <textarea rols=\"40\" cols=\"20\" v-model=\"additionalNotes\">      </textarea>\n  </span>\n\n  <div class=\"control-bar\">\n    <div class=\"control-bar-content\">\n      <button class=\"btn\" @click.prevent=\"submitForm\">\n              Complete\n      </button>\n    </div>\n  </div>\n\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16480,7 +16548,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],81:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],82:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n")
 "use strict";
 
@@ -16514,7 +16582,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],82:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],83:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16561,7 +16629,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./Tile.vue":84,"vue":62,"vue-hot-reload-api":36}],83:[function(require,module,exports){
+},{"./Tile.vue":85,"vue":62,"vue-hot-reload-api":36}],84:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16584,7 +16652,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36}],84:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],85:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16616,7 +16684,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36}],85:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],86:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16644,7 +16712,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36}],86:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],87:[function(require,module,exports){
 var Vue = require('vue');
 var VueResource = require('vue-resource');
 var Router = require('vue-router');
@@ -16713,4 +16781,4 @@ router.start(App, '#app');
 //     }
 //   }
 // })
-},{"./components/AddLotItem.vue":64,"./components/App.vue":65,"./components/ArrangeAppraisal.vue":66,"./components/ClientDetails.vue":69,"./components/ClientList.vue":71,"./components/DefineCategories.vue":74,"./components/LotAppraisal.vue":80,"./components/PageNav.vue":82,"./components/Welcome.vue":85,"vue":62,"vue-resource":50,"vue-router":61}]},{},[86]);
+},{"./components/AddLotItem.vue":64,"./components/App.vue":65,"./components/ArrangeAppraisal.vue":66,"./components/ClientDetails.vue":69,"./components/ClientList.vue":71,"./components/DefineCategories.vue":74,"./components/LotAppraisal.vue":81,"./components/PageNav.vue":83,"./components/Welcome.vue":86,"vue":62,"vue-resource":50,"vue-router":61}]},{},[87]);

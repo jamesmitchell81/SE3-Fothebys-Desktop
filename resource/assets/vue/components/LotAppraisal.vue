@@ -1,6 +1,13 @@
 <template>
-  <form action="">
+  <form action="" @keyup.enter.prevent="" @change="validate">
     <legend>Record Lot Appraisal</legend>
+
+    <span class="form-element">
+      <label for="appraisalDate">Appraisal Date
+          <span class="msg" transition="msg-hide" v-if="appraisalDate.length === 0">Required field</span>
+      </label>
+      <input type="date" v-model="appraisalDate" required>
+    </span>
 
     <span class="form-element">
       <label for="">Client</label>
@@ -32,6 +39,14 @@
               class="btn">Select Category
             </button>
       <div class="details-display" id="category-details"></div>
+    </span>
+
+    <span class="form-element">
+      <label for="">Category Specific Attributes</label>
+      <button @click.prevent="this.$dispatch('loadSideForm', 'ItemAttributeDefinition')"
+              class="btn">Set Attributes
+            </button>
+      <div class="details-display" id="attribute-details"></div>
     </span>
 
     <span class="form-element">
@@ -77,24 +92,32 @@
     </span>
 
     <span class="form-element">
-      <label for="itemName">Item Name</label>
-      <input type="text" v-model="itemName">
+      <label for="itemName">Item Name
+          <span class="msg" transition="msg-hide" v-if="itemName.length === 0">Required field</span>
+      </label>
+      <input type="text" v-model="itemName" required>
     </span>
 
     <span class="form-element">
-      <label for="estimatedPrice">Estimated Price</label>
-      <input type="number" min="1" v-model="estimatedPrice">
+      <label for="estimatedPrice">Estimated Price
+          <span class="msg" transition="msg-hide" v-if="estimatedPrice.length === 0">Required field</span>
+      </label>
+      <input type="number" min="1" v-model="estimatedPrice" required>
     </span>
 
     <span class="form-element">
-      <label for="textualDescription">Textual Description</label>
-      <textarea rols="40" cols="20" v-model="textualDescription">
+      <label for="textualDescription">Textual Description
+          <span class="msg" transition="msg-hide" v-if="textualDescription.length === 0">Required field</span>
+      </label>
+      <textarea rols="40" cols="20" v-model="textualDescription" required>
       </textarea>
     </span>
 
     <span class="form-element">
-      <label for="provenanceDetails">Provenance Details</label>
-      <textarea rols="40" cols="20" v-model="provenanceDetails">
+      <label for="provenanceDetails">Provenance Details
+          <span class="msg" transition="msg-hide" v-if="provenanceDetails.length === 0">Required field</span>
+      </label>
+      <textarea rols="40" cols="20" v-model="provenanceDetails" required>
       </textarea>
     </span>
 
@@ -151,6 +174,7 @@
 
     data: function() {
       return {
+        appraisalDate: '',
         agreement: false,
         authenticated: false,
         itemName: "",
@@ -174,12 +198,29 @@
     },
 
     methods: {
+      validate: function(e) {
+        var src = e.target;
+        var err = src.parentElement.querySelector(".msg-error");
+
+        if ( err ) {
+          if ( !src.validity.valid ) {
+            err.style.display = "block";
+          } else {
+            err.style.display = "none";
+          }
+        }
+      },
+
       submitForm: function() {
       var form = document.querySelector('form');
       var action = form.action;
       var method = form.method;
 
       var d = JSON.stringify(this.$data);
+
+      console.log(this.$data);
+
+      // lot item
 
       this.$http.post('http://localhost:8080/services/lot-item', d)
                 .then(function(response) {
