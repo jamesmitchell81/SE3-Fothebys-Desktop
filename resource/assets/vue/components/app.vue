@@ -41,6 +41,7 @@ var ItemImagesForm = require('./ItemImagesForm.vue');
 var ItemWeightForm = require('./ItemWeightForm.vue');
 var DefineCategoryForm = require('./DefineCategoryForm.vue');
 var ItemAttributeDefinition = require('./ItemAttributeDefinition.vue');
+var ItemDeleteConfirm = require('./ItemDeleteConfirm.vue');
 
   export default {
 
@@ -56,7 +57,8 @@ var ItemAttributeDefinition = require('./ItemAttributeDefinition.vue');
       ItemImagesForm,
       ItemWeightForm,
       DefineCategoryForm,
-      ItemAttributeDefinition
+      ItemAttributeDefinition,
+      ItemDeleteConfirm
     },
 
     props: {
@@ -118,7 +120,6 @@ var ItemAttributeDefinition = require('./ItemAttributeDefinition.vue');
       },
 
       broadcastEvent: function(event) {
-        console.log(event);
         this.$broadcast(event);
       }
     }

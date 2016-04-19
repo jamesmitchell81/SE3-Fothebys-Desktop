@@ -31,13 +31,35 @@ router.map({
       }
     }
   },
+  '/lot-items/:id': {
+    name: "item.view",
+    component: require('./components/ViewItem.vue')
+  },
   '/lot-items/lot-appraisal': {
     component: require('./components/LotAppraisal.vue')
+  },
+  '/lot-items/lot-appraisal/update/:id': {
+    name: "item.update",
+    component: require('./components/LotAppraisal.vue')
+  },
+  '/lot-items/lot-appraisal/delete/:id': {
+    name: "item.delete",
+    component: require('./components/ItemDeleteConfirm.vue')
+  },
+  '/lot-items/view-items': {
+    name: "items.view",
+    component: require('./components/ViewItems.vue')
+  },
+  '/lot-items/design/:id': {
+    name: "item.page.design",
+    component: require('./components/ItemPageDesign.vue')
   },
   '/clients': {
     component: require('./components/ClientList.vue')
   }
 });
+
+// lot-items/design
 
 Vue.config.debug = true;
 

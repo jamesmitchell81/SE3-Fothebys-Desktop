@@ -20,7 +20,7 @@ var Tile = require("./Tile.vue");
     data: function() {
       return {
         tiles: [
-          { name: "Arrange Appraisal", url: "/lot-items/arrange-appraisal" },
+          { name: "View Items", url: "/lot-items/view-items" },
           { name: "Record Lot Appraisal", url: "/lot-items/record-appraisal" },
           { name: "Define Categories", url: "/lot-items/define-categories" }
         ]

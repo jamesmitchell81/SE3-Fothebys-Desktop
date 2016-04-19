@@ -68,7 +68,7 @@
               var image = {
                 id: response.data.id,
                 index: this.$data.images.length,
-                src: "data:image/" + response.data.extension + ";base64," + response.data.data,
+                src: response.data.dataURL, //"data:image/" + response.data.extension + ";base64," + response.data.data,
                 extension: response.data.extension,
                 filename: response.data.filename,
                 action: "remove",

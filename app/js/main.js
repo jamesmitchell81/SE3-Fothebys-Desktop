@@ -15106,6 +15106,7 @@ var ItemImagesForm = require('./ItemImagesForm.vue');
 var ItemWeightForm = require('./ItemWeightForm.vue');
 var DefineCategoryForm = require('./DefineCategoryForm.vue');
 var ItemAttributeDefinition = require('./ItemAttributeDefinition.vue');
+var ItemDeleteConfirm = require('./ItemDeleteConfirm.vue');
 
 exports.default = {
 
@@ -15121,7 +15122,8 @@ exports.default = {
     ItemImagesForm: ItemImagesForm,
     ItemWeightForm: ItemWeightForm,
     DefineCategoryForm: DefineCategoryForm,
-    ItemAttributeDefinition: ItemAttributeDefinition
+    ItemAttributeDefinition: ItemAttributeDefinition,
+    ItemDeleteConfirm: ItemDeleteConfirm
   },
 
   props: {
@@ -15182,7 +15184,6 @@ exports.default = {
     },
 
     broadcastEvent: function broadcastEvent(event) {
-      console.log(event);
       this.$broadcast(event);
     }
   }
@@ -15204,7 +15205,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./CategorySelection.vue":66,"./ClassificationSelection.vue":67,"./ClientDetailsForm.vue":69,"./ClientSearchForm.vue":71,"./DatePeriodForm.vue":72,"./DefineCategoryForm.vue":74,"./ExpertSelection.vue":75,"./ItemAttributeDefinition.vue":76,"./ItemDimensionForm.vue":77,"./ItemImagesForm.vue":78,"./ItemWeightForm.vue":80,"./SidePanel.vue":83,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],65:[function(require,module,exports){
+},{"./CategorySelection.vue":66,"./ClassificationSelection.vue":67,"./ClientDetailsForm.vue":69,"./ClientSearchForm.vue":71,"./DatePeriodForm.vue":72,"./DefineCategoryForm.vue":74,"./ExpertSelection.vue":75,"./ItemAttributeDefinition.vue":76,"./ItemDeleteConfirm.vue":77,"./ItemDimensionForm.vue":78,"./ItemImagesForm.vue":79,"./ItemWeightForm.vue":83,"./SidePanel.vue":86,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],65:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 "use strict";
 
@@ -15333,7 +15334,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./OptionItem.vue":82,"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],67:[function(require,module,exports){
+},{"./OptionItem.vue":85,"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],67:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16077,6 +16078,86 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+
+var ItemView = require('./ItemView.vue');
+
+exports.default = {
+  name: "ItemDeleteConfirm",
+
+  components: {
+    ItemView: ItemView
+  },
+
+  data: function data() {
+    return {
+      id: 0,
+      items: []
+    };
+  },
+
+  ready: function ready() {
+    var path = "http://localhost:8080/services/lot-item/" + this.$route.params.id;
+    this.$data.id = this.$route.params.id;
+    this.$http.get(path).then(function (response) {
+      this.$data.items.push(response.data);
+      var images = response.data.images;
+      var realImages = [];
+
+      for (var i in images) {
+
+        var id = images[i].image.id;
+        this.$http.get("http://localhost:8080/services/item-images/" + id).then(function (response) {
+          realImages.push(response.data);
+        }, function (response) {
+          console.log(response);
+        });
+      }
+
+      this.$data.items[0].images = realImages;
+    }, function (response) {
+      console.log(response);
+    });
+  },
+
+  methods: {
+    delete: function _delete() {
+      var path = "http://localhost:8080/services/lot-item/" + this.$data.id;
+      this.$http.delete(path).then(function (response) {
+        if (response.status === 200) {
+          this.$router.go({ name: 'items.view' });
+        }
+      }, function (response) {
+        console.log(response);
+      });
+    },
+
+    go: function go(e) {
+      var src = e.target;
+      var routename = src.getAttribute("data-route-name");
+      this.$router.go({ name: routename });
+    }
+  }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div>\n\n  <div class=\"item-view\">\n    <h3>\n      Are you sure you want to delete this item?\n    </h3>\n    <item-view v-for=\"item in items\" :item=\"item\"></item-view>\n  </div>\n\n  <div class=\"control-bar\">\n    <div class=\"item-list-controls\">\n      <button class=\"btn\" @click.prevent=\"delete\">Delete</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"items.view\">Return</button>\n    </div>\n  </div>\n\n</div>\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/ItemDeleteConfirm.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./ItemView.vue":82,"vue":62,"vue-hot-reload-api":36}],78:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _stringify = require("babel-runtime/core-js/json/stringify");
 
 var _stringify2 = _interopRequireDefault(_stringify);
@@ -16129,7 +16210,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36}],78:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36}],79:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16164,7 +16245,7 @@ exports.default = {
           var image = {
             id: response.data.id,
             index: this.$data.images.length,
-            src: "data:image/" + response.data.extension + ";base64," + response.data.data,
+            src: response.data.dataURL, //"data:image/" + response.data.extension + ";base64," + response.data.data,
             extension: response.data.extension,
             filename: response.data.filename,
             action: "remove"
@@ -16310,7 +16391,38 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36}],79:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36}],80:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  name: "ItemPageDesign",
+
+  data: function data() {
+    return {};
+  },
+
+  ready: function ready() {
+    console.log(this.$route.params.id);
+  }
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/ItemPageDesign.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":62,"vue-hot-reload-api":36}],81:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16329,7 +16441,7 @@ exports.default = {
 
   data: function data() {
     return {
-      tiles: [{ name: "Arrange Appraisal", url: "/lot-items/arrange-appraisal" }, { name: "Record Lot Appraisal", url: "/lot-items/record-appraisal" }, { name: "Define Categories", url: "/lot-items/define-categories" }]
+      tiles: [{ name: "View Items", url: "/lot-items/view-items" }, { name: "Record Lot Appraisal", url: "/lot-items/record-appraisal" }, { name: "Define Categories", url: "/lot-items/define-categories" }]
     };
   }
 
@@ -16357,7 +16469,37 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./Tile.vue":84,"vue":62,"vue-hot-reload-api":36}],80:[function(require,module,exports){
+},{"./Tile.vue":87,"vue":62,"vue-hot-reload-api":36}],82:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  name: "ItemView",
+
+  props: ["item"],
+
+  data: function data() {
+    return {};
+  },
+
+  ready: function ready() {}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"item\" data-id=\"{{ item.id }}\">\n  <span class=\"item-row\">\n    <span class=\"item-cell\">Item Name: {{ item.itemName }}</span>\n    <span class=\"item-cell\">Category: {{ item.category.name }}</span>\n    <span class=\"item-cell\">\n      Classifications:\n      <span v-for=\"classification in item.classifications\">{{ classification.name }} </span>\n    </span>\n    <span class=\"item-cell\">\n      <div v-for=\"attribute in item.attributes\">\n        <span> {{ attribute.name }}</span>:<span> {{ attribute.value }}</span>\n      </div>\n    </span>\n    <span class=\"item-cell\">\n      <div v-for=\"(index, dimension) in item.dimensions\">\n        <span> {{ index }}</span>:<span> {{ dimension[index] }}</span>\n      </div>\n    </span>\n  </span>\n  <span class=\"item-row\">\n    <span class=\"item-cell\">Textual Description:</span>\n    <span class=\"item-cell item-textual-description\">{{ item.textualDescription }}</span>\n  </span>\n\n  <div class=\"image-list\">\n    <div class=\"image-item\" v-for=\"image in item.images\">\n      <div class=\"item-image-wrap\">\n        <img class=\"image-upload-preview\" :src=\"image.dataURL\" alt=\"{{ image.filename }}\">\n      </div>\n    </div>\n  </div>\n\n</div>\n\n\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/ItemView.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":62,"vue-hot-reload-api":36}],83:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16410,7 +16552,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36}],81:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36}],84:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 'use strict';
 
@@ -16458,6 +16600,8 @@ exports.default = {
   },
 
   ready: function ready() {
+
+    console.log(this.$route.params.id);
     // reload all the displayed data on reload.
     this.$dispatch("broadcastEvent", "updateCategory");
     this.$dispatch("broadcastEvent", "updateClassifications");
@@ -16543,9 +16687,10 @@ exports.default = {
         }
       }
 
-      console.log(data);
       this.$http.post('http://localhost:8080/services/lot-item', (0, _stringify2.default)(data)).then(function (response) {
-        console.log(response);
+        if (response.status === 201) {
+          this.$router.go("/lot-items");
+        }
       }, function (response) {
         console.log(response);
       });
@@ -16591,7 +16736,7 @@ exports.default = {
       var span = document.createElement("span");
 
       span.innerHTML = imageData.filename;
-      image.src = "data:image/" + imageData.extension + ";base64," + imageData.data;
+      image.src = imageData.dataURL; //"data:image/" + imageData.extension + ";base64," + imageData.data;
       image.alt = imageData.filename;
       image.classList.add("image-upload-preview-small");
       imageWrap.classList.add("item-image-wrap");
@@ -16679,7 +16824,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],82:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/helpers/typeof":3,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],85:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n")
 "use strict";
 
@@ -16713,7 +16858,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],83:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],86:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16736,7 +16881,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36}],84:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],87:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16768,7 +16913,142 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36}],85:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],88:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+
+var ItemView = require('./ItemView.vue');
+
+exports.default = {
+  name: "ViewItem",
+
+  components: {
+    ItemView: ItemView
+  },
+
+  data: function data() {
+    return {
+      items: []
+    };
+  },
+
+  ready: function ready() {
+    var id = this.$route.params.id;
+    var path = "http://localhost:8080/services/lot-item/" + id;
+
+    this.$http.get(path).then(function (response) {
+      this.$data.items.push(response.data);
+      var images = response.data.images;
+      var realImages = [];
+
+      console.log(response);
+
+      for (var i in images) {
+
+        var id = images[i].image.id;
+        this.$http.get("http://localhost:8080/services/item-images/" + id).then(function (response) {
+          realImages.push(response.data);
+        }, function (response) {
+          console.log(response);
+        });
+      }
+
+      this.$data.items[0].images = realImages;
+    }, function (response) {
+      console.log(response);
+    });
+  }
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div>\n  Here is your item\n  <item-view v-for=\"item in items\" :item=\"item\"></item-view>\n\n\n  <div class=\"control-bar\">\n    <div class=\"item-list-controls\">\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"items.view\">Return</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.update\">Update</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.delete\">Delete</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.page.design\">Design Page</button>\n    </div>\n  </div>\n\n</div>\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/ViewItem.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./ItemView.vue":82,"vue":62,"vue-hot-reload-api":36}],89:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  name: "ViewItems",
+
+  data: function data() {
+    return {
+      items: [],
+      selected: 0
+    };
+  },
+
+  ready: function ready() {
+    // get last ten created items
+    var path = "http://localhost:8080/services/lot-item";
+
+    console.log(this.$route.path);
+
+    this.$http.get(path).then(function (response) {
+      this.$data.items = response.data;
+
+      // for ( var i = 0; i < this.$data.items.length; i++ )
+      // {
+      //   this.$data.items[i].updatePath =
+      // }
+    }, function (response) {
+      console.log(response);
+    });
+  },
+
+  methods: {
+    search: function search() {},
+
+    select: function select(e) {
+      var src = e.target;
+      var tag = src.parentElement;
+
+      while (!tag.hasAttribute("data-id")) {
+        if (tag.tagName === "BODY") break;
+
+        tag = tag.parentElement;
+      }
+
+      this.$data.selected = tag.getAttribute("data-id");
+    },
+
+    go: function go(e) {
+      var src = e.target;
+      var routename = src.getAttribute("data-route-name");
+      this.$router.go({ name: routename, params: { id: this.$data.selected } });
+    }
+  }
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div>\n  <form action=\"\">\n    <fieldset>\n      <legend>Search Items</legend>\n    </fieldset>\n  </form>\n\n\n  <div class=\"item-list-view\">\n    <div v-for=\"item in items\" class=\"item-list\" data-id=\"{{ item.id }}\" @click=\"select\">\n      <span class=\"item-list-column\">\n        <span class=\"item-list-cell\">Item Name: <span class=\"item-list-cell-value\">{{ item.itemName }}</span></span>\n        <span class=\"item-list-cell\">Category: <span class=\"item-list-cell-value\">{{ item.category.name }}</span></span>\n        <span class=\"item-list-cell\">\n          Classifications:\n          <span v-for=\"classification in item.classifications\"><span class=\"item-list-cell-value\">{{ classification.name }}</span></span>\n        </span>\n        <span class=\"item-list-cell\">\n          <div v-for=\"attribute in item.attributes\">\n            <span> {{ attribute.name }}</span>:<span class=\"item-list-cell-value\"> {{ attribute.value }}</span>\n          </div>\n        </span>\n      </span>\n      <span class=\"item-list-column\">\n        <span class=\"item-list-cell\">Textual Description:</span>\n        <span class=\"item-list-cell item-list-textual-description\">{{ item.textualDescription }}</span>\n      </span>\n    </div>\n  </div>\n\n  <div class=\"control-bar\" v-show=\"selected !== 0\">\n    <div class=\"item-list-controls\">\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.view\">View</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.update\">Update</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.delete\">Delete</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.page.design\">Design Page</button>\n    </div>\n  </div>\n\n</div><!-- end -->\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/jm/Development/SE3/SE3-Fothebys-Desktop/resource/assets/vue/components/ViewItems.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":62,"vue-hot-reload-api":36}],90:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16796,7 +17076,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36}],86:[function(require,module,exports){
+},{"vue":62,"vue-hot-reload-api":36}],91:[function(require,module,exports){
 var Vue = require('vue');
 var VueResource = require('vue-resource');
 var Router = require('vue-router');
@@ -16830,13 +17110,35 @@ router.map({
       }
     }
   },
+  '/lot-items/:id': {
+    name: "item.view",
+    component: require('./components/ViewItem.vue')
+  },
   '/lot-items/lot-appraisal': {
     component: require('./components/LotAppraisal.vue')
+  },
+  '/lot-items/lot-appraisal/update/:id': {
+    name: "item.update",
+    component: require('./components/LotAppraisal.vue')
+  },
+  '/lot-items/lot-appraisal/delete/:id': {
+    name: "item.delete",
+    component: require('./components/ItemDeleteConfirm.vue')
+  },
+  '/lot-items/view-items': {
+    name: "items.view",
+    component: require('./components/ViewItems.vue')
+  },
+  '/lot-items/design/:id': {
+    name: "item.page.design",
+    component: require('./components/ItemPageDesign.vue')
   },
   '/clients': {
     component: require('./components/ClientList.vue')
   }
 });
+
+// lot-items/design
 
 Vue.config.debug = true;
 
@@ -16862,4 +17164,4 @@ router.start(App, '#app');
 //     }
 //   }
 // })
-},{"./components/App.vue":64,"./components/ArrangeAppraisal.vue":65,"./components/ClientDetails.vue":68,"./components/ClientList.vue":70,"./components/DefineCategories.vue":73,"./components/ItemPageNav.vue":79,"./components/LotAppraisal.vue":81,"./components/Welcome.vue":85,"vue":62,"vue-resource":50,"vue-router":61}]},{},[86]);
+},{"./components/App.vue":64,"./components/ArrangeAppraisal.vue":65,"./components/ClientDetails.vue":68,"./components/ClientList.vue":70,"./components/DefineCategories.vue":73,"./components/ItemDeleteConfirm.vue":77,"./components/ItemPageDesign.vue":80,"./components/ItemPageNav.vue":81,"./components/LotAppraisal.vue":84,"./components/ViewItem.vue":88,"./components/ViewItems.vue":89,"./components/Welcome.vue":90,"vue":62,"vue-resource":50,"vue-router":61}]},{},[91]);

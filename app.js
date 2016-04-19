@@ -29,7 +29,7 @@ app.on('ready', function() {
   mainWindow = new BrowserWindow({
     title: "Fothebys Auction House",
     show: false,
-    width: (size.width - 40),
+    width: (size.width - 100),
     height: (size.height - 40), //0.99),
     minWidth: 800,
     minHeight: 600,

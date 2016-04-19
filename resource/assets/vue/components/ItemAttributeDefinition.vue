@@ -10,17 +10,31 @@
           <span class="msg" transition="msg-hide" v-if="attribute.required">Required field</span>
       </label>
 
-      <input class="attribute-input" type="text" name="{{ attribute.name }}" id="{{ attribute.name }}" required v-if="attribute.type === 'text'">
-      <input class="attribute-input" type="number" name="{{ attribute.name }}" id="{{ attribute.name }}" required v-if="attribute.type === 'number'">
-      <input class="attribute-input" type="date" name="{{ attribute.name }}" id="{{ attribute.name }}" required v-if="attribute.type === 'date'">
+      <input class="attribute-input"
+             type="text"
+             name="{{ attribute.name }}"
+             id="{{ attribute.name }}" required
+             v-if="attribute.type === 'text'">
+      <input class="attribute-input"
+             type="number"
+             name="{{ attribute.name }}"
+             id="{{ attribute.name }}" required
+             v-if="attribute.type === 'number'">
+      <input class="attribute-input" type="date"
+             name="{{ attribute.name }}" id="{{ attribute.name }}" required
+             v-if="attribute.type === 'date'">
 
       <span class="form-input-inline" v-if="attribute.type === 'true/false'">
         <span class="option-item">
-          <input class="attribute-input" type="radio" name="{{ attribute.name | lowercase }}" id="{{ attribute.name | lowercase }}-true">
+          <input class="attribute-input" type="radio"
+                 name="{{ attribute.name | lowercase }}"
+                 id="{{ attribute.name | lowercase }}-true">
           <label for="{{ attribute.name | lowercase }}-true">Yes</label>
         </span>
         <span class="option-item">
-          <input class="attribute-input" type="radio" name="{{ attribute.name | lowercase }}" id="{{ attribute.name | lowercase }}-false">
+          <input class="attribute-input"
+                 type="radio" name="{{ attribute.name | lowercase }}"
+                 id="{{ attribute.name | lowercase }}-false">
           <label for="{{ attribute.name | lowercase }}-false">No</label>
         </span>
       </span>

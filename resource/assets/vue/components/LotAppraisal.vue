@@ -205,6 +205,8 @@
     },
 
     ready: function() {
+
+      console.log(this.$route.params.id);
       // reload all the displayed data on reload.
       this.$dispatch("broadcastEvent", "updateCategory");
       this.$dispatch("broadcastEvent", "updateClassifications");
@@ -290,10 +292,11 @@
           }
         }
 
-        console.log(data);
         this.$http.post('http://localhost:8080/services/lot-item', JSON.stringify(data))
                   .then(function(response) {
-                    console.log(response);
+                    if ( response.status === 201 ) {
+                      this.$router.go("/lot-items");
+                    }
                   }, function(response) {
                     console.log(response);
                   });
@@ -341,7 +344,7 @@
         var span = document.createElement("span");
 
         span.innerHTML = imageData.filename;
-        image.src = "data:image/" + imageData.extension + ";base64," + imageData.data;
+        image.src = imageData.dataURL; //"data:image/" + imageData.extension + ";base64," + imageData.data;
         image.alt = imageData.filename;
         image.classList.add("image-upload-preview-small");
         imageWrap.classList.add("item-image-wrap");
