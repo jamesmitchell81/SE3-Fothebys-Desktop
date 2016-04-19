@@ -171,7 +171,7 @@ export default {
               var location = response.headers("location");
               var parts = location.split("/");
               details = JSON.parse(details);
-              details.id = parts[parts.length];
+              details.id = parts[parts.length - 1];
               sessionStorage.setItem("client-set", JSON.stringify(details));
               this.$dispatch('broadcastEvent', 'displayClientDetails');
               this.$dispatch('closeSidePanelView');

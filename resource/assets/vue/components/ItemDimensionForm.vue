@@ -48,9 +48,9 @@
     data: function() {
       return {
         measures: [],
-        width: "",
-        height: "",
-        length: "",
+        width: 0,
+        height: 0,
+        length: 0,
         measure: ""
       }
     },
@@ -66,9 +66,9 @@
       setDimensions: function() {
         var details = {
           measure: document.querySelector("input[type='radio']:checked").id,
-          width: this.$data.width,
-          height: this.$data.height,
-          length: this.$data.length,
+          width: this.$data.width === "" ? 0 : this.$data.width,
+          height: this.$data.height === "" ? 0 : this.$data.height,
+          length: this.$data.length === "" ? 0 : this.$data.length,
         }
 
         sessionStorage.setItem("dimensions-set", JSON.stringify(details));

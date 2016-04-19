@@ -15,10 +15,7 @@ router.map({
     component: require('./components/Welcome.vue')
   },
   '/lot-items': {
-    component: require('./components/PageNav.vue')
-  },
-  '/lot-items/add-item': {
-    component: require('./components/AddLotItem.vue')
+    component: require('./components/ItemPageNav.vue')
   },
   '/lot-items/record-appraisal': {
     component: require('./components/LotAppraisal.vue')

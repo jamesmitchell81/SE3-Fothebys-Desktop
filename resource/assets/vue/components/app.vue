@@ -82,6 +82,7 @@ var ItemAttributeDefinition = require('./ItemAttributeDefinition.vue');
         var side = document.getElementById("side-bar");
         side.classList.remove("side-panel__open");
         side.classList.add("side-panel__closed");
+        this.sidePanelView = null;
       },
 
       clearData: function(data) {

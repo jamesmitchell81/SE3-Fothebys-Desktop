@@ -6,7 +6,7 @@
       <label for="appraisalDate">Appraisal Date
           <span class="msg" transition="msg-hide" v-if="appraisalDate.length === 0">Required field</span>
       </label>
-      <input type="date" v-model="appraisalDate" required>
+      <input type="date" name="appraisalDate" id="appraisalDate" v-model="appraisalDate" required @change="store">
     </span>
 
     <span class="form-element">
@@ -95,21 +95,28 @@
       <label for="itemName">Item Name
           <span class="msg" transition="msg-hide" v-if="itemName.length === 0">Required field</span>
       </label>
-      <input type="text" v-model="itemName" required>
+      <input type="text" name="itemName" id="itemName" v-model="itemName" required @change="store">
     </span>
 
     <span class="form-element">
       <label for="estimatedPrice">Estimated Price
           <span class="msg" transition="msg-hide" v-if="estimatedPrice.length === 0">Required field</span>
       </label>
-      <input type="number" min="1" v-model="estimatedPrice" required>
+      <input type="number" min="1" name="estimatedPrice" id="estimatedPrice" v-model="estimatedPrice" required @change="store">
+    </span>
+
+    <span class="form-element">
+      <label for="estimatedPrice">Agreed Reserve Price
+          <span class="msg" transition="msg-hide" v-if="agreedPrice.length === 0">Required field</span>
+      </label>
+      <input type="number" min="1" name="agreedPrice" id="agreedPrice" v-model="agreedPrice" required @change="store">
     </span>
 
     <span class="form-element">
       <label for="textualDescription">Textual Description
           <span class="msg" transition="msg-hide" v-if="textualDescription.length === 0">Required field</span>
       </label>
-      <textarea rols="40" cols="20" v-model="textualDescription" required>
+      <textarea rols="40" cols="20" name="textualDescription" id="textualDescription" v-model="textualDescription" required @change="store">
       </textarea>
     </span>
 
@@ -117,7 +124,7 @@
       <label for="provenanceDetails">Provenance Details
           <span class="msg" transition="msg-hide" v-if="provenanceDetails.length === 0">Required field</span>
       </label>
-      <textarea rols="40" cols="20" v-model="provenanceDetails" required>
+      <textarea rols="40" cols="20" name="provenanceDetails" id="provenanceDetails" v-model="provenanceDetails" required @change="store">
       </textarea>
     </span>
 
@@ -125,11 +132,11 @@
       <label for="">Authenticated</label>
       <span class="form-input-inline">
         <span class="option-item">
-          <input type="radio" name="authenticated" id="authenticatedYes">
+          <input type="radio" name="authenticated" id="authenticatedYes" @change="store" v-model="authenticated" value="true">
           <label for="authenticatedYes">Yes</label>
         </span>
         <span class="option-item">
-          <input type="radio" name="authenticated" id="authenticatedNo">
+          <input type="radio" name="authenticated" id="authenticatedNo" @change="store" v-model="authenticated" value="false">
           <label for="authenticatedNo">No</label>
         </span>
       </span>
@@ -139,11 +146,11 @@
       <label for="additionalNotes">Agreement Signed</label>
       <span class="form-input-inline">
         <span class="option-item">
-          <input type="radio" name="agreement" id="agreedYes">
+          <input type="radio" name="agreement" id="agreedYes" @change="store" v-model="agreement" value="true">
           <label for="agreedYes">Yes</label>
         </span>
         <span class="option-item">
-          <input type="radio" name="agreement" id="agreedNo">
+          <input type="radio" name="agreement" id="agreedNo" @change="store" v-model="agreement" value="false">
           <label for="agreedNo">No</label>
         </span>
       </span>
@@ -151,7 +158,7 @@
 
     <span class="form-element">
       <label for="additionalNotes">Additional Notes</label>
-      <textarea rols="40" cols="20" v-model="additionalNotes">
+      <textarea rols="40" cols="20" name="additionalNotes" id="additionalNotes" v-model="additionalNotes" @change="store">
       </textarea>
     </span>
 
@@ -168,21 +175,33 @@
 </template>
 
 <script>
-
   export default {
     name: "LotAppraisalForm",
 
     data: function() {
-      return {
+      var data = {
+        textualDescription: '',
         appraisalDate: '',
         agreement: false,
         authenticated: false,
         itemName: "",
         estimatedPrice: "",
+        agreedPrice: "",
         provenanceDetails: "",
-        additionalNotes: "",
-        category: ""
+        additionalNotes: ""
       }
+
+      for ( var prop in data ) {
+        if ( data.hasOwnProperty(prop) ) {
+          var sess = sessionStorage.getItem(prop);
+
+          if ( sess !== null ) {
+            data[prop] = JSON.parse(sess);
+          }
+        }
+      }
+
+      return data;
     },
 
     ready: function() {
@@ -195,6 +214,7 @@
       this.$dispatch("broadcastEvent", "displayClientDetails");
       this.$dispatch("broadcastEvent", "displayItemWeight");
       this.$dispatch("broadcastEvent", "displayUploadedImages");
+      this.$dispatch("broadcastEvent", "displayAttributes");
     },
 
     methods: {
@@ -211,24 +231,72 @@
         }
       },
 
+      store: function(e) {
+        var src = e.target;
+        console.log("Store", src.name);
+        sessionStorage.setItem(src.name, JSON.stringify(src.value));
+      },
+
       submitForm: function() {
-      var form = document.querySelector('form');
-      var action = form.action;
-      var method = form.method;
+        var data = {};
 
-      var d = JSON.stringify(this.$data);
+        var attr = JSON.parse(sessionStorage.getItem("attributes-set"));
+        if ( attr !== null ) {
+          data.attributes = attr;
+        }
 
-      console.log(this.$data);
+        var category = JSON.parse(sessionStorage.getItem("category-selected"));
+        if ( category ) {
+          console.log(category);
+          data.category = category;
+        }
 
-      // lot item
+        var classification = JSON.parse(sessionStorage.getItem("classification-selection"));
+        if ( classification ) {
+          data.classifications = classification;
+        }
 
-      this.$http.post('http://localhost:8080/services/lot-item', d)
-                .then(function(response) {
-                  console.log(response);
+        var client = JSON.parse(sessionStorage.getItem("client-set"));
+        if ( client ) {
+          data.client = client.id;
+        }
 
-                }, function(response) {
-                  console.log(response);
-                });
+        var dates = JSON.parse(sessionStorage.getItem("date-period-set"));
+        if ( dates ) {
+          data.productionDate = dates;
+        }
+
+        var dimensions = JSON.parse(sessionStorage.getItem("dimensions-set"));
+        if ( dimensions ) {
+          data.dimensions = dimensions;
+        }
+
+        var expert = JSON.parse(sessionStorage.getItem("expert-selection"));
+        if ( expert ) {
+          data.expert = expert.id;
+        }
+
+        var images = JSON.parse(sessionStorage.getItem("uploaded-images"));
+        if ( images ) {
+          data.images = images;
+        }
+
+        for ( var prop in this.$data ) {
+          if ( this.$data.hasOwnProperty(prop) ) {
+            if ( this.$data[prop] === "on" ) {
+              this.$data[prop] = true;
+            }
+            data[prop] = this.$data[prop];
+          }
+        }
+
+        console.log(data);
+        this.$http.post('http://localhost:8080/services/lot-item', JSON.stringify(data))
+                  .then(function(response) {
+                    console.log(response);
+                  }, function(response) {
+                    console.log(response);
+                  });
       },
 
       updateDetails: function(details, elem) {
@@ -271,8 +339,6 @@
         var wrapper = document.createElement("div");
         var imageWrap = document.createElement("div");
         var span = document.createElement("span");
-
-        console.log(parent);
 
         span.innerHTML = imageData.filename;
         image.src = "data:image/" + imageData.extension + ";base64," + imageData.data;
@@ -326,6 +392,9 @@
       },
       displayItemWeight: function() {
         this.updateCollectionDetails("item-weight-set", "item-weight-details");
+      },
+      displayAttributes: function() {
+        this.updateCollectionDetails("attributes-set", "attribute-details");
       },
       displayUploadedImages: function() {
         var uploadedImages = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
