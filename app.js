@@ -37,7 +37,7 @@ app.on('ready', function() {
   });
 
   mainWindow.loadURL('file://' + __dirname + '/app/html/index.html');
-  mainWindow.openDevTools();
+  // mainWindow.openDevTools();
 
   var page = mainWindow.webContents;
 

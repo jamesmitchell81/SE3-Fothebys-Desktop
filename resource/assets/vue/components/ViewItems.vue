@@ -4,31 +4,49 @@
   <form action="">
     <fieldset>
       <legend>Search Items</legend>
+
+      <span class="form-element">
+        <label for="">Name</label>
+        <input type="text" v-model="searchName" @keyup="searchItem | debounce 200">
+      </span>
+
     </fieldset>
   </form>
 
+  <div class="page-notification" v-if="items.length === 0">
+    You have currently have no items...
+  </div>
+
   <div class="item-list-view">
     <div v-for="item in items" class="item-list" data-id="{{ item.id }}" @click="select">
-      <span class="item-list-column" v-for="image in images">
-        <img :src="image.dataURL" alt="">
-      </span>
-      <span class="item-list-column">
-        <span class="item-list-cell">Item Name: <span class="item-list-cell-value">{{ item.itemName }}</span></span>
-        <span class="item-list-cell">Category: <span class="item-list-cell-value">{{ item.category.name }}</span></span>
-        <span class="item-list-cell">
-          Classifications:
-          <span v-for="classification in item.classifications"><span class="item-list-cell-value">{{ classification.name }}</span></span>
+      <span class="item-list-columns">
+        <span class="item-list-column">
+          <span class="item-list-cell">Item Name: <span class="item-list-cell-value">{{ item.itemName }}</span></span>
+          <span class="item-list-cell">Category: <span class="item-list-cell-value">{{ item.category.name }}</span></span>
+          <span class="item-list-cell">
+            Classifications:
+            <span v-for="classification in item.classifications"><span class="item-list-cell-value">{{ classification.name }}</span></span>
+          </span>
+          <span class="item-list-cell">
+            <div v-for="attribute in item.attributes">
+              <span> {{ attribute.name }}</span>:<span class="item-list-cell-value"> {{ attribute.value }}</span>
+            </div>
+          </span>
         </span>
-        <span class="item-list-cell">
-          <div v-for="attribute in item.attributes">
-            <span> {{ attribute.name }}</span>:<span class="item-list-cell-value"> {{ attribute.value }}</span>
+        <span class="item-list-column">
+          <span class="item-list-cell">Textual Description:</span>
+          <span class="item-list-cell item-list-textual-description">{{ item.textualDescription }}</span>
+        </span>
+      </span>
+
+      <div class="image-list">
+        <div class="image-item-small" v-for="image in item.images">
+          <div class="item-image-wrap">
+            <img class="image-upload-preview" :src="image.dataURL" alt="{{ image.filename }}">
           </div>
-        </span>
-      </span>
-      <span class="item-list-column">
-        <span class="item-list-cell">Textual Description:</span>
-        <span class="item-list-cell item-list-textual-description">{{ item.textualDescription }}</span>
-      </span>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -68,7 +86,7 @@ export default {
           var images = this.$data.items[j].images;
           var realImages = [];
           for ( var i in images ) {
-            var id = images[i].image.id;
+            var id = images[i];
             this.$http.get("http://localhost:8080/services/item-images/" + id).then(
               function(response) {
                 realImages.push(response.data);
@@ -77,6 +95,7 @@ export default {
               });
           }
           this.$data.items[j].images = realImages;
+          this.$data.items[j].displayImage = realImages[0];
         }
 
     }, function(response) {

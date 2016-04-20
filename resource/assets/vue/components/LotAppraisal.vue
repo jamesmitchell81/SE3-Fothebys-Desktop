@@ -4,7 +4,7 @@
 
     <span class="form-element">
       <label for="appraisalDate">Appraisal Date
-          <span class="msg" transition="msg-hide" v-if="appraisalDate.length === 0">Required field</span>
+          <span class="msg" transition="msg-hide">Required field</span>
       </label>
       <input type="date" name="appraisalDate" id="appraisalDate" v-model="appraisalDate" required @change="store">
     </span>
@@ -206,8 +206,75 @@
 
     ready: function() {
 
-      console.log(this.$route.params.id);
-      // reload all the displayed data on reload.
+      if ( this.$route.params.id ) {
+        // populate session
+        this.$http.get("http://localhost:8080/services/lot-item/" + this.$route.params.id).then(
+          function(response) {
+            console.log(response);
+            var category = {
+              id: response.data.category.id,
+              name: response.data.category.name
+            }
+
+            var dimensions = {
+              baseMeasure: response.data.dimensions.baseMeasure,
+              height: response.data.dimensions.height,
+              length: response.data.dimensions.length,
+              width: response.data.dimensions.width
+            }
+
+            sessionStorage.setItem("category-selected", JSON.stringify(category));
+            sessionStorage.setItem("dimensions-set", JSON.stringify(dimensions));
+            sessionStorage.setItem("classification-selection", JSON.stringify(response.data.classifications));
+            sessionStorage.setItem("attributes-set", JSON.stringify(response.data.attributes));
+            sessionStorage.setItem("date-period-set", JSON.stringify(response.data.productionDate));
+            sessionStorage.setItem("date-period-set", JSON.stringify(response.data.productionDate));
+
+            this.$data.authenticated = response.data.authenticated;
+            this.$data.itemName = response.data.itemName;
+            this.$data.textualDescription = response.data.textualDescription;
+            this.$data.authenticated = response.data.authenticated;
+            this.$data.itemName = response.data.itemName;
+            this.$data.provenanceDetails = response.data.provenanceDetails;
+
+            this.$http.get("http://localhost:8080/services/lot-item/item-appraisal/" + this.$route.params.id).then(
+              function(response) {
+                console.log(response);
+                this.$data.estimatedPrice = response.data.estimatedPrice;
+                this.$data.agreedPrice = response.data.agreedPrice;
+                this.$data.additionalNotes = response.data.additionalNotes;
+                this.$data.appraisalDate = response.data.appraisalDate;
+                this.$data.agreement = response.data.agreement;
+
+                var expert = {
+                  "id": response.data.expert.id,
+                  "name": response.data.expert.fullName,
+                  "location": response.data.expert.location.name,
+                  "email": response.data.expert.emailAddress,
+                  "category": response.data.expert.category.name
+                }
+
+                var client = {
+                  "id": response.data.client.id,
+                  "name": response.data.client.fullName,
+                  "address": response.data.client.address,
+                  "email": response.data.client.emailAddress
+                }
+
+                sessionStorage.setItem("client-set", JSON.stringify(client));
+                sessionStorage.setItem("expert-selection", JSON.stringify(expert));
+              }, function(response) {
+                console.log(response);
+              });
+
+          }, function(response) {
+            console.log(response);
+          });
+
+
+
+      }
+
       this.$dispatch("broadcastEvent", "updateCategory");
       this.$dispatch("broadcastEvent", "updateClassifications");
       this.$dispatch("broadcastEvent", "updateDimensions");
@@ -292,6 +359,8 @@
           }
         }
 
+        // if not update
+      if ( !this.$route.params.id ) {
         this.$http.post('http://localhost:8080/services/lot-item', JSON.stringify(data))
                   .then(function(response) {
                     if ( response.status === 201 ) {
@@ -300,6 +369,17 @@
                   }, function(response) {
                     console.log(response);
                   });
+        } else {
+          this.$http.put('http://localhost:8080/services/lot-item/' + this.$route.params.id, JSON.stringify(data))
+                    .then(function(response) {
+                      console.log(response);
+                      if ( response.status === 204 ) {
+                        this.$router.go("/lot-items");
+                      }
+                    }, function(response) {
+                      console.log(response);
+                    });
+        }
       },
 
       updateDetails: function(details, elem) {

@@ -58,30 +58,5 @@ router.map({
     component: require('./components/ClientList.vue')
   }
 });
-
-// lot-items/design
-
 Vue.config.debug = true;
-
 router.start(App, '#app');
-
-// new Vue({
-//   el: 'body',
-//   components: {
-//     app: App,
-//     'nav-core': navComponent
-//   },
-//   data: {
-//     view: 'login',
-//     navItems: [
-//       { navName: "Lot Items", linkedView: "lot-items" },
-//       { navName: "Auction Events", linkedView: "auction-events" }
-//     ]
-//   },
-
-//   methods: {
-//     swapView(newView) {
-//       this.view = newView;
-//     }
-//   }
-// })

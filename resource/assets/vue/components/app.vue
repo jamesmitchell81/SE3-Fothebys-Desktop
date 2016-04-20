@@ -6,8 +6,6 @@
       </header>
       <nav>
         <a v-link="'/lot-items'" class="nav-core">Lot Items</a>
-        <a :href="" class="nav-core">Auction Events</a>
-        <a :href="" class="nav-core">Employees</a>
         <a v-link="'/clients'" class="nav-core">Clients</a>
       </nav>
     </div>

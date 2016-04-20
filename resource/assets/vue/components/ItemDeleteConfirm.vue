@@ -44,10 +44,8 @@ export default {
         this.$data.items.push(response.data);
         var images = response.data.images;
         var realImages = [];
-
         for ( var i in images ) {
-
-          var id = images[i].image.id;
+          var id = images[i];
           this.$http.get("http://localhost:8080/services/item-images/" + id).then(
             function(response) {
               realImages.push(response.data);
@@ -55,7 +53,6 @@ export default {
               console.log(response);
             });
         }
-
         this.$data.items[0].images = realImages;
 
       }, function(response) {

@@ -1,8 +1,8 @@
 <template>
 
   <div>
-    Here is your item
     <item-view v-for="item in items" :item="item"></item-view>
+
 
 
     <div class="control-bar">
@@ -39,15 +39,12 @@ export default {
 
     this.$http.get(path).then(
       function(response) {
+        console.log(response);
         this.$data.items.push(response.data);
         var images = response.data.images;
         var realImages = [];
-
-        console.log(response);
-
         for ( var i in images ) {
-
-          var id = images[i].image.id;
+          var id = images[i];
           this.$http.get("http://localhost:8080/services/item-images/" + id).then(
             function(response) {
               realImages.push(response.data);
@@ -61,6 +58,14 @@ export default {
         console.log(response);
       });
 
+  },
+
+  methods: {
+    go: function(e) {
+        var src = e.target;
+        var routename = src.getAttribute("data-route-name");
+        this.$router.go({ name: routename, params:{ id: this.$route.params.id } });
+    }
   }
 
 }

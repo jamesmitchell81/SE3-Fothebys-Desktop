@@ -15189,7 +15189,7 @@ exports.default = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"body-wrap\">\n  <div class=\"side-wrap\">\n    <header>\n      <img src=\"../assets/svg/fb-logo-white.svg\" alt=\"Fothebys Auction House\">\n    </header>\n    <nav>\n      <a v-link=\"'/lot-items'\" class=\"nav-core\">Lot Items</a>\n      <a :href=\"\" class=\"nav-core\">Auction Events</a>\n      <a :href=\"\" class=\"nav-core\">Employees</a>\n      <a v-link=\"'/clients'\" class=\"nav-core\">Clients</a>\n    </nav>\n  </div>\n\n  <div class=\"content-wrap\">\n    <div class=\"content\">\n      <router-view></router-view>\n    </div>\n\n    <div class=\"side-panel side-panel__closed\" transition=\"slideout\" id=\"side-bar\">\n      <span @click=\"cancelSide\" class=\"btn cancel-side\" id=\"close-side-bar\">Cancel</span>\n      <div class=\"side-bar-content\">\n        <div :is=\"sidePanelView\"></div>\n      </div>\n    </div>\n  </div>\n\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"body-wrap\">\n  <div class=\"side-wrap\">\n    <header>\n      <img src=\"../assets/svg/fb-logo-white.svg\" alt=\"Fothebys Auction House\">\n    </header>\n    <nav>\n      <a v-link=\"'/lot-items'\" class=\"nav-core\">Lot Items</a>\n      <a v-link=\"'/clients'\" class=\"nav-core\">Clients</a>\n    </nav>\n  </div>\n\n  <div class=\"content-wrap\">\n    <div class=\"content\">\n      <router-view></router-view>\n    </div>\n\n    <div class=\"side-panel side-panel__closed\" transition=\"slideout\" id=\"side-bar\">\n      <span @click=\"cancelSide\" class=\"btn cancel-side\" id=\"close-side-bar\">Cancel</span>\n      <div class=\"side-bar-content\">\n        <div :is=\"sidePanelView\"></div>\n      </div>\n    </div>\n  </div>\n\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15567,7 +15567,7 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],70:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -15577,34 +15577,14 @@ Object.defineProperty(exports, "__esModule", {
 var ClientSearchForm = require('./ClientSearchForm.vue');
 
 exports.default = {
-
   name: "ClientList",
 
   components: {
     ClientSearchForm: ClientSearchForm
-  },
-
-  data: function data() {
-    return {
-      clients: []
-    };
-  },
-
-  route: {
-    activate: function activate() {
-
-      this.$http.get('http://localhost:8080/services/clients').then(function (response) {
-        console.log(response);
-        this.$data.clients = response.data;
-      }, function (response) {
-        console.log(response);
-      });
-    }
   }
-
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<client-search-form>\n</client-search-form>\n\n<div v-for=\"client in clients\">\n    <span>Name: <span>{{ client.fullName }}</span></span>\n    <span>Email: <span>{{ client.emailAddress }}</span></span>\n</div>\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<client-search-form>\n</client-search-form>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16112,17 +16092,14 @@ exports.default = {
       this.$data.items.push(response.data);
       var images = response.data.images;
       var realImages = [];
-
       for (var i in images) {
-
-        var id = images[i].image.id;
+        var id = images[i];
         this.$http.get("http://localhost:8080/services/item-images/" + id).then(function (response) {
           realImages.push(response.data);
         }, function (response) {
           console.log(response);
         });
       }
-
       this.$data.items[0].images = realImages;
     }, function (response) {
       console.log(response);
@@ -16497,7 +16474,7 @@ exports.default = {
   ready: function ready() {}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"item\" data-id=\"{{ item.id }}\">\n  <span class=\"item-row\">\n    <span class=\"item-cell\">Item Name: {{ item.itemName }}</span>\n    <span class=\"item-cell\">Category: {{ item.category.name }}</span>\n    <span class=\"item-cell\">\n      Classifications:\n      <span v-for=\"classification in item.classifications\">{{ classification.name }} </span>\n    </span>\n    <span class=\"item-cell\">\n      <div v-for=\"attribute in item.attributes\">\n        <span> {{ attribute.name }}</span>:<span> {{ attribute.value }}</span>\n      </div>\n    </span>\n    <span class=\"item-cell\">\n      <span>{{ item.dimensions }}</span>\n    </span>\n  </span>\n  <span class=\"item-row\">\n    <span class=\"item-cell\">Textual Description:</span>\n    <span class=\"item-cell item-textual-description\">{{ item.textualDescription }}</span>\n  </span>\n\n  <div class=\"image-list\">\n    <div class=\"image-item\" v-for=\"image in item.images\">\n      <div class=\"item-image-wrap\">\n        <img class=\"image-upload-preview\" :src=\"image.dataURL\" alt=\"{{ image.filename }}\">\n      </div>\n    </div>\n  </div>\n\n</div>\n\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"item\" data-id=\"{{ item.id }}\">\n  <span class=\"item-row\">\n    <span class=\"item-cell\">Item Name: {{ item.itemName }}</span>\n    <span class=\"item-cell\">Category: {{ item.category.name }}</span>\n    <span class=\"item-cell\">\n      Classifications:\n      <span v-for=\"classification in item.classifications\">{{ classification.name }} </span>\n    </span>\n    <span class=\"item-cell\">\n      <div v-for=\"attribute in item.attributes\">\n        <span> {{ attribute.name }}</span>:<span> {{ attribute.value }}</span>\n      </div>\n    </span>\n    <span class=\"item-cell\">\n      <div>Date Details</div>\n      <div v-if=\"item.productionDate.productionDate !== ''\">Production Date: {{ item.productionDate.productionDate }}</div>\n      <div v-if=\"item.productionDate.dateDescription !== ''\">Date Description: {{ item.productionDate.dateDescription }}</div>\n      <div v-if=\"item.productionDate.year !== ''\">Year: {{ item.productionDate.year }}</div>\n      <div v-if=\"item.productionDate.yearBetweenStart !== -1 &amp;&amp; item.productionDate.yearBetweenEnd !== -1\">\n        Between: {{ item.productionDate.yearBetweenStart }} and {{ item.productionDate.yearBetweenEnd }}</div>\n    </span>\n    <span class=\"item-cell\">\n      <span>Dimensions: {{ item.dimensions.dimensions }}, {{ item.dimensions.baseMeasure }}</span>\n    </span>\n    <span class=\"item-cell\">\n      <span>Provenance Details: {{ item.provenanceDetails }}</span>\n    </span>\n    <span class=\"item-cell\">\n      <span>Textual Description: {{ item.textualDescription }}</span>\n    </span>\n  </span>\n\n  <div class=\"image-list\">\n    <div class=\"image-item-small\" v-for=\"image in item.images\">\n      <div class=\"item-image-wrap\">\n        <img class=\"image-upload-preview-small\" :src=\"image.dataURL\" alt=\"{{ image.filename }}\">\n      </div>\n    </div>\n  </div>\n\n</div>\n\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16611,8 +16588,69 @@ exports.default = {
 
   ready: function ready() {
 
-    console.log(this.$route.params.id);
-    // reload all the displayed data on reload.
+    if (this.$route.params.id) {
+      // populate session
+      this.$http.get("http://localhost:8080/services/lot-item/" + this.$route.params.id).then(function (response) {
+        console.log(response);
+        var category = {
+          id: response.data.category.id,
+          name: response.data.category.name
+        };
+
+        var dimensions = {
+          baseMeasure: response.data.dimensions.baseMeasure,
+          height: response.data.dimensions.height,
+          length: response.data.dimensions.length,
+          width: response.data.dimensions.width
+        };
+
+        sessionStorage.setItem("category-selected", (0, _stringify2.default)(category));
+        sessionStorage.setItem("dimensions-set", (0, _stringify2.default)(dimensions));
+        sessionStorage.setItem("classification-selection", (0, _stringify2.default)(response.data.classifications));
+        sessionStorage.setItem("attributes-set", (0, _stringify2.default)(response.data.attributes));
+        sessionStorage.setItem("date-period-set", (0, _stringify2.default)(response.data.productionDate));
+        sessionStorage.setItem("date-period-set", (0, _stringify2.default)(response.data.productionDate));
+
+        this.$data.authenticated = response.data.authenticated;
+        this.$data.itemName = response.data.itemName;
+        this.$data.textualDescription = response.data.textualDescription;
+        this.$data.authenticated = response.data.authenticated;
+        this.$data.itemName = response.data.itemName;
+        this.$data.provenanceDetails = response.data.provenanceDetails;
+
+        this.$http.get("http://localhost:8080/services/lot-item/item-appraisal/" + this.$route.params.id).then(function (response) {
+          console.log(response);
+          this.$data.estimatedPrice = response.data.estimatedPrice;
+          this.$data.agreedPrice = response.data.agreedPrice;
+          this.$data.additionalNotes = response.data.additionalNotes;
+          this.$data.appraisalDate = response.data.appraisalDate;
+          this.$data.agreement = response.data.agreement;
+
+          var expert = {
+            "id": response.data.expert.id,
+            "name": response.data.expert.fullName,
+            "location": response.data.expert.location.name,
+            "email": response.data.expert.emailAddress,
+            "category": response.data.expert.category.name
+          };
+
+          var client = {
+            "id": response.data.client.id,
+            "name": response.data.client.fullName,
+            "address": response.data.client.address,
+            "email": response.data.client.emailAddress
+          };
+
+          sessionStorage.setItem("client-set", (0, _stringify2.default)(client));
+          sessionStorage.setItem("expert-selection", (0, _stringify2.default)(expert));
+        }, function (response) {
+          console.log(response);
+        });
+      }, function (response) {
+        console.log(response);
+      });
+    }
+
     this.$dispatch("broadcastEvent", "updateCategory");
     this.$dispatch("broadcastEvent", "updateClassifications");
     this.$dispatch("broadcastEvent", "updateDimensions");
@@ -16697,13 +16735,25 @@ exports.default = {
         }
       }
 
-      this.$http.post('http://localhost:8080/services/lot-item', (0, _stringify2.default)(data)).then(function (response) {
-        if (response.status === 201) {
-          this.$router.go("/lot-items");
-        }
-      }, function (response) {
-        console.log(response);
-      });
+      // if not update
+      if (!this.$route.params.id) {
+        this.$http.post('http://localhost:8080/services/lot-item', (0, _stringify2.default)(data)).then(function (response) {
+          if (response.status === 201) {
+            this.$router.go("/lot-items");
+          }
+        }, function (response) {
+          console.log(response);
+        });
+      } else {
+        this.$http.put('http://localhost:8080/services/lot-item/' + this.$route.params.id, (0, _stringify2.default)(data)).then(function (response) {
+          console.log(response);
+          if (response.status === 204) {
+            this.$router.go("/lot-items");
+          }
+        }, function (response) {
+          console.log(response);
+        });
+      }
     },
 
     updateDetails: function updateDetails(details, elem) {},
@@ -16951,15 +17001,12 @@ exports.default = {
     var path = "http://localhost:8080/services/lot-item/" + id;
 
     this.$http.get(path).then(function (response) {
+      console.log(response);
       this.$data.items.push(response.data);
       var images = response.data.images;
       var realImages = [];
-
-      console.log(response);
-
       for (var i in images) {
-
-        var id = images[i].image.id;
+        var id = images[i];
         this.$http.get("http://localhost:8080/services/item-images/" + id).then(function (response) {
           realImages.push(response.data);
         }, function (response) {
@@ -16971,11 +17018,19 @@ exports.default = {
     }, function (response) {
       console.log(response);
     });
+  },
+
+  methods: {
+    go: function go(e) {
+      var src = e.target;
+      var routename = src.getAttribute("data-route-name");
+      this.$router.go({ name: routename, params: { id: this.$route.params.id } });
+    }
   }
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div>\n  Here is your item\n  <item-view v-for=\"item in items\" :item=\"item\"></item-view>\n\n\n  <div class=\"control-bar\">\n    <div class=\"item-list-controls\">\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"items.view\">Return</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.update\">Update</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.delete\">Delete</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.page.design\">Design Page</button>\n    </div>\n  </div>\n\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div>\n  <item-view v-for=\"item in items\" :item=\"item\"></item-view>\n\n\n\n  <div class=\"control-bar\">\n    <div class=\"item-list-controls\">\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"items.view\">Return</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.update\">Update</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.delete\">Delete</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.page.design\">Design Page</button>\n    </div>\n  </div>\n\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17014,7 +17069,7 @@ exports.default = {
         var images = this.$data.items[j].images;
         var realImages = [];
         for (var i in images) {
-          var id = images[i].image.id;
+          var id = images[i];
           this.$http.get("http://localhost:8080/services/item-images/" + id).then(function (response) {
             realImages.push(response.data);
           }, function (response) {
@@ -17022,6 +17077,7 @@ exports.default = {
           });
         }
         this.$data.items[j].images = realImages;
+        this.$data.items[j].displayImage = realImages[0];
       }
     }, function (response) {
       console.log(response);
@@ -17053,7 +17109,7 @@ exports.default = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div>\n  <form action=\"\">\n    <fieldset>\n      <legend>Search Items</legend>\n    </fieldset>\n  </form>\n\n  <div class=\"item-list-view\">\n    <div v-for=\"item in items\" class=\"item-list\" data-id=\"{{ item.id }}\" @click=\"select\">\n      <span class=\"item-list-column\" v-for=\"image in images\">\n        <img :src=\"image.dataURL\" alt=\"\">\n      </span>\n      <span class=\"item-list-column\">\n        <span class=\"item-list-cell\">Item Name: <span class=\"item-list-cell-value\">{{ item.itemName }}</span></span>\n        <span class=\"item-list-cell\">Category: <span class=\"item-list-cell-value\">{{ item.category.name }}</span></span>\n        <span class=\"item-list-cell\">\n          Classifications:\n          <span v-for=\"classification in item.classifications\"><span class=\"item-list-cell-value\">{{ classification.name }}</span></span>\n        </span>\n        <span class=\"item-list-cell\">\n          <div v-for=\"attribute in item.attributes\">\n            <span> {{ attribute.name }}</span>:<span class=\"item-list-cell-value\"> {{ attribute.value }}</span>\n          </div>\n        </span>\n      </span>\n      <span class=\"item-list-column\">\n        <span class=\"item-list-cell\">Textual Description:</span>\n        <span class=\"item-list-cell item-list-textual-description\">{{ item.textualDescription }}</span>\n      </span>\n    </div>\n  </div>\n\n  <div class=\"control-bar\" v-show=\"selected !== 0\">\n    <div class=\"item-list-controls\">\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.view\">View</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.update\">Update</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.delete\">Delete</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.page.design\">Design Page</button>\n    </div>\n  </div>\n\n</div><!-- end -->\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div>\n  <form action=\"\">\n    <fieldset>\n      <legend>Search Items</legend>\n\n      <span class=\"form-element\">\n        <label for=\"\">Name</label>\n        <input type=\"text\" v-model=\"searchName\" @keyup=\"searchItem | debounce 200\">\n      </span>\n\n    </fieldset>\n  </form>\n\n  <div class=\"page-notification\" v-if=\"items.length === 0\">\n    You have currently have no items...\n  </div>\n\n  <div class=\"item-list-view\">\n    <div v-for=\"item in items\" class=\"item-list\" data-id=\"{{ item.id }}\" @click=\"select\">\n      <span class=\"item-list-columns\">\n        <span class=\"item-list-column\">\n          <span class=\"item-list-cell\">Item Name: <span class=\"item-list-cell-value\">{{ item.itemName }}</span></span>\n          <span class=\"item-list-cell\">Category: <span class=\"item-list-cell-value\">{{ item.category.name }}</span></span>\n          <span class=\"item-list-cell\">\n            Classifications:\n            <span v-for=\"classification in item.classifications\"><span class=\"item-list-cell-value\">{{ classification.name }}</span></span>\n          </span>\n          <span class=\"item-list-cell\">\n            <div v-for=\"attribute in item.attributes\">\n              <span> {{ attribute.name }}</span>:<span class=\"item-list-cell-value\"> {{ attribute.value }}</span>\n            </div>\n          </span>\n        </span>\n        <span class=\"item-list-column\">\n          <span class=\"item-list-cell\">Textual Description:</span>\n          <span class=\"item-list-cell item-list-textual-description\">{{ item.textualDescription }}</span>\n        </span>\n      </span>\n\n      <div class=\"image-list\">\n        <div class=\"image-item-small\" v-for=\"image in item.images\">\n          <div class=\"item-image-wrap\">\n            <img class=\"image-upload-preview\" :src=\"image.dataURL\" alt=\"{{ image.filename }}\">\n          </div>\n        </div>\n      </div>\n\n    </div>\n  </div>\n\n  <div class=\"control-bar\" v-show=\"selected !== 0\">\n    <div class=\"item-list-controls\">\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.view\">View</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.update\">Update</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.delete\">Delete</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.page.design\">Design Page</button>\n    </div>\n  </div>\n\n</div><!-- end -->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17081,7 +17137,7 @@ exports.default = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"actions\">\n  <h1>Actions</h1>\n\n    <div class=\"page-notification\" v-if=\"actions.length === 0\">\n      You have no current actions\n    </div>\n\n</div>\n\n\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"actions\">\n  <h1>Actions</h1>\n\n    <div class=\"page-notification\" v-if=\"actions.length === 0\">\n      You have no current actions\n    </div>\n\n</div>\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17154,31 +17210,7 @@ router.map({
     component: require('./components/ClientList.vue')
   }
 });
-
-// lot-items/design
-
 Vue.config.debug = true;
-
 router.start(App, '#app');
 
-// new Vue({
-//   el: 'body',
-//   components: {
-//     app: App,
-//     'nav-core': navComponent
-//   },
-//   data: {
-//     view: 'login',
-//     navItems: [
-//       { navName: "Lot Items", linkedView: "lot-items" },
-//       { navName: "Auction Events", linkedView: "auction-events" }
-//     ]
-//   },
-
-//   methods: {
-//     swapView(newView) {
-//       this.view = newView;
-//     }
-//   }
-// })
 },{"./components/App.vue":64,"./components/ArrangeAppraisal.vue":65,"./components/ClientDetails.vue":68,"./components/ClientList.vue":70,"./components/DefineCategories.vue":73,"./components/ItemDeleteConfirm.vue":77,"./components/ItemPageDesign.vue":80,"./components/ItemPageNav.vue":81,"./components/LotAppraisal.vue":84,"./components/ViewItem.vue":88,"./components/ViewItems.vue":89,"./components/Welcome.vue":90,"vue":62,"vue-resource":50,"vue-router":61}]},{},[91]);
