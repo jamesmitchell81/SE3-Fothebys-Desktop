@@ -59,9 +59,9 @@ export default {
   },
 
   ready: function() {
-    var category = sessionStorage.getItem("category-selected");
+    var category = sessionStorage.getItem("category");
     var path = "http://localhost:8080/services/category/";
-    var values = sessionStorage.getItem("attributes-set");
+    var values = sessionStorage.getItem("attributes");
 
     if ( category !== null )
     {
@@ -100,8 +100,7 @@ export default {
         }
       }
 
-      sessionStorage.removeItem("attributes-set");
-      sessionStorage.setItem("attributes-set", JSON.stringify(attributes));
+      sessionStorage.setItem("attributes", JSON.stringify(attributes));
       this.$dispatch('broadcastEvent', 'displayAttributes');
       this.$dispatch('closeSidePanelView');
     }

@@ -67,7 +67,7 @@
           "email": email,
           "category": category
         }
-        sessionStorage.setItem("expert-selection", JSON.stringify(details));
+        sessionStorage.setItem("expert", JSON.stringify(details));
         this.$dispatch('broadcastEvent', 'showExpertDetails');
         this.$dispatch('closeSidePanelView');
       }

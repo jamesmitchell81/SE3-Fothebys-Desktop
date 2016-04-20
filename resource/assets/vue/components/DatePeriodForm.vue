@@ -49,7 +49,7 @@
 
     methods: {
       setDatePeriod: function() {
-        sessionStorage.setItem("date-period-set", JSON.stringify(this.$data));
+        sessionStorage.setItem("productionDate", JSON.stringify(this.$data));
         this.$dispatch('broadcastEvent', 'updateDatePeriod');
         this.$dispatch('closeSidePanelView');
       }

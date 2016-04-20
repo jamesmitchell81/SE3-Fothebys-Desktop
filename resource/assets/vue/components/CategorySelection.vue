@@ -1,7 +1,6 @@
 <template>
 
   <form action="">
-
     <legend>Category Selection</legend>
       <span class="option-item" v-for="category in categories">
         <input type="radio"
@@ -11,7 +10,6 @@
         <label @click="setCategory(category.id, category.name)"
                for="{{ category.name | lowercase }}">{{ category.name }}</label>
       </span>
-
   </form>
 
 </template>
@@ -49,7 +47,7 @@
           "name": name
         };
 
-        sessionStorage.setItem("category-selected", JSON.stringify(category));
+        sessionStorage.setItem("category", JSON.stringify(category));
         this.$dispatch('broadcastEvent', 'updateCategory');
         this.$dispatch('closeSidePanelView');
       }

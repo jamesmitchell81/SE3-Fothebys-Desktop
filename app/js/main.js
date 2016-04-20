@@ -15310,7 +15310,7 @@ exports.default = {
         "name": name
       };
 
-      sessionStorage.setItem("category-selected", (0, _stringify2.default)(category));
+      sessionStorage.setItem("category", (0, _stringify2.default)(category));
       this.$dispatch('broadcastEvent', 'updateCategory');
       this.$dispatch('closeSidePanelView');
     }
@@ -15370,10 +15370,10 @@ exports.default = {
         "id": id,
         "name": name
       };
-      var data = sessionStorage.getItem("classifications-selection");
+      var data = sessionStorage.getItem("classifications");
       var details = JSON.parse(data) || [];
       details.push(detail);
-      sessionStorage.setItem("classifications-selection", (0, _stringify2.default)(details));
+      sessionStorage.setItem("classifications", (0, _stringify2.default)(details));
     },
 
     setClassifications: function setClassifications() {
@@ -15513,7 +15513,7 @@ exports.default = {
           var parts = location.split("/");
           details = JSON.parse(details);
           details.id = parts[parts.length - 1];
-          sessionStorage.setItem("client-set", (0, _stringify2.default)(details));
+          sessionStorage.setItem("client", (0, _stringify2.default)(details));
           this.$dispatch('broadcastEvent', 'displayClientDetails');
           this.$dispatch('closeSidePanelView');
         }, function (response) {
@@ -15527,24 +15527,6 @@ exports.default = {
           console.log(response);
         });
       }
-    },
-
-    demoPopulateForm: function demoPopulateForm() {
-      var d = {
-        title: 'Mr',
-        firstName: 'James',
-        surname: 'Mitchell',
-        emailAddress: 'james.mitchell81@live.co.uk',
-        telNumber: '07789 558 138',
-        contactAddress: {
-          firstLine: 'Apt 4, The Gallery',
-          secondLine: '2/3 Market Square',
-          townCity: 'Northampton',
-          postalCode: 'NN1 2DL'
-        }
-      };
-
-      this.$data = d;
     }
   }
 };
@@ -15643,7 +15625,7 @@ exports.default = {
         "address": address,
         "email": email
       };
-      sessionStorage.setItem("client-set", (0, _stringify2.default)(details));
+      sessionStorage.setItem("client", (0, _stringify2.default)(details));
       this.$dispatch('broadcastEvent', 'displayClientDetails');
       this.$dispatch('closeSidePanelView');
     }
@@ -15697,7 +15679,7 @@ exports.default = {
 
   methods: {
     setDatePeriod: function setDatePeriod() {
-      sessionStorage.setItem("date-period-set", (0, _stringify2.default)(this.$data));
+      sessionStorage.setItem("productionDate", (0, _stringify2.default)(this.$data));
       this.$dispatch('broadcastEvent', 'updateDatePeriod');
       this.$dispatch('closeSidePanelView');
     }
@@ -15948,7 +15930,7 @@ exports.default = {
         "email": email,
         "category": category
       };
-      sessionStorage.setItem("expert-selection", (0, _stringify2.default)(details));
+      sessionStorage.setItem("expert", (0, _stringify2.default)(details));
       this.$dispatch('broadcastEvent', 'showExpertDetails');
       this.$dispatch('closeSidePanelView');
     }
@@ -15997,9 +15979,9 @@ exports.default = {
   },
 
   ready: function ready() {
-    var category = sessionStorage.getItem("category-selected");
+    var category = sessionStorage.getItem("category");
     var path = "http://localhost:8080/services/category/";
-    var values = sessionStorage.getItem("attributes-set");
+    var values = sessionStorage.getItem("attributes");
 
     if (category !== null) {
       category = JSON.parse(category);
@@ -16036,8 +16018,7 @@ exports.default = {
         }
       }
 
-      sessionStorage.removeItem("attributes-set");
-      sessionStorage.setItem("attributes-set", (0, _stringify2.default)(attributes));
+      sessionStorage.setItem("attributes", (0, _stringify2.default)(attributes));
       this.$dispatch('broadcastEvent', 'displayAttributes');
       this.$dispatch('closeSidePanelView');
     }
@@ -16177,7 +16158,7 @@ exports.default = {
         length: this.$data.length === "" ? 0 : this.$data.length
       };
 
-      sessionStorage.setItem("dimensions-set", (0, _stringify2.default)(details));
+      sessionStorage.setItem("dimensions", (0, _stringify2.default)(details));
       this.$dispatch('broadcastEvent', 'updateDimensions');
       this.$dispatch('closeSidePanelView');
     }
@@ -16222,7 +16203,7 @@ exports.default = {
 
   ready: function ready() {
     // get the images for this item.
-    var sess = sessionStorage.getItem("uploaded-images");
+    var sess = sessionStorage.getItem("images");
 
     if (sess !== null) {
       sess = JSON.parse(sess);
@@ -16324,11 +16305,11 @@ exports.default = {
 
       this.$http.post(path, data, { headers: headers }).then(function (response) {
         var images = [];
-        images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+        images = JSON.parse(sessionStorage.getItem("images")) || [];
         var id = this.getIdFromLocationHeader(response.headers("Location"));
         images.push(id);
         this.$data.images[index].id = id;
-        sessionStorage.setItem("uploaded-images", (0, _stringify2.default)(images));
+        sessionStorage.setItem("images", (0, _stringify2.default)(images));
         this.$data.images[index].action = "remove";
       }, function (response) {
         console.log(response);
@@ -16347,15 +16328,17 @@ exports.default = {
       this.$http.delete(path).then(function (response) {
         // hate this.
         var images = [];
-        images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+        images = JSON.parse(sessionStorage.getItem("images")) || [];
         for (var i = 0; i < images.length; i++) {
           if (images[i] == id) {
             images.splice(i, 1);
           }
         }
-        sessionStorage.setItem("uploaded-images", (0, _stringify2.default)(images));
+        sessionStorage.setItem("images", (0, _stringify2.default)(images));
         this.$data.images[index].action = "upload";
-      }, function (response) {});
+      }, function (response) {
+        console.log(response);
+      });
     },
 
     confirm: function confirm() {
@@ -16519,7 +16502,7 @@ exports.default = {
         weight: this.$data.weight
       };
 
-      sessionStorage.setItem("item-weight-set", (0, _stringify2.default)(details));
+      sessionStorage.setItem("weight", (0, _stringify2.default)(details));
       this.$dispatch('broadcastEvent', 'displayItemWeight');
       this.$dispatch('closeSidePanelView');
     }
@@ -16559,7 +16542,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
   name: "LotAppraisalForm",
-
   data: function data() {
     var data = {
       textualDescription: '',
@@ -16572,7 +16554,6 @@ exports.default = {
       provenanceDetails: "",
       additionalNotes: ""
     };
-
     for (var prop in data) {
       if (data.hasOwnProperty(prop)) {
         var sess = sessionStorage.getItem(prop);
@@ -16582,16 +16563,14 @@ exports.default = {
         }
       }
     }
-
     return data;
   },
 
   ready: function ready() {
-
+    console.log(this.$route.params.id);
     if (this.$route.params.id) {
       // populate session
       this.$http.get("http://localhost:8080/services/lot-item/" + this.$route.params.id).then(function (response) {
-        console.log(response);
         var category = {
           id: response.data.category.id,
           name: response.data.category.name
@@ -16604,12 +16583,11 @@ exports.default = {
           width: response.data.dimensions.width
         };
 
-        sessionStorage.setItem("category-selected", (0, _stringify2.default)(category));
-        sessionStorage.setItem("dimensions-set", (0, _stringify2.default)(dimensions));
-        sessionStorage.setItem("classification-selection", (0, _stringify2.default)(response.data.classifications));
-        sessionStorage.setItem("attributes-set", (0, _stringify2.default)(response.data.attributes));
-        sessionStorage.setItem("date-period-set", (0, _stringify2.default)(response.data.productionDate));
-        sessionStorage.setItem("date-period-set", (0, _stringify2.default)(response.data.productionDate));
+        sessionStorage.setItem("category", (0, _stringify2.default)(category));
+        sessionStorage.setItem("dimensions", (0, _stringify2.default)(dimensions));
+        sessionStorage.setItem("attributes", (0, _stringify2.default)(response.data.attributes));
+        sessionStorage.setItem("productionDate", (0, _stringify2.default)(response.data.productionDate));
+        sessionStorage.setItem("images", (0, _stringify2.default)(response.data.images));
 
         this.$data.authenticated = response.data.authenticated;
         this.$data.itemName = response.data.itemName;
@@ -16619,7 +16597,6 @@ exports.default = {
         this.$data.provenanceDetails = response.data.provenanceDetails;
 
         this.$http.get("http://localhost:8080/services/lot-item/item-appraisal/" + this.$route.params.id).then(function (response) {
-          console.log(response);
           this.$data.estimatedPrice = response.data.estimatedPrice;
           this.$data.agreedPrice = response.data.agreedPrice;
           this.$data.additionalNotes = response.data.additionalNotes;
@@ -16641,28 +16618,34 @@ exports.default = {
             "email": response.data.client.emailAddress
           };
 
-          sessionStorage.setItem("client-set", (0, _stringify2.default)(client));
-          sessionStorage.setItem("expert-selection", (0, _stringify2.default)(expert));
-        }, function (response) {
-          console.log(response);
-        });
-      }, function (response) {
-        console.log(response);
-      });
-    }
+          sessionStorage.setItem("client", (0, _stringify2.default)(client));
+          sessionStorage.setItem("expert", (0, _stringify2.default)(expert));
 
-    this.$dispatch("broadcastEvent", "updateCategory");
-    this.$dispatch("broadcastEvent", "updateClassifications");
-    this.$dispatch("broadcastEvent", "updateDimensions");
-    this.$dispatch("broadcastEvent", "updateDatePeriod");
-    this.$dispatch("broadcastEvent", "showExpertDetails");
-    this.$dispatch("broadcastEvent", "displayClientDetails");
-    this.$dispatch("broadcastEvent", "displayItemWeight");
-    this.$dispatch("broadcastEvent", "displayUploadedImages");
-    this.$dispatch("broadcastEvent", "displayAttributes");
+          this.updatePage();
+        }, function (error) {
+          console.log(error);
+        });
+      }, function (error) {
+        console.log(error);
+      });
+    } else {
+      this.updatePage();
+    }
   },
 
   methods: {
+    updatePage: function updatePage() {
+      this.$dispatch("broadcastEvent", "updateCategory");
+      this.$dispatch("broadcastEvent", "updateClassifications");
+      this.$dispatch("broadcastEvent", "updateDimensions");
+      this.$dispatch("broadcastEvent", "updateDatePeriod");
+      this.$dispatch("broadcastEvent", "showExpertDetails");
+      this.$dispatch("broadcastEvent", "displayClientDetails");
+      this.$dispatch("broadcastEvent", "displayItemWeight");
+      this.$dispatch("broadcastEvent", "displayUploadedImages");
+      this.$dispatch("broadcastEvent", "displayAttributes");
+    },
+
     validate: function validate(e) {
       var src = e.target;
       var err = src.parentElement.querySelector(".msg-error");
@@ -16678,64 +16661,32 @@ exports.default = {
 
     store: function store(e) {
       var src = e.target;
-      console.log("Store", src.name);
       sessionStorage.setItem(src.name, (0, _stringify2.default)(src.value));
     },
 
     submitForm: function submitForm() {
       var data = {};
-
-      var attr = JSON.parse(sessionStorage.getItem("attributes-set"));
-      if (attr !== null) {
-        data.attributes = attr;
+      for (var i = 0; i < sessionStorage.length; i++) {
+        var key = sessionStorage.key(i);
+        data[key] = JSON.parse(sessionStorage.getItem(key));
       }
 
-      var category = JSON.parse(sessionStorage.getItem("category-selected"));
-      if (category) {
-        console.log(category);
-        data.category = category;
-      }
+      var client = JSON.parse(sessionStorage.getItem("client"));
+      var expert = JSON.parse(sessionStorage.getItem("expert"));
+      if (client) data.client = client.id;
+      if (expert) data.expert = expert.id;
 
-      var classification = JSON.parse(sessionStorage.getItem("classification-selection"));
-      if (classification) {
-        data.classifications = classification;
-      }
-
-      var client = JSON.parse(sessionStorage.getItem("client-set"));
-      if (client) {
-        data.client = client.id;
-      }
-
-      var dates = JSON.parse(sessionStorage.getItem("date-period-set"));
-      if (dates) {
-        data.productionDate = dates;
-      }
-
-      var dimensions = JSON.parse(sessionStorage.getItem("dimensions-set"));
-      if (dimensions) {
-        data.dimensions = dimensions;
-      }
-
-      var expert = JSON.parse(sessionStorage.getItem("expert-selection"));
-      if (expert) {
-        data.expert = expert.id;
-      }
-
-      var images = JSON.parse(sessionStorage.getItem("uploaded-images"));
-      if (images) {
-        data.images = images;
-      }
-
-      for (var prop in this.$data) {
-        if (this.$data.hasOwnProperty(prop)) {
-          if (this.$data[prop] === "on") {
-            this.$data[prop] = true;
-          }
-          data[prop] = this.$data[prop];
-        }
-      }
+      // for ( var prop in this.$data ) {
+      //   if ( this.$data.hasOwnProperty(prop) ) {
+      //     if ( this.$data[prop] === "on" ) {
+      //       this.$data[prop] = true;
+      //     }
+      //     data[prop] = this.$data[prop];
+      //   }
+      // }
 
       // if not update
+      console.log(this.$route.params.id);
       if (!this.$route.params.id) {
         this.$http.post('http://localhost:8080/services/lot-item', (0, _stringify2.default)(data)).then(function (response) {
           if (response.status === 201) {
@@ -16754,9 +16705,9 @@ exports.default = {
           console.log(response);
         });
       }
-    },
 
-    updateDetails: function updateDetails(details, elem) {},
+      sessionStorage.clear();
+    },
 
     updateCollectionDetails: function updateCollectionDetails(storagePath, displayPath) {
       var details = JSON.parse(sessionStorage.getItem(storagePath));
@@ -16779,7 +16730,9 @@ exports.default = {
               li.appendChild(this.makeList(details[prop]));
             } else {
               var label = prop.split(/(?=[A-Z])/g).join(" ").toUpperCase();
-              li.innerHTML = label + ": " + "<strong>" + details[prop] + "</strong>";
+              if (!(details[prop] === -1)) {
+                li.innerHTML = label + ": " + "<strong>" + details[prop] + "</strong>";
+              }
             }
             ul.appendChild(li);
           }
@@ -16810,7 +16763,7 @@ exports.default = {
 
   events: {
     updateCategory: function updateCategory() {
-      var details = JSON.parse(sessionStorage.getItem("category-selected"));
+      var details = JSON.parse(sessionStorage.getItem("category"));
       var box = document.getElementById("category-details");
       if (details) {
         box.innerHTML = details.name;
@@ -16819,7 +16772,7 @@ exports.default = {
     },
 
     updateClassifications: function updateClassifications() {
-      var details = JSON.parse(sessionStorage.getItem("classifications-selection"));
+      var details = JSON.parse(sessionStorage.getItem("classifications"));
       var box = document.getElementById("classification-details");
       box.innerHTML = "";
       if (details) {
@@ -16834,25 +16787,25 @@ exports.default = {
       }
     },
     updateDimensions: function updateDimensions() {
-      this.updateCollectionDetails("dimensions-set", "dimension-details");
+      this.updateCollectionDetails("dimensions", "dimension-details");
     },
     updateDatePeriod: function updateDatePeriod() {
-      this.updateCollectionDetails("date-period-set", "date-period-details");
+      this.updateCollectionDetails("productionDate", "date-period-details");
     },
     showExpertDetails: function showExpertDetails() {
-      this.updateCollectionDetails("expert-selection", "expert-selected-details");
+      this.updateCollectionDetails("expert", "expert-selected-details");
     },
     displayClientDetails: function displayClientDetails() {
-      this.updateCollectionDetails("client-set", "client-details");
+      this.updateCollectionDetails("client", "client-details");
     },
     displayItemWeight: function displayItemWeight() {
-      this.updateCollectionDetails("item-weight-set", "item-weight-details");
+      this.updateCollectionDetails("weight", "item-weight-details");
     },
     displayAttributes: function displayAttributes() {
-      this.updateCollectionDetails("attributes-set", "attribute-details");
+      this.updateCollectionDetails("attributes", "attribute-details");
     },
     displayUploadedImages: function displayUploadedImages() {
-      var uploadedImages = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+      var uploadedImages = JSON.parse(sessionStorage.getItem("images")) || [];
       var path = "http://localhost:8080/services/item-images/";
       var parent = document.getElementById("item-images-details");
       parent.innerHTML = "";
@@ -16866,9 +16819,11 @@ exports.default = {
       }
     }
 
-  } };
+  }
+
+};
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form action=\"\" @keyup.enter.prevent=\"\" @change=\"validate\">\n  <legend>Record Lot Appraisal</legend>\n\n  <span class=\"form-element\">\n    <label for=\"appraisalDate\">Appraisal Date\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"appraisalDate.length === 0\">Required field</span>\n    </label>\n    <input type=\"date\" name=\"appraisalDate\" id=\"appraisalDate\" v-model=\"appraisalDate\" required=\"\" @change=\"store\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n\n    <span class=\"btn-group\"><!-- v-show -->\n      <span>Existing Client</span>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientSearchForm')\" class=\"btn\">Yes</button>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientDetailsForm')\" class=\"btn\">No</button>\n    </span>\n\n    <div class=\"details-display\" id=\"client-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ExpertSelection')\" class=\"btn\">Add Expert\n          </button>\n    <!-- details -->\n    <div class=\"details-display\" id=\"expert-selected-details\"></div>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'CategorySelection')\" class=\"btn\">Select Category\n          </button>\n    <div class=\"details-display\" id=\"category-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Category Specific Attributes</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemAttributeDefinition')\" class=\"btn\">Set Attributes\n          </button>\n    <div class=\"details-display\" id=\"attribute-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Classification</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClassificationSelection')\" class=\"btn\">Select Classifications\n          </button>\n    <div class=\"details-display\" id=\"classification-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Date Period</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'DatePeriodForm')\" class=\"btn\">\n            Add Date Period\n      </button>\n    <div class=\"details-display\" id=\"date-period-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Dimensions</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemDimensionForm')\" class=\"btn\">Add Dimensions\n          </button>\n    <div class=\"details-display\" id=\"dimension-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Weight</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemWeightForm')\" class=\"btn\">Add Item Weight\n          </button>\n    <div class=\"details-display\" id=\"item-weight-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Images</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemImagesForm')\" class=\"btn\">Add Images</button>\n    <!-- list of filenames -->\n    <div class=\"details-display\" id=\"item-images-details\"></div>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"itemName\">Item Name\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"itemName.length === 0\">Required field</span>\n    </label>\n    <input type=\"text\" name=\"itemName\" id=\"itemName\" v-model=\"itemName\" required=\"\" @change=\"store\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"estimatedPrice\">Estimated Price\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"estimatedPrice.length === 0\">Required field</span>\n    </label>\n    <input type=\"number\" min=\"1\" name=\"estimatedPrice\" id=\"estimatedPrice\" v-model=\"estimatedPrice\" required=\"\" @change=\"store\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"estimatedPrice\">Agreed Reserve Price\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"agreedPrice.length === 0\">Required field</span>\n    </label>\n    <input type=\"number\" min=\"1\" name=\"agreedPrice\" id=\"agreedPrice\" v-model=\"agreedPrice\" required=\"\" @change=\"store\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"textualDescription\">Textual Description\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"textualDescription.length === 0\">Required field</span>\n    </label>\n    <textarea rols=\"40\" cols=\"20\" name=\"textualDescription\" id=\"textualDescription\" v-model=\"textualDescription\" required=\"\" @change=\"store\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"provenanceDetails\">Provenance Details\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"provenanceDetails.length === 0\">Required field</span>\n    </label>\n    <textarea rols=\"40\" cols=\"20\" name=\"provenanceDetails\" id=\"provenanceDetails\" v-model=\"provenanceDetails\" required=\"\" @change=\"store\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Authenticated</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedYes\" @change=\"store\" v-model=\"authenticated\" value=\"true\">\n        <label for=\"authenticatedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedNo\" @change=\"store\" v-model=\"authenticated\" value=\"false\">\n        <label for=\"authenticatedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Agreement Signed</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedYes\" @change=\"store\" v-model=\"agreement\" value=\"true\">\n        <label for=\"agreedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedNo\" @change=\"store\" v-model=\"agreement\" value=\"false\">\n        <label for=\"agreedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Additional Notes</label>\n    <textarea rols=\"40\" cols=\"20\" name=\"additionalNotes\" id=\"additionalNotes\" v-model=\"additionalNotes\" @change=\"store\">      </textarea>\n  </span>\n\n  <div class=\"control-bar\">\n    <div class=\"control-bar-content\">\n      <button class=\"btn\" @click.prevent=\"submitForm\">\n              Complete\n      </button>\n    </div>\n  </div>\n\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form action=\"\" @keyup.enter.prevent=\"\" @change=\"validate\">\n  <legend>Record Lot Appraisal</legend>\n\n  <span class=\"form-element\">\n    <label for=\"appraisalDate\">Appraisal Date\n        <span class=\"msg\" transition=\"msg-hide\">Required field</span>\n    </label>\n    <input type=\"date\" name=\"appraisalDate\" id=\"appraisalDate\" v-model=\"appraisalDate\" required=\"\" @change=\"store\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Client</label>\n\n    <span class=\"btn-group\"><!-- v-show -->\n      <span>Existing Client</span>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientSearchForm')\" class=\"btn\">Yes</button>\n      <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClientDetailsForm')\" class=\"btn\">No</button>\n    </span>\n\n    <div class=\"details-display\" id=\"client-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Expert</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ExpertSelection')\" class=\"btn\">Add Expert\n          </button>\n    <!-- details -->\n    <div class=\"details-display\" id=\"expert-selected-details\"></div>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Category</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'CategorySelection')\" class=\"btn\">Select Category\n          </button>\n    <div class=\"details-display\" id=\"category-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Category Specific Attributes</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemAttributeDefinition')\" class=\"btn\">Set Attributes\n          </button>\n    <div class=\"details-display\" id=\"attribute-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Classification</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ClassificationSelection')\" class=\"btn\">Select Classifications\n          </button>\n    <div class=\"details-display\" id=\"classification-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Date Period</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'DatePeriodForm')\" class=\"btn\">\n            Add Date Period\n      </button>\n    <div class=\"details-display\" id=\"date-period-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Dimensions</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemDimensionForm')\" class=\"btn\">Add Dimensions\n          </button>\n    <div class=\"details-display\" id=\"dimension-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Weight</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemWeightForm')\" class=\"btn\">Add Item Weight\n          </button>\n    <div class=\"details-display\" id=\"item-weight-details\"></div>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Item Images</label>\n    <button @click.prevent=\"this.$dispatch('loadSideForm', 'ItemImagesForm')\" class=\"btn\">Add Images</button>\n    <!-- list of filenames -->\n    <div class=\"details-display\" id=\"item-images-details\"></div>\n    <!-- edit -->\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"itemName\">Item Name\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"itemName.length === 0\">Required field</span>\n    </label>\n    <input type=\"text\" name=\"itemName\" id=\"itemName\" v-model=\"itemName\" required=\"\" @change=\"store\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"estimatedPrice\">Estimated Price\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"estimatedPrice.length === 0\">Required field</span>\n    </label>\n    <input type=\"number\" min=\"1\" name=\"estimatedPrice\" id=\"estimatedPrice\" v-model=\"estimatedPrice\" required=\"\" @change=\"store\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"estimatedPrice\">Agreed Reserve Price\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"agreedPrice.length === 0\">Required field</span>\n    </label>\n    <input type=\"number\" min=\"1\" name=\"agreedPrice\" id=\"agreedPrice\" v-model=\"agreedPrice\" required=\"\" @change=\"store\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"textualDescription\">Textual Description\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"textualDescription.length === 0\">Required field</span>\n    </label>\n    <textarea rols=\"40\" cols=\"20\" name=\"textualDescription\" id=\"textualDescription\" v-model=\"textualDescription\" required=\"\" @change=\"store\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"provenanceDetails\">Provenance Details\n        <span class=\"msg\" transition=\"msg-hide\" v-if=\"provenanceDetails.length === 0\">Required field</span>\n    </label>\n    <textarea rols=\"40\" cols=\"20\" name=\"provenanceDetails\" id=\"provenanceDetails\" v-model=\"provenanceDetails\" required=\"\" @change=\"store\">      </textarea>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"\">Authenticated</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedYes\" @change=\"store\" v-model=\"authenticated\" value=\"true\">\n        <label for=\"authenticatedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"authenticated\" id=\"authenticatedNo\" @change=\"store\" v-model=\"authenticated\" value=\"false\">\n        <label for=\"authenticatedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Agreement Signed</label>\n    <span class=\"form-input-inline\">\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedYes\" @change=\"store\" v-model=\"agreement\" value=\"true\">\n        <label for=\"agreedYes\">Yes</label>\n      </span>\n      <span class=\"option-item\">\n        <input type=\"radio\" name=\"agreement\" id=\"agreedNo\" @change=\"store\" v-model=\"agreement\" value=\"false\">\n        <label for=\"agreedNo\">No</label>\n      </span>\n    </span>\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"additionalNotes\">Additional Notes</label>\n    <textarea rols=\"40\" cols=\"20\" name=\"additionalNotes\" id=\"additionalNotes\" v-model=\"additionalNotes\" @change=\"store\">      </textarea>\n  </span>\n\n  <div class=\"control-bar\">\n    <div class=\"control-bar-content\">\n      <button class=\"btn\" @click.prevent=\"submitForm\">\n              Complete\n      </button>\n    </div>\n  </div>\n\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17077,7 +17032,6 @@ exports.default = {
           });
         }
         this.$data.items[j].images = realImages;
-        this.$data.items[j].displayImage = realImages[0];
       }
     }, function (response) {
       console.log(response);
@@ -17109,7 +17063,7 @@ exports.default = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div>\n  <form action=\"\">\n    <fieldset>\n      <legend>Search Items</legend>\n\n      <span class=\"form-element\">\n        <label for=\"\">Name</label>\n        <input type=\"text\" v-model=\"searchName\" @keyup=\"searchItem | debounce 200\">\n      </span>\n\n    </fieldset>\n  </form>\n\n  <div class=\"page-notification\" v-if=\"items.length === 0\">\n    You have currently have no items...\n  </div>\n\n  <div class=\"item-list-view\">\n    <div v-for=\"item in items\" class=\"item-list\" data-id=\"{{ item.id }}\" @click=\"select\">\n      <span class=\"item-list-columns\">\n        <span class=\"item-list-column\">\n          <span class=\"item-list-cell\">Item Name: <span class=\"item-list-cell-value\">{{ item.itemName }}</span></span>\n          <span class=\"item-list-cell\">Category: <span class=\"item-list-cell-value\">{{ item.category.name }}</span></span>\n          <span class=\"item-list-cell\">\n            Classifications:\n            <span v-for=\"classification in item.classifications\"><span class=\"item-list-cell-value\">{{ classification.name }}</span></span>\n          </span>\n          <span class=\"item-list-cell\">\n            <div v-for=\"attribute in item.attributes\">\n              <span> {{ attribute.name }}</span>:<span class=\"item-list-cell-value\"> {{ attribute.value }}</span>\n            </div>\n          </span>\n        </span>\n        <span class=\"item-list-column\">\n          <span class=\"item-list-cell\">Textual Description:</span>\n          <span class=\"item-list-cell item-list-textual-description\">{{ item.textualDescription }}</span>\n        </span>\n      </span>\n\n      <div class=\"image-list\">\n        <div class=\"image-item-small\" v-for=\"image in item.images\">\n          <div class=\"item-image-wrap\">\n            <img class=\"image-upload-preview\" :src=\"image.dataURL\" alt=\"{{ image.filename }}\">\n          </div>\n        </div>\n      </div>\n\n    </div>\n  </div>\n\n  <div class=\"control-bar\" v-show=\"selected !== 0\">\n    <div class=\"item-list-controls\">\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.view\">View</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.update\">Update</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.delete\">Delete</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.page.design\">Design Page</button>\n    </div>\n  </div>\n\n</div><!-- end -->\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div>\n  <form action=\"\">\n    <fieldset>\n      <legend>Items</legend>\n\n<!--       <span class=\"form-element\">\n        <label for=\"\">Name</label>\n        <input type=\"text\" v-model=\"searchName\" @keyup=\"searchItem | debounce 200\">\n      </span> -->\n\n    </fieldset>\n  </form>\n\n\n  <div class=\"page-notification\" v-if=\"items.length === 0\">\n    You have currently have no items...\n  </div>\n\n  <div class=\"item-list-view\">\n    <div v-for=\"item in items\" class=\"item-list\" data-id=\"{{ item.id }}\" @click=\"select\">\n      <span class=\"item-list-columns\">\n        <span class=\"item-list-column\">\n          <span class=\"item-list-cell\">Item Name: <span class=\"item-list-cell-value\">{{ item.itemName }}</span></span>\n          <span class=\"item-list-cell\">Category: <span class=\"item-list-cell-value\">{{ item.category.name }}</span></span>\n          <span class=\"item-list-cell\">\n            Classifications:\n            <span v-for=\"classification in item.classifications\">\n              <span class=\"item-list-cell-value\">{{ classification.name | capitalize }} </span>\n            </span>\n          </span>\n          <span class=\"item-list-cell\">\n            <div v-for=\"attribute in item.attributes\">\n              <span> {{ attribute.name }}</span>:<span class=\"item-list-cell-value\"> {{ attribute.value }}</span>\n            </div>\n          </span>\n        </span>\n        <span class=\"item-list-column\">\n          <span class=\"item-list-cell\">Textual Description:</span>\n          <span class=\"item-list-cell item-list-textual-description\">{{ item.textualDescription }}</span>\n        </span>\n\n      </span>\n\n<!--       <div class=\"image-list\">\n        <div class=\"image-item-small\" v-for=\"image in item.images\">\n          <div class=\"item-image-wrap\">\n            <img class=\"image-upload-preview-small\" :src=\"image.dataURL\" alt=\"{{ image.filename }}\"/>\n          </div>\n        </div>\n      </div> -->\n\n\n    </div>\n  </div>\n\n  <div class=\"control-bar\" v-show=\"selected !== 0\">\n    <div class=\"item-list-controls\">\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.view\">View</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.update\">Update</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.delete\">Delete</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.page.design\">Design Page</button>\n    </div>\n  </div>\n\n</div><!-- end -->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

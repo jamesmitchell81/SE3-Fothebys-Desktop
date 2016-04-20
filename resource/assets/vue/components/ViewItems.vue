@@ -3,15 +3,16 @@
 <div>
   <form action="">
     <fieldset>
-      <legend>Search Items</legend>
+      <legend>Items</legend>
 
-      <span class="form-element">
+<!--       <span class="form-element">
         <label for="">Name</label>
         <input type="text" v-model="searchName" @keyup="searchItem | debounce 200">
-      </span>
+      </span> -->
 
     </fieldset>
   </form>
+
 
   <div class="page-notification" v-if="items.length === 0">
     You have currently have no items...
@@ -25,7 +26,9 @@
           <span class="item-list-cell">Category: <span class="item-list-cell-value">{{ item.category.name }}</span></span>
           <span class="item-list-cell">
             Classifications:
-            <span v-for="classification in item.classifications"><span class="item-list-cell-value">{{ classification.name }}</span></span>
+            <span v-for="classification in item.classifications">
+              <span class="item-list-cell-value">{{ classification.name | capitalize }} </span>
+            </span>
           </span>
           <span class="item-list-cell">
             <div v-for="attribute in item.attributes">
@@ -37,15 +40,17 @@
           <span class="item-list-cell">Textual Description:</span>
           <span class="item-list-cell item-list-textual-description">{{ item.textualDescription }}</span>
         </span>
+
       </span>
 
-      <div class="image-list">
+<!--       <div class="image-list">
         <div class="image-item-small" v-for="image in item.images">
           <div class="item-image-wrap">
-            <img class="image-upload-preview" :src="image.dataURL" alt="{{ image.filename }}">
+            <img class="image-upload-preview-small" :src="image.dataURL" alt="{{ image.filename }}"/>
           </div>
         </div>
-      </div>
+      </div> -->
+
 
     </div>
   </div>
@@ -95,7 +100,6 @@ export default {
               });
           }
           this.$data.items[j].images = realImages;
-          this.$data.items[j].displayImage = realImages[0];
         }
 
     }, function(response) {

@@ -71,7 +71,7 @@
           length: this.$data.length === "" ? 0 : this.$data.length,
         }
 
-        sessionStorage.setItem("dimensions-set", JSON.stringify(details));
+        sessionStorage.setItem("dimensions", JSON.stringify(details));
         this.$dispatch('broadcastEvent', 'updateDimensions');
         this.$dispatch('closeSidePanelView');
       }

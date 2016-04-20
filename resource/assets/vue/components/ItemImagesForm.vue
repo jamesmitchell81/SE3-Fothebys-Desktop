@@ -57,7 +57,7 @@
 
     ready: function() {
       // get the images for this item.
-      var sess = sessionStorage.getItem("uploaded-images");
+      var sess = sessionStorage.getItem("images");
 
       if ( sess !== null ) {
         sess = JSON.parse(sess);
@@ -161,11 +161,11 @@
 
         this.$http.post(path, data, {headers: headers}).then(function(response){
           var  images = [];
-          images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+          images = JSON.parse(sessionStorage.getItem("images")) || [];
           var id = this.getIdFromLocationHeader(response.headers("Location"));
           images.push(id);
           this.$data.images[index].id = id;
-          sessionStorage.setItem("uploaded-images", JSON.stringify(images));
+          sessionStorage.setItem("images", JSON.stringify(images));
           this.$data.images[index].action = "remove";
         }, function(response) {
           console.log(response);
@@ -185,18 +185,17 @@
                   .then(function(response){
                     // hate this.
                     var  images = [];
-                    images = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+                    images = JSON.parse(sessionStorage.getItem("images")) || [];
                     for ( var i = 0; i < images.length; i++ ) {
                       if ( images[i] == id ) {
                         images.splice(i, 1);
                       }
                     }
-                    sessionStorage.setItem("uploaded-images", JSON.stringify(images));
+                    sessionStorage.setItem("images", JSON.stringify(images));
                     this.$data.images[index].action = "upload";
                   }, function(response){
-
+                    console.log(response);
                   });
-
       },
 
       confirm: function() {

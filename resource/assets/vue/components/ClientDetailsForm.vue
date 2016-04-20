@@ -172,7 +172,7 @@ export default {
               var parts = location.split("/");
               details = JSON.parse(details);
               details.id = parts[parts.length - 1];
-              sessionStorage.setItem("client-set", JSON.stringify(details));
+              sessionStorage.setItem("client", JSON.stringify(details));
               this.$dispatch('broadcastEvent', 'displayClientDetails');
               this.$dispatch('closeSidePanelView');
           }, function(response) {
@@ -188,24 +188,6 @@ export default {
           });
       }
     },
-
-    demoPopulateForm: function() {
-      var d = {
-          title: 'Mr',
-          firstName: 'James',
-          surname: 'Mitchell',
-          emailAddress: 'james.mitchell81@live.co.uk',
-          telNumber: '07789 558 138',
-          contactAddress: {
-            firstLine: 'Apt 4, The Gallery',
-            secondLine: '2/3 Market Square',
-            townCity: 'Northampton',
-            postalCode: 'NN1 2DL'
-          }
-        }
-
-        this.$data = d;
-    }
   }
 }
 </script>

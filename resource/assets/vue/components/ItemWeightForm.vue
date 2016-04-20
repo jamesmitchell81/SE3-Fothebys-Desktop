@@ -49,7 +49,7 @@
           weight: this.$data.weight,
         }
 
-        sessionStorage.setItem("item-weight-set", JSON.stringify(details));
+        sessionStorage.setItem("weight", JSON.stringify(details));
         this.$dispatch('broadcastEvent', 'displayItemWeight');
         this.$dispatch('closeSidePanelView');
       },

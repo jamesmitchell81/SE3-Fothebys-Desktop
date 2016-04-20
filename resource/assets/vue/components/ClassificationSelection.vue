@@ -43,10 +43,10 @@
           "id"   : id,
           "name" : name
         };
-        var data = sessionStorage.getItem("classifications-selection");
+        var data = sessionStorage.getItem("classifications");
         var details =  JSON.parse(data) || [];
         details.push(detail);
-        sessionStorage.setItem("classifications-selection", JSON.stringify(details));
+        sessionStorage.setItem("classifications", JSON.stringify(details));
       },
 
       setClassifications: function() {

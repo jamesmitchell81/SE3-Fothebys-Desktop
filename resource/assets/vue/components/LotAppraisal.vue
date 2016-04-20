@@ -177,7 +177,6 @@
 <script>
   export default {
     name: "LotAppraisalForm",
-
     data: function() {
       var data = {
         textualDescription: '',
@@ -190,7 +189,6 @@
         provenanceDetails: "",
         additionalNotes: ""
       }
-
       for ( var prop in data ) {
         if ( data.hasOwnProperty(prop) ) {
           var sess = sessionStorage.getItem(prop);
@@ -200,17 +198,15 @@
           }
         }
       }
-
       return data;
     },
 
     ready: function() {
-
+      console.log(this.$route.params.id);
       if ( this.$route.params.id ) {
         // populate session
         this.$http.get("http://localhost:8080/services/lot-item/" + this.$route.params.id).then(
           function(response) {
-            console.log(response);
             var category = {
               id: response.data.category.id,
               name: response.data.category.name
@@ -223,12 +219,11 @@
               width: response.data.dimensions.width
             }
 
-            sessionStorage.setItem("category-selected", JSON.stringify(category));
-            sessionStorage.setItem("dimensions-set", JSON.stringify(dimensions));
-            sessionStorage.setItem("classification-selection", JSON.stringify(response.data.classifications));
-            sessionStorage.setItem("attributes-set", JSON.stringify(response.data.attributes));
-            sessionStorage.setItem("date-period-set", JSON.stringify(response.data.productionDate));
-            sessionStorage.setItem("date-period-set", JSON.stringify(response.data.productionDate));
+            sessionStorage.setItem("category", JSON.stringify(category));
+            sessionStorage.setItem("dimensions", JSON.stringify(dimensions));
+            sessionStorage.setItem("attributes", JSON.stringify(response.data.attributes));
+            sessionStorage.setItem("productionDate", JSON.stringify(response.data.productionDate));
+            sessionStorage.setItem("images", JSON.stringify(response.data.images));
 
             this.$data.authenticated = response.data.authenticated;
             this.$data.itemName = response.data.itemName;
@@ -239,7 +234,6 @@
 
             this.$http.get("http://localhost:8080/services/lot-item/item-appraisal/" + this.$route.params.id).then(
               function(response) {
-                console.log(response);
                 this.$data.estimatedPrice = response.data.estimatedPrice;
                 this.$data.agreedPrice = response.data.agreedPrice;
                 this.$data.additionalNotes = response.data.additionalNotes;
@@ -261,32 +255,37 @@
                   "email": response.data.client.emailAddress
                 }
 
-                sessionStorage.setItem("client-set", JSON.stringify(client));
-                sessionStorage.setItem("expert-selection", JSON.stringify(expert));
-              }, function(response) {
-                console.log(response);
+                sessionStorage.setItem("client", JSON.stringify(client));
+                sessionStorage.setItem("expert", JSON.stringify(expert));
+
+                this.updatePage();
+              }, function(error) {
+                console.log(error);
               });
 
-          }, function(response) {
-            console.log(response);
+          }, function(error) {
+            console.log(error);
           });
 
-
-
+      } else {
+        this.updatePage();
       }
 
-      this.$dispatch("broadcastEvent", "updateCategory");
-      this.$dispatch("broadcastEvent", "updateClassifications");
-      this.$dispatch("broadcastEvent", "updateDimensions");
-      this.$dispatch("broadcastEvent", "updateDatePeriod");
-      this.$dispatch("broadcastEvent", "showExpertDetails");
-      this.$dispatch("broadcastEvent", "displayClientDetails");
-      this.$dispatch("broadcastEvent", "displayItemWeight");
-      this.$dispatch("broadcastEvent", "displayUploadedImages");
-      this.$dispatch("broadcastEvent", "displayAttributes");
     },
 
     methods: {
+      updatePage: function() {
+        this.$dispatch("broadcastEvent", "updateCategory");
+        this.$dispatch("broadcastEvent", "updateClassifications");
+        this.$dispatch("broadcastEvent", "updateDimensions");
+        this.$dispatch("broadcastEvent", "updateDatePeriod");
+        this.$dispatch("broadcastEvent", "showExpertDetails");
+        this.$dispatch("broadcastEvent", "displayClientDetails");
+        this.$dispatch("broadcastEvent", "displayItemWeight");
+        this.$dispatch("broadcastEvent", "displayUploadedImages");
+        this.$dispatch("broadcastEvent", "displayAttributes");
+      },
+
       validate: function(e) {
         var src = e.target;
         var err = src.parentElement.querySelector(".msg-error");
@@ -302,64 +301,32 @@
 
       store: function(e) {
         var src = e.target;
-        console.log("Store", src.name);
         sessionStorage.setItem(src.name, JSON.stringify(src.value));
       },
 
       submitForm: function() {
         var data = {};
-
-        var attr = JSON.parse(sessionStorage.getItem("attributes-set"));
-        if ( attr !== null ) {
-          data.attributes = attr;
+        for ( var i = 0; i < sessionStorage.length; i++ ) {
+          var key = sessionStorage.key(i);
+          data[key] = JSON.parse(sessionStorage.getItem(key));
         }
 
-        var category = JSON.parse(sessionStorage.getItem("category-selected"));
-        if ( category ) {
-          console.log(category);
-          data.category = category;
-        }
+        var client = JSON.parse(sessionStorage.getItem("client"));
+        var expert = JSON.parse(sessionStorage.getItem("expert"));
+        if ( client ) data.client = client.id;
+        if ( expert ) data.expert = expert.id;
 
-        var classification = JSON.parse(sessionStorage.getItem("classification-selection"));
-        if ( classification ) {
-          data.classifications = classification;
-        }
-
-        var client = JSON.parse(sessionStorage.getItem("client-set"));
-        if ( client ) {
-          data.client = client.id;
-        }
-
-        var dates = JSON.parse(sessionStorage.getItem("date-period-set"));
-        if ( dates ) {
-          data.productionDate = dates;
-        }
-
-        var dimensions = JSON.parse(sessionStorage.getItem("dimensions-set"));
-        if ( dimensions ) {
-          data.dimensions = dimensions;
-        }
-
-        var expert = JSON.parse(sessionStorage.getItem("expert-selection"));
-        if ( expert ) {
-          data.expert = expert.id;
-        }
-
-        var images = JSON.parse(sessionStorage.getItem("uploaded-images"));
-        if ( images ) {
-          data.images = images;
-        }
-
-        for ( var prop in this.$data ) {
-          if ( this.$data.hasOwnProperty(prop) ) {
-            if ( this.$data[prop] === "on" ) {
-              this.$data[prop] = true;
-            }
-            data[prop] = this.$data[prop];
-          }
-        }
+        // for ( var prop in this.$data ) {
+        //   if ( this.$data.hasOwnProperty(prop) ) {
+        //     if ( this.$data[prop] === "on" ) {
+        //       this.$data[prop] = true;
+        //     }
+        //     data[prop] = this.$data[prop];
+        //   }
+        // }
 
         // if not update
+      console.log(this.$route.params.id);
       if ( !this.$route.params.id ) {
         this.$http.post('http://localhost:8080/services/lot-item', JSON.stringify(data))
                   .then(function(response) {
@@ -380,10 +347,8 @@
                       console.log(response);
                     });
         }
-      },
 
-      updateDetails: function(details, elem) {
-
+        sessionStorage.clear();
       },
 
       updateCollectionDetails: function(storagePath, displayPath) {
@@ -407,7 +372,9 @@
                 li.appendChild(this.makeList(details[prop]));
               } else {
                 var label = prop.split(/(?=[A-Z])/g).join(" ").toUpperCase();
-                li.innerHTML = label + ": " + "<strong>" + details[prop] + "</strong>";
+                if ( !(details[prop] === -1) ) {
+                  li.innerHTML = label + ": " + "<strong>" + details[prop] + "</strong>";
+                }
               }
               ul.appendChild(li);
             }
@@ -438,7 +405,7 @@
 
     events: {
       updateCategory: function() {
-        var details = JSON.parse(sessionStorage.getItem("category-selected"));
+        var details = JSON.parse(sessionStorage.getItem("category"));
         var box = document.getElementById("category-details");
         if ( details ) {
           box.innerHTML = details.name;
@@ -447,7 +414,7 @@
       },
 
       updateClassifications: function() {
-        var details = JSON.parse(sessionStorage.getItem("classifications-selection"));
+        var details = JSON.parse(sessionStorage.getItem("classifications"));
         var box = document.getElementById("classification-details");
         box.innerHTML = "";
         if ( details ) {
@@ -462,25 +429,25 @@
         }
       },
       updateDimensions: function() {
-        this.updateCollectionDetails("dimensions-set", "dimension-details");
+        this.updateCollectionDetails("dimensions", "dimension-details");
       },
       updateDatePeriod: function() {
-        this.updateCollectionDetails("date-period-set", "date-period-details");
+        this.updateCollectionDetails("productionDate", "date-period-details");
       },
       showExpertDetails: function() {
-        this.updateCollectionDetails("expert-selection", "expert-selected-details");
+        this.updateCollectionDetails("expert", "expert-selected-details");
       },
       displayClientDetails: function() {
-        this.updateCollectionDetails("client-set", "client-details");
+        this.updateCollectionDetails("client", "client-details");
       },
       displayItemWeight: function() {
-        this.updateCollectionDetails("item-weight-set", "item-weight-details");
+        this.updateCollectionDetails("weight", "item-weight-details");
       },
       displayAttributes: function() {
-        this.updateCollectionDetails("attributes-set", "attribute-details");
+        this.updateCollectionDetails("attributes", "attribute-details");
       },
       displayUploadedImages: function() {
-        var uploadedImages = JSON.parse(sessionStorage.getItem("uploaded-images")) || [];
+        var uploadedImages = JSON.parse(sessionStorage.getItem("images")) || [];
         var path = "http://localhost:8080/services/item-images/";
         var parent = document.getElementById("item-images-details");
         parent.innerHTML = "";
@@ -494,7 +461,7 @@
         }
       }
 
-    }, // end of events.
+    },
 
   }
 </script>

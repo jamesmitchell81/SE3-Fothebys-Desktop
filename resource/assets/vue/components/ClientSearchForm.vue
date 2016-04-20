@@ -55,7 +55,7 @@
           "address": address,
           "email": email
         }
-        sessionStorage.setItem("client-set", JSON.stringify(details));
+        sessionStorage.setItem("client", JSON.stringify(details));
         this.$dispatch('broadcastEvent', 'displayClientDetails');
         this.$dispatch('closeSidePanelView');
       }
