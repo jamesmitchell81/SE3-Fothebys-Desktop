@@ -1,24 +1,25 @@
 <template>
 
   <form method="get" action="http://localhost:8080/services/clients/">
-
-    <span class="form-element">
-      <label for="surname">Surname</label>
-      <input type="text" v-model="surname">
-    </span>
-
-    <span class="form-element">
-      <label for="title">Email Address</label>
-      <input type="email" v-model="emailAddress">
-    </span>
-
-    <span class="form-element">
-      <label for="telNumber">Telephone Number</label>
-      <input type="text" v-model="telNumber">
-    </span>
-
-    <button class="btn" @click.prevent="searchClient">Search</button>
-
+    <fieldset>
+      <span class="form-element">
+        <label for="title">Email Address</label>
+        <input type="text" v-model="emailAddress" @keyup="searchClient | debounce 200">
+      </span>
+    </fieldset>
+    <fieldset>
+      <span class="option-item" v-for="client in clients">
+        <input type="radio"
+               name="client"
+               id="client-{{ client.id }}"
+               data-index="{{ client.id }}">
+        <label @click="setClient(client.id, client.name, client.emailAddress, client.addressFirstLine)"
+               for="client-{{ client.id }}">
+                    <span style="font-weight:300;">Name:</span> {{ client.name }},
+               <br> <span style="font-weight:300;">Address First Line:</span> {{ client.addressFirstLine }},
+               <br> <span style="font-weight:300;">Email:</span> {{ client.emailAddress }}</label>
+      </span>
+    </fieldset>
   </form>
 </template>
 
@@ -30,34 +31,35 @@
     data: function() {
       return {
         emailAddress: "",
-        surname: "",
-        telNumber: ""
+        clients: []
       }
     },
 
     methods: {
       searchClient: function() {
-
-        var query = "?";
-        var data = this.$data;
-
-        for ( var prop in data ) {
-          if ( data.hasOwnProperty(prop) ) {
-            // if ( !data[prop].length === 0 ) {
-              query += ( prop + "=" + data[prop] + "&");
-            // }
-          }
+        var query = "?emailAddress=" + this.$data.emailAddress;
+        if ( this.$data.emailAddress.length > 1 ) {
+          this.$http.get('http://localhost:8080/services/clients/search-client' + query).then(
+            function(response) {
+              this.$data.clients = response.data
+            }, function(response) {
+              console.log(response);
+            });
         }
-        query = query.slice(0, -1);
-        console.log(query);
+      },
 
-        this.$http.get('http://localhost:8080/services/clients/search-client' + query)
-                  .then(function(response) {
-                    console.log(response)
-                  }, function(response) {
-                    console.log(response);
-                  });
+      setClient: function(id, name, address, email) {
+        var details = {
+          "id": id,
+          "name": name,
+          "address": address,
+          "email": email
+        }
+        sessionStorage.setItem("client-set", JSON.stringify(details));
+        this.$dispatch('broadcastEvent', 'displayClientDetails');
+        this.$dispatch('closeSidePanelView');
       }
+
     }
 
   }

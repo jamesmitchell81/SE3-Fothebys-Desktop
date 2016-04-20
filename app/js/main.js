@@ -15627,44 +15627,52 @@ var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _stringify = require("babel-runtime/core-js/json/stringify");
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 exports.default = {
   name: "ClientSearchForm",
 
   data: function data() {
     return {
       emailAddress: "",
-      surname: "",
-      telNumber: ""
+      clients: []
     };
   },
 
   methods: {
     searchClient: function searchClient() {
-
-      var query = "?";
-      var data = this.$data;
-
-      for (var prop in data) {
-        if (data.hasOwnProperty(prop)) {
-          // if ( !data[prop].length === 0 ) {
-          query += prop + "=" + data[prop] + "&";
-          // }
-        }
+      var query = "?emailAddress=" + this.$data.emailAddress;
+      if (this.$data.emailAddress.length > 1) {
+        this.$http.get('http://localhost:8080/services/clients/search-client' + query).then(function (response) {
+          this.$data.clients = response.data;
+        }, function (response) {
+          console.log(response);
+        });
       }
-      query = query.slice(0, -1);
-      console.log(query);
+    },
 
-      this.$http.get('http://localhost:8080/services/clients/search-client' + query).then(function (response) {
-        console.log(response);
-      }, function (response) {
-        console.log(response);
-      });
+    setClient: function setClient(id, name, address, email) {
+      var details = {
+        "id": id,
+        "name": name,
+        "address": address,
+        "email": email
+      };
+      sessionStorage.setItem("client-set", (0, _stringify2.default)(details));
+      this.$dispatch('broadcastEvent', 'displayClientDetails');
+      this.$dispatch('closeSidePanelView');
     }
+
   }
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form method=\"get\" action=\"http://localhost:8080/services/clients/\">\n\n  <span class=\"form-element\">\n    <label for=\"surname\">Surname</label>\n    <input type=\"text\" v-model=\"surname\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"title\">Email Address</label>\n    <input type=\"email\" v-model=\"emailAddress\">\n  </span>\n\n  <span class=\"form-element\">\n    <label for=\"telNumber\">Telephone Number</label>\n    <input type=\"text\" v-model=\"telNumber\">\n  </span>\n\n  <button class=\"btn\" @click.prevent=\"searchClient\">Search</button>\n\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form method=\"get\" action=\"http://localhost:8080/services/clients/\">\n  <fieldset>\n    <span class=\"form-element\">\n      <label for=\"title\">Email Address</label>\n      <input type=\"text\" v-model=\"emailAddress\" @keyup=\"searchClient | debounce 200\">\n    </span>\n  </fieldset>\n  <fieldset>\n    <span class=\"option-item\" v-for=\"client in clients\">\n      <input type=\"radio\" name=\"client\" id=\"client-{{ client.id }}\" data-index=\"{{ client.id }}\">\n      <label @click=\"setClient(client.id, client.name, client.emailAddress, client.addressFirstLine)\" for=\"client-{{ client.id }}\">\n                  <span style=\"font-weight:300;\">Name:</span> {{ client.name }},\n             <br> <span style=\"font-weight:300;\">Address First Line:</span> {{ client.addressFirstLine }},\n             <br> <span style=\"font-weight:300;\">Email:</span> {{ client.emailAddress }}</label>\n    </span>\n  </fieldset>\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15680,7 +15688,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],72:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"vue":62,"vue-hot-reload-api":36,"vueify-insert-css":63}],72:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 "use strict";
 
@@ -15932,31 +15940,33 @@ exports.default = {
 
   data: function data() {
     return {
-      expertSearch: "",
+      emailAddress: "",
       experts: []
     };
   },
 
-  ready: function ready() {
-    this.$http.get('http://localhost:8080/services/expert').then(function (response) {
-      this.experts = response.data;
-    }, function (err) {
-      this.experts = [];
-      console.log(err);
-    });
-  },
+  ready: function ready() {},
 
   methods: {
     searchExperts: function searchExperts() {
-      console.log(this.$data.expertSearch);
+      var query = "?emailAddress=" + this.$data.emailAddress;
+      console.log(query);
+      if (this.$data.emailAddress.length > 1) {
+        this.$http.get('http://localhost:8080/services/expert/search' + query).then(function (response) {
+          this.$data.experts = response.data;
+        }, function (response) {
+          console.log(response);
+        });
+      }
     },
 
-    setExpert: function setExpert(id, name, location, email) {
+    setExpert: function setExpert(id, name, location, email, category) {
       var details = {
         "id": id,
         "name": name,
         "location": location,
-        "email": email
+        "email": email,
+        "category": category
       };
       sessionStorage.setItem("expert-selection", (0, _stringify2.default)(details));
       this.$dispatch('broadcastEvent', 'showExpertDetails');
@@ -15966,7 +15976,7 @@ exports.default = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n  <fieldset>\n    <legend>Expert Selection</legend>\n    <span class=\"form-element\">\n      <label for=\"date-description\">Expert Search</label>\n      <input @keyup=\"searchExperts | debounce 500\" type=\"text\" v-model=\"expertSearch\">\n    </span>\n  </fieldset>\n\n  <fieldset>\n\n    <span class=\"option-item\" v-for=\"expert in experts\">\n      <input type=\"radio\" name=\"expert\" id=\"expert-{{ expert.id }}\" data-index=\"{{ expert.id }}\">\n      <label @click=\"setExpert(expert.id, expert.fullName, expert.location.name, expert.emailAddress)\" for=\"expert-{{ expert.id }}\">{{ expert.fullName }}, {{ expert.location.name }}, {{ expert.emailAddress }}</label>\n    </span>\n\n  </fieldset>\n</form>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form action=\"\">\n  <fieldset>\n    <legend>Expert Selection</legend>\n    <span class=\"form-element\">\n      <label for=\"date-description\">Expert Search</label>\n      <input @keyup=\"searchExperts | debounce 200\" type=\"text\" v-model=\"emailAddress\">\n    </span>\n  </fieldset>\n\n  <fieldset>\n\n    <span class=\"option-item\" v-for=\"expert in experts\">\n      <input type=\"radio\" name=\"expert\" id=\"expert-{{ expert.id }}\" data-index=\"{{ expert.id }}\">\n      <label @click=\"setExpert(expert.id, expert.name, expert.location.name, expert.emailAddress, expert.category.name)\" for=\"expert-{{ expert.id }}\">\n                  <span style=\"font-weight:300;\">Name:</span> {{ expert.name }},\n             <br> <span style=\"font-weight:300;\">Location:</span> {{ expert.location.name }},\n             <br> <span style=\"font-weight:300;\">Email:</span> {{ expert.emailAddress }},\n             <br> <span style=\"font-weight:300;\">Specialisation:</span> {{ expert.category.name }}</label>\n    </span>\n\n  </fieldset>\n</form>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16487,7 +16497,7 @@ exports.default = {
   ready: function ready() {}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"item\" data-id=\"{{ item.id }}\">\n  <span class=\"item-row\">\n    <span class=\"item-cell\">Item Name: {{ item.itemName }}</span>\n    <span class=\"item-cell\">Category: {{ item.category.name }}</span>\n    <span class=\"item-cell\">\n      Classifications:\n      <span v-for=\"classification in item.classifications\">{{ classification.name }} </span>\n    </span>\n    <span class=\"item-cell\">\n      <div v-for=\"attribute in item.attributes\">\n        <span> {{ attribute.name }}</span>:<span> {{ attribute.value }}</span>\n      </div>\n    </span>\n    <span class=\"item-cell\">\n      <div v-for=\"(index, dimension) in item.dimensions\">\n        <span> {{ index }}</span>:<span> {{ dimension[index] }}</span>\n      </div>\n    </span>\n  </span>\n  <span class=\"item-row\">\n    <span class=\"item-cell\">Textual Description:</span>\n    <span class=\"item-cell item-textual-description\">{{ item.textualDescription }}</span>\n  </span>\n\n  <div class=\"image-list\">\n    <div class=\"image-item\" v-for=\"image in item.images\">\n      <div class=\"item-image-wrap\">\n        <img class=\"image-upload-preview\" :src=\"image.dataURL\" alt=\"{{ image.filename }}\">\n      </div>\n    </div>\n  </div>\n\n</div>\n\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"item\" data-id=\"{{ item.id }}\">\n  <span class=\"item-row\">\n    <span class=\"item-cell\">Item Name: {{ item.itemName }}</span>\n    <span class=\"item-cell\">Category: {{ item.category.name }}</span>\n    <span class=\"item-cell\">\n      Classifications:\n      <span v-for=\"classification in item.classifications\">{{ classification.name }} </span>\n    </span>\n    <span class=\"item-cell\">\n      <div v-for=\"attribute in item.attributes\">\n        <span> {{ attribute.name }}</span>:<span> {{ attribute.value }}</span>\n      </div>\n    </span>\n    <span class=\"item-cell\">\n      <span>{{ item.dimensions }}</span>\n    </span>\n  </span>\n  <span class=\"item-row\">\n    <span class=\"item-cell\">Textual Description:</span>\n    <span class=\"item-cell item-textual-description\">{{ item.textualDescription }}</span>\n  </span>\n\n  <div class=\"image-list\">\n    <div class=\"image-item\" v-for=\"image in item.images\">\n      <div class=\"item-image-wrap\">\n        <img class=\"image-upload-preview\" :src=\"image.dataURL\" alt=\"{{ image.filename }}\">\n      </div>\n    </div>\n  </div>\n\n</div>\n\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16994,18 +17004,25 @@ exports.default = {
   },
 
   ready: function ready() {
-    // get last ten created items
     var path = "http://localhost:8080/services/lot-item";
-
-    console.log(this.$route.path);
 
     this.$http.get(path).then(function (response) {
       this.$data.items = response.data;
-
-      // for ( var i = 0; i < this.$data.items.length; i++ )
-      // {
-      //   this.$data.items[i].updatePath =
-      // }
+      console.log(response);
+      // get the correct images.
+      for (var j = 0; j < this.$data.items.length; j++) {
+        var images = this.$data.items[j].images;
+        var realImages = [];
+        for (var i in images) {
+          var id = images[i].image.id;
+          this.$http.get("http://localhost:8080/services/item-images/" + id).then(function (response) {
+            realImages.push(response.data);
+          }, function (response) {
+            console.log(response);
+          });
+        }
+        this.$data.items[j].images = realImages;
+      }
     }, function (response) {
       console.log(response);
     });
@@ -17036,7 +17053,7 @@ exports.default = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div>\n  <form action=\"\">\n    <fieldset>\n      <legend>Search Items</legend>\n    </fieldset>\n  </form>\n\n\n  <div class=\"item-list-view\">\n    <div v-for=\"item in items\" class=\"item-list\" data-id=\"{{ item.id }}\" @click=\"select\">\n      <span class=\"item-list-column\">\n        <span class=\"item-list-cell\">Item Name: <span class=\"item-list-cell-value\">{{ item.itemName }}</span></span>\n        <span class=\"item-list-cell\">Category: <span class=\"item-list-cell-value\">{{ item.category.name }}</span></span>\n        <span class=\"item-list-cell\">\n          Classifications:\n          <span v-for=\"classification in item.classifications\"><span class=\"item-list-cell-value\">{{ classification.name }}</span></span>\n        </span>\n        <span class=\"item-list-cell\">\n          <div v-for=\"attribute in item.attributes\">\n            <span> {{ attribute.name }}</span>:<span class=\"item-list-cell-value\"> {{ attribute.value }}</span>\n          </div>\n        </span>\n      </span>\n      <span class=\"item-list-column\">\n        <span class=\"item-list-cell\">Textual Description:</span>\n        <span class=\"item-list-cell item-list-textual-description\">{{ item.textualDescription }}</span>\n      </span>\n    </div>\n  </div>\n\n  <div class=\"control-bar\" v-show=\"selected !== 0\">\n    <div class=\"item-list-controls\">\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.view\">View</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.update\">Update</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.delete\">Delete</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.page.design\">Design Page</button>\n    </div>\n  </div>\n\n</div><!-- end -->\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div>\n  <form action=\"\">\n    <fieldset>\n      <legend>Search Items</legend>\n    </fieldset>\n  </form>\n\n  <div class=\"item-list-view\">\n    <div v-for=\"item in items\" class=\"item-list\" data-id=\"{{ item.id }}\" @click=\"select\">\n      <span class=\"item-list-column\" v-for=\"image in images\">\n        <img :src=\"image.dataURL\" alt=\"\">\n      </span>\n      <span class=\"item-list-column\">\n        <span class=\"item-list-cell\">Item Name: <span class=\"item-list-cell-value\">{{ item.itemName }}</span></span>\n        <span class=\"item-list-cell\">Category: <span class=\"item-list-cell-value\">{{ item.category.name }}</span></span>\n        <span class=\"item-list-cell\">\n          Classifications:\n          <span v-for=\"classification in item.classifications\"><span class=\"item-list-cell-value\">{{ classification.name }}</span></span>\n        </span>\n        <span class=\"item-list-cell\">\n          <div v-for=\"attribute in item.attributes\">\n            <span> {{ attribute.name }}</span>:<span class=\"item-list-cell-value\"> {{ attribute.value }}</span>\n          </div>\n        </span>\n      </span>\n      <span class=\"item-list-column\">\n        <span class=\"item-list-cell\">Textual Description:</span>\n        <span class=\"item-list-cell item-list-textual-description\">{{ item.textualDescription }}</span>\n      </span>\n    </div>\n  </div>\n\n  <div class=\"control-bar\" v-show=\"selected !== 0\">\n    <div class=\"item-list-controls\">\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.view\">View</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.update\">Update</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.delete\">Delete</button>\n      <button class=\"btn\" @click.prevent=\"go\" data-route-name=\"item.page.design\">Design Page</button>\n    </div>\n  </div>\n\n</div><!-- end -->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

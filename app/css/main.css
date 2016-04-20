@@ -194,7 +194,7 @@ nav {
   float: none; }
 
 .item-list-column {
-  width: 50%; }
+  width: 33%; }
 
 .item-list-cell {
   border-top: 1px dotted #cacaca;
@@ -402,6 +402,8 @@ select {
   display: none; }
 
 .option-item label {
+  text-transform: none;
+  letter-spacing: 0;
   background: #efefef;
   box-shadow: 1px 1px 1px #cacaca;
   border-radius: 2px;

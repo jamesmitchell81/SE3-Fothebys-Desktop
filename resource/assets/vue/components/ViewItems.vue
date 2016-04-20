@@ -7,9 +7,11 @@
     </fieldset>
   </form>
 
-
   <div class="item-list-view">
     <div v-for="item in items" class="item-list" data-id="{{ item.id }}" @click="select">
+      <span class="item-list-column" v-for="image in images">
+        <img :src="image.dataURL" alt="">
+      </span>
       <span class="item-list-column">
         <span class="item-list-cell">Item Name: <span class="item-list-cell-value">{{ item.itemName }}</span></span>
         <span class="item-list-cell">Category: <span class="item-list-cell-value">{{ item.category.name }}</span></span>
@@ -55,19 +57,28 @@ export default {
   },
 
   ready: function() {
-    // get last ten created items
     var path = "http://localhost:8080/services/lot-item";
-
-    console.log(this.$route.path);
 
     this.$http.get(path).then(
       function(response) {
         this.$data.items = response.data;
+        console.log(response);
+        // get the correct images.
+        for ( var j = 0; j < this.$data.items.length; j++ ) {
+          var images = this.$data.items[j].images;
+          var realImages = [];
+          for ( var i in images ) {
+            var id = images[i].image.id;
+            this.$http.get("http://localhost:8080/services/item-images/" + id).then(
+              function(response) {
+                realImages.push(response.data);
+              }, function(response) {
+                console.log(response);
+              });
+          }
+          this.$data.items[j].images = realImages;
+        }
 
-        // for ( var i = 0; i < this.$data.items.length; i++ )
-        // {
-        //   this.$data.items[i].updatePath =
-        // }
     }, function(response) {
       console.log(response);
     });

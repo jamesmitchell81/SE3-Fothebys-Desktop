@@ -14,9 +14,7 @@
           </div>
         </span>
         <span class="item-cell">
-          <div v-for="(index, dimension) in item.dimensions">
-            <span> {{ index }}</span>:<span> {{ dimension[index] }}</span>
-          </div>
+          <span>{{ item.dimensions }}</span>
         </span>
       </span>
       <span class="item-row">

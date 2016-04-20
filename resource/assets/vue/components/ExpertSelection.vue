@@ -5,7 +5,7 @@
       <legend>Expert Selection</legend>
       <span class="form-element">
         <label for="date-description">Expert Search</label>
-        <input @keyup="searchExperts | debounce 500" type="text" v-model="expertSearch">
+        <input @keyup="searchExperts | debounce 200" type="text" v-model="emailAddress">
       </span>
     </fieldset>
 
@@ -16,8 +16,12 @@
                name="expert"
                id="expert-{{ expert.id }}"
                data-index="{{ expert.id }}">
-        <label @click="setExpert(expert.id, expert.fullName, expert.location.name, expert.emailAddress)"
-               for="expert-{{ expert.id }}">{{ expert.fullName }}, {{ expert.location.name }}, {{ expert.emailAddress }}</label>
+        <label @click="setExpert(expert.id, expert.name, expert.location.name, expert.emailAddress, expert.category.name)"
+               for="expert-{{ expert.id }}">
+                    <span style="font-weight:300;">Name:</span> {{ expert.name }},
+               <br> <span style="font-weight:300;">Location:</span> {{ expert.location.name }},
+               <br> <span style="font-weight:300;">Email:</span> {{ expert.emailAddress }},
+               <br> <span style="font-weight:300;">Specialisation:</span> {{ expert.category.name }}</label>
       </span>
 
     </fieldset>
@@ -32,32 +36,36 @@
 
     data: function() {
       return {
-        expertSearch: "",
+        emailAddress: "",
         experts: []
       }
     },
 
     ready: function() {
-      this.$http.get('http://localhost:8080/services/expert')
-                .then(function(response) {
-                  this.experts = response.data;
-                }, function(err) {
-                  this.experts = [];
-                  console.log(err);
-                });
+
     },
 
     methods: {
       searchExperts: function() {
-        console.log(this.$data.expertSearch);
+        var query = "?emailAddress=" + this.$data.emailAddress;
+        console.log(query);
+        if ( this.$data.emailAddress.length > 1 ) {
+          this.$http.get('http://localhost:8080/services/expert/search' + query).then(
+            function(response) {
+              this.$data.experts = response.data
+            }, function(response) {
+              console.log(response);
+            });
+        }
       },
 
-      setExpert: function(id, name, location, email) {
+      setExpert: function(id, name, location, email, category) {
         var details = {
           "id": id,
           "name": name,
           "location": location,
-          "email": email
+          "email": email,
+          "category": category
         }
         sessionStorage.setItem("expert-selection", JSON.stringify(details));
         this.$dispatch('broadcastEvent', 'showExpertDetails');
